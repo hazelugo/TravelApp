@@ -1823,6 +1823,28 @@ createApp({
 
     const syncStatus = ref('idle'); // 'idle' | 'saving' | 'saved' | 'error'
     const linkCopied = ref(false);
+
+    // ── Trip index ───────────────────────────────────────────────
+    const TRIP_INDEX_KEY = 'travelapp_trips';
+    const tripIndex = ref([]);
+    const tripsOpen = ref(false);
+    const tripsCopiedId = ref(null);
+
+    function loadTripIndex() {
+      try { tripIndex.value = JSON.parse(localStorage.getItem(TRIP_INDEX_KEY) || '[]'); }
+      catch { tripIndex.value = []; }
+    }
+    function saveTripIndex() {
+      localStorage.setItem(TRIP_INDEX_KEY, JSON.stringify(tripIndex.value));
+    }
+    function upsertTripIndex(id, name, startDate, endDate) {
+      const idx = tripIndex.value.findIndex(t => t.id === id);
+      const entry = { id, name: name || 'Untitled Trip', startDate: startDate || '', endDate: endDate || '', savedAt: new Date().toISOString() };
+      if (idx >= 0) { tripIndex.value[idx] = { ...tripIndex.value[idx], ...entry }; }
+      else { tripIndex.value.unshift(entry); }
+      saveTripIndex();
+    }
+
     let saveTimer = null;
 
     async function saveTrip() {
@@ -2461,6 +2483,8 @@ createApp({
       try {
         const { data } = await db.from('trips').select('data').eq('id', tripId).single();
         if (data?.data) Object.assign(state, data.data);
+        loadTripIndex();
+        upsertTripIndex(tripId, state.trip.destination, state.trip.startDate, state.trip.endDate);
       } catch {}
 
       // Real-time: when another user saves, pull their changes in
@@ -2485,6 +2509,10 @@ createApp({
 
     watch(() => state.trip.destination, (dest) => {
       document.title = dest ? `${dest} — TravelApp` : 'TravelApp — Plan & Budget';
+    });
+
+    watch(() => [state.trip.destination, state.trip.startDate, state.trip.endDate], ([dest, start, end]) => {
+      upsertTripIndex(tripId, dest, start, end);
     });
 
     return {
