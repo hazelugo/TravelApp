@@ -523,7 +523,7 @@
             aria-label="My trips">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
             My Trips
-            <span v-if="tripIndex.length > 0" class="bg-teal-100 text-teal-700 rounded-full px-1.5 text-[10px] font-bold leading-none py-0.5">{{ tripIndex.length }}</span>
+            <span v-if="tripIndex.length > 1" class="bg-teal-100 text-teal-700 rounded-full px-1.5 text-[10px] font-bold leading-none py-0.5">{{ tripIndex.length }}</span>
           </button>
           <transition name="fade">
             <div v-if="tripsOpen" class="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/60 z-50 overflow-hidden">
@@ -1806,9 +1806,9 @@
 
     <!-- ── Confirm Dialog ── -->
     <teleport to="body">
+      <!-- Trips panel click-outside overlay -->
+      <div v-if="tripsOpen" class="fixed inset-0 z-40 hidden lg:block" @click="tripsOpen = false" aria-hidden="true"></div>
       <transition name="lightbox">
-        <!-- Trips panel click-outside overlay -->
-        <div v-if="tripsOpen" class="fixed inset-0 z-40 hidden lg:block" @click="tripsOpen = false" aria-hidden="true"></div>
         <div v-if="confirmDialog.show" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
           @click.self="confirmCancel" @keydown.escape.prevent="confirmCancel">
           <div role="dialog" aria-modal="true" aria-labelledby="confirm-title"
@@ -1931,6 +1931,7 @@ createApp({
     }
 
     async function startNewTrip() {
+      tripsOpen.value = false;
       const ok = await showConfirm(
         'Start a new trip?',
         'Your current trip is saved and you can switch back anytime.',
@@ -1949,6 +1950,7 @@ createApp({
 
     async function switchTrip(id) {
       if (id === tripId) { tripsOpen.value = false; return; }
+      tripsOpen.value = false;
       const hasContent = !!(state.trip.destination || state.events.length || state.friends.length);
       if (hasContent) {
         const ok = await showConfirm(
