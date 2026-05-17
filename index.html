@@ -154,6 +154,9 @@
     }
     /* Dark mode bottom nav */
     html.dark nav.mobile-nav { background-color: #1a1f2e !important; border-color: #2a3347 !important; }
+    /* Neutralize colored glow shadows in dark mode */
+    html.dark .shadow-teal-200\/60,
+    html.dark .shadow-indigo-200\/60 { --tw-shadow-color: rgba(0,0,0,0) !important; }
 
     /* ── Focus visible ── */
     button:focus-visible, [role="button"]:focus-visible {
@@ -171,13 +174,6 @@
       100% { transform: scale(1); }
     }
     .btn-success-pop { animation: btn-success-pop 0.32s cubic-bezier(0.25, 1, 0.5, 1); }
-
-    /* ── Delight: Packing progress pulse at 100% ── */
-    @keyframes packed-pulse {
-      0%, 100% { opacity: 1; transform: scale(1); }
-      50%       { opacity: 0.82; transform: scale(1.04); }
-    }
-    .packed-pulse { animation: packed-pulse 1.4s ease-in-out infinite; }
 
     /* ── Delight: Photo upload toast ── */
     .slide-up-enter-active { transition: all 0.22s cubic-bezier(0.4,0,0.2,1); }
@@ -197,6 +193,271 @@
     @media (pointer: coarse) {
       .touch-visible { opacity: 0.72 !important; }
     }
+
+    /* ── Overview redesign ── */
+
+    /* Destination input — headline scale */
+    .dest-headline-input {
+      font-size: 1.75rem;
+      font-weight: 700;
+      line-height: 1.2;
+      border: none;
+      border-bottom: 2px solid transparent;
+      border-radius: 0;
+      padding: 0.25rem 0;
+      background: transparent;
+      color: inherit;
+      width: 100%;
+      transition: border-color 0.18s ease;
+      outline: none;
+    }
+    .dest-headline-input:focus {
+      border-bottom-color: var(--p400);
+      box-shadow: none;
+    }
+    .dest-headline-input::placeholder {
+      color: #cbd5e1;
+      font-weight: 400;
+    }
+    html.dark .dest-headline-input { color: #f1f5f9 !important; background: transparent !important; border-color: transparent !important; }
+    html.dark .dest-headline-input:focus { border-bottom-color: var(--p400) !important; }
+    html.dark .dest-headline-input::placeholder { color: #3a4558 !important; }
+
+    /* Date input row — understated */
+    .date-input-understated {
+      background: transparent;
+      border: none;
+      border-bottom: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      padding: 0.25rem 0.5rem 0.25rem 0;
+      font-size: 0.875rem;
+      color: #475569;
+      outline: none;
+      transition: border-color 0.18s ease;
+      width: 100%;
+    }
+    .date-input-understated:focus {
+      border-bottom-color: var(--p500);
+      box-shadow: none;
+    }
+    html.dark .date-input-understated { color: #94a3b8 !important; background: transparent !important; border-color: #2a3347 !important; }
+    html.dark .date-input-understated:focus { border-bottom-color: var(--p400) !important; }
+
+    /* Budget input — inline, borderless */
+    .budget-inline-input {
+      background: transparent;
+      border: none;
+      border-bottom: 1.5px solid #e2e8f0;
+      border-radius: 0;
+      padding: 0.25rem 0.5rem 0.25rem 1.25rem;
+      font-size: 0.875rem;
+      color: #475569;
+      outline: none;
+      transition: border-color 0.18s ease;
+      width: 100%;
+      -moz-appearance: textfield;
+    }
+    .budget-inline-input::-webkit-outer-spin-button,
+    .budget-inline-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    .budget-inline-input:focus { border-bottom-color: var(--p500); box-shadow: none; }
+    html.dark .budget-inline-input { color: #94a3b8 !important; background: transparent !important; border-color: #2a3347 !important; }
+    html.dark .budget-inline-input:focus { border-bottom-color: var(--p400) !important; }
+
+    /* Cost number — receipt-header style */
+    .cost-hero-number {
+      font-size: 4.5rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.03em;
+    }
+    @media (min-width: 640px) {
+      .cost-hero-number { font-size: 5.5rem; }
+    }
+
+    /* Countdown strip mobile — mini hero */
+    .countdown-hero-days {
+      font-size: 4rem;
+      font-weight: 900;
+      line-height: 1;
+      letter-spacing: -0.04em;
+    }
+
+    /* Weather day cards — lighter, more visual */
+    .weather-day-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 1rem 0.75rem;
+      border-radius: 1.25rem;
+      background: #f8fafc;
+      width: 88px;
+      flex-shrink: 0;
+    }
+    html.dark .weather-day-card { background: #1e2535 !important; }
+
+    /* Welcome banner upgrade */
+    .welcome-banner-emoji { font-size: 2.5rem; line-height: 1; animation: float-plane 3s ease-in-out infinite; }
+    @keyframes float-plane {
+      0%, 100% { transform: translateY(0) rotate(-2deg); }
+      50%       { transform: translateY(-5px) rotate(2deg); }
+    }
+    @media (prefers-reduced-motion: reduce) {
+      .welcome-banner-emoji { animation: none !important; }
+    }
+
+    /* ── Itinerary redesign ── */
+
+    /* Add-event name input — headline scale */
+    .itinerary-name-input {
+      font-size: 1.125rem;
+      font-weight: 600;
+      line-height: 1.3;
+      border: none;
+      border-bottom: 2px solid #e2e8f0;
+      border-radius: 0;
+      padding: 0.375rem 0;
+      background: transparent;
+      color: inherit;
+      outline: none;
+      transition: border-color 0.18s ease;
+    }
+    .itinerary-name-input:focus {
+      border-bottom-color: var(--p400);
+      box-shadow: none;
+    }
+    .itinerary-name-input::placeholder {
+      color: #cbd5e1;
+      font-weight: 400;
+    }
+    html.dark .itinerary-name-input {
+      color: #f1f5f9 !important;
+      background: transparent !important;
+      border-color: #2a3347 !important;
+    }
+    html.dark .itinerary-name-input:focus { border-bottom-color: var(--p400) !important; }
+    html.dark .itinerary-name-input::placeholder { color: #3a4558 !important; }
+
+    /* Add-event CTA — pill-shaped, positive */
+    .itinerary-add-btn {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.375rem;
+      padding: 0.625rem 1.75rem;
+      border-radius: 9999px;
+      border-width: 1px;
+      border-style: solid;
+      font-size: 0.875rem;
+      font-weight: 600;
+      color: #ffffff;
+      cursor: pointer;
+      box-shadow: 0 2px 8px var(--tw-shadow-color, rgba(0,0,0,0.12));
+      transition: background-color 0.15s ease, transform 0.08s ease, box-shadow 0.15s ease;
+    }
+    .itinerary-add-btn:active:not(:disabled) { transform: scale(0.97); }
+
+    /* Timeline spine — flat view */
+    .itinerary-spine {
+      position: absolute;
+      left: 32px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: #e2e8f0;
+      pointer-events: none;
+    }
+    html.dark .itinerary-spine { background: #2a3347 !important; }
+
+    /* Timeline spine — day group view */
+    .itinerary-day-spine {
+      position: absolute;
+      left: 12px;
+      top: 0;
+      bottom: 0;
+      width: 1px;
+      background: #e2e8f0;
+      pointer-events: none;
+    }
+    html.dark .itinerary-day-spine { background: #2a3347 !important; }
+
+    /* Drag-over indicator */
+    .itinerary-drag-over > .flex-1 {
+      outline: 2px solid var(--p400);
+      outline-offset: 1px;
+    }
+
+    /* Timeline dot colors in dark mode — keep the colored bg readable */
+    html.dark .itinerary-spine,
+    html.dark .itinerary-day-spine { background: #2a3347 !important; }
+
+    /* Splitter redesign */
+
+    /* Member chip remove button - hidden until hover */
+    .splitter-member-chip .splitter-remove-btn {
+      opacity: 0;
+      transform: scale(0.8);
+      transition: opacity 0.15s ease, transform 0.15s ease;
+    }
+    .splitter-member-chip:hover .splitter-remove-btn,
+    .splitter-member-chip:focus-within .splitter-remove-btn {
+      opacity: 1;
+      transform: scale(1);
+    }
+    @media (pointer: coarse) {
+      .splitter-member-chip .splitter-remove-btn { opacity: 0.6 !important; transform: scale(1) !important; }
+    }
+
+    /* Receipt header strip */
+    .splitter-receipt-header {
+      background: linear-gradient(135deg, var(--p50) 0%, #f0fdfa 100%);
+      border-bottom: 1px dashed var(--p200);
+    }
+    html.dark .splitter-receipt-header {
+      background: oklch(20% 0.045 195) !important;
+      border-bottom-color: oklch(32% 0.09 195) !important;
+    }
+
+    /* Amount input - large receipt number */
+    .splitter-amount-input {
+      font-size: 2rem !important;
+      font-weight: 800;
+      letter-spacing: -0.02em;
+      -moz-appearance: textfield;
+    }
+    .splitter-amount-input::-webkit-outer-spin-button,
+    .splitter-amount-input::-webkit-inner-spin-button { -webkit-appearance: none; }
+    html.dark .splitter-amount-input {
+      color: #f1f5f9 !important;
+      border-color: #2a3347 !important;
+      background: transparent !important;
+    }
+    html.dark .splitter-amount-input:focus { border-bottom-color: var(--p400) !important; }
+
+    /* Payer chip */
+    .splitter-payer-chip { transition: all 0.14s cubic-bezier(0.25, 1, 0.5, 1); }
+    .splitter-payer-chip:active { transform: scale(0.96); }
+
+    /* Settled empty state */
+    .splitter-settled-empty {
+      background: linear-gradient(135deg, #ecfdf5 0%, #f0fdf4 100%);
+      border: 1.5px solid #bbf7d0;
+    }
+    html.dark .splitter-settled-empty {
+      background: #052e16 !important;
+      border-color: #064e3b !important;
+    }
+    html.dark .splitter-settled-empty .text-emerald-700 { color: #34d399 !important; }
+    html.dark .splitter-settled-empty .text-emerald-600 { color: #6ee7b7 !important; }
+
+    /* Settlement row transitions */
+    .splitter-settlement-row { transition: opacity 0.3s ease, box-shadow 0.2s ease; }
+
+    /* Dark mode overrides for new Splitter elements */
+    html.dark .splitter-member-chip { background-color: #1e2535 !important; }
+    html.dark .splitter-member-chip:hover { background-color: oklch(22% 0.05 195) !important; }
+    html.dark .splitter-remove-btn { background-color: #253047 !important; }
+    html.dark .splitter-settlement-row { background-color: #1a1f2e !important; border-color: #2a3347 !important; }
   </style>
 </head>
 <body class="bg-slate-50 text-slate-800 antialiased">
@@ -211,7 +472,7 @@
         </div>
         <div>
           <p class="font-bold text-slate-900 text-sm leading-tight">TravelApp</p>
-          <p class="text-xs text-slate-400">Plan & Budget</p>
+          <p class="text-xs text-slate-400 truncate max-w-[140px]">{{ state.trip.destination || 'Plan & Budget' }}</p>
         </div>
       </div>
     </div>
@@ -308,167 +569,196 @@
                ========================================= -->
           <div v-if="currentTab === 'overview'" key="overview" class="space-y-5">
 
+            <!-- First-time welcome -->
+            <div v-if="!state.trip.destination && state.events.length === 0 && state.friends.length === 0"
+              class="bg-gradient-to-r from-teal-50 via-cyan-50 to-teal-50 border border-teal-100 rounded-2xl p-6 flex items-center gap-5 overflow-hidden relative">
+              <span class="welcome-banner-emoji shrink-0 select-none">✈️</span>
+              <div class="min-w-0">
+                <p class="font-bold text-teal-800 text-base leading-snug">Your next adventure starts here.</p>
+                <p class="text-sm text-teal-600 mt-1 leading-relaxed">Type your destination below, add dates and a budget, then share the link — your whole group can plan and split costs together.</p>
+              </div>
+            </div>
+
             <!-- Mobile countdown — sidebar has this on desktop -->
-            <div v-if="daysUntilTrip !== null" class="lg:hidden flex items-center gap-4 px-4 py-3.5 bg-teal-50 rounded-2xl border border-teal-100">
+            <div v-if="daysUntilTrip !== null" class="lg:hidden rounded-2xl overflow-hidden"
+              :class="daysUntilTrip === 0 ? 'bg-gradient-to-br from-emerald-500 to-teal-600' : daysUntilTrip <= 7 ? 'bg-gradient-to-br from-teal-500 to-cyan-600' : 'bg-gradient-to-br from-teal-600 to-teal-700'">
               <template v-if="daysUntilTrip === 0">
-                <span class="text-3xl today-bounce">🎉</span>
-                <div>
-                  <p class="text-xs font-bold text-teal-500 uppercase tracking-wider">It's today!</p>
-                  <p class="text-sm font-semibold text-teal-600">Have an amazing trip!</p>
+                <div class="px-6 py-6 flex items-center gap-5">
+                  <span class="text-5xl today-bounce shrink-0 select-none">🎉</span>
+                  <div>
+                    <p class="text-xs font-bold text-white/70 uppercase tracking-widest">It's today!</p>
+                    <p class="text-2xl font-black text-white leading-tight mt-0.5">Have an amazing trip!</p>
+                    <p v-if="state.trip.destination" class="text-sm text-white/70 mt-1 truncate">{{ state.trip.destination }}</p>
+                  </div>
                 </div>
               </template>
               <template v-else>
-                <div class="shrink-0">
-                  <p class="text-3xl font-extrabold text-teal-700 leading-none">{{ Math.max(0, daysUntilTrip) }}</p>
-                  <p class="text-[10px] font-semibold text-teal-500 uppercase tracking-wider">days</p>
-                  <span v-if="daysUntilTrip > 0 && daysUntilTrip <= 7" class="text-xs font-bold text-teal-500 animate-pulse">Almost there!</span>
-                </div>
-                <div class="min-w-0">
-                  <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Departing in</p>
-                  <p class="text-sm font-semibold text-slate-700 truncate">{{ state.trip.destination || 'Your destination' }}</p>
+                <div class="px-6 py-5 flex items-center gap-6">
+                  <div class="shrink-0 text-center">
+                    <p class="countdown-hero-days text-white leading-none">{{ Math.max(0, daysUntilTrip) }}</p>
+                    <p class="text-[10px] font-bold text-white/60 uppercase tracking-widest mt-0.5">days to go</p>
+                  </div>
+                  <div class="w-px h-12 bg-white/20 shrink-0"></div>
+                  <div class="min-w-0">
+                    <p v-if="daysUntilTrip <= 7" class="text-xs font-bold text-white/80 uppercase tracking-wider animate-pulse mb-0.5">Almost there!</p>
+                    <p v-else class="text-xs font-semibold text-white/60 uppercase tracking-wider mb-0.5">Destination</p>
+                    <p class="text-lg font-bold text-white truncate leading-snug">{{ state.trip.destination || 'Your destination' }}</p>
+                  </div>
                 </div>
               </template>
             </div>
+            <div v-else class="lg:hidden flex items-center gap-3 px-4 py-3.5 bg-slate-50 border border-slate-100 rounded-2xl text-xs text-slate-400">
+              <span class="text-xl">📅</span>
+              <span>Add your travel dates to see the countdown</span>
+            </div>
 
             <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
-              <!-- Trip Details -->
-              <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
-                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Trip Details</h2>
-                <div>
-                  <label for="trip-destination" class="block text-xs font-medium text-slate-500 mb-1.5">Destination</label>
-                  <div class="relative">
-                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                    <svg v-if="destSearching" class="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-slate-300 pointer-events-none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-                    <input id="trip-destination" v-model="state.trip.destination" type="text" placeholder="Where are you going?"
-                      autocomplete="off"
-                      @input="onDestinationInput"
-                      @blur="onDestinationBlur"
-                      @keydown.escape="showDestSuggestions = false"
-                      @keydown.enter.prevent="destSuggestions[0] && selectDestination(destSuggestions[0])"
-                      class="w-full pl-9 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
-                    <!-- Autocomplete dropdown -->
-                    <div v-if="showDestSuggestions && destSuggestions.length"
-                      class="absolute top-full left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
-                      <button v-for="s in destSuggestions" :key="s.label"
-                        @mousedown.prevent="selectDestination(s)"
-                        class="w-full text-left flex items-start gap-2.5 px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
-                        <svg class="shrink-0 mt-0.5 text-slate-300" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                        <span class="truncate">{{ s.label }}</span>
-                      </button>
-                    </div>
+
+              <!-- Trip Header — immersive destination card -->
+              <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-100 shadow-sm p-7 space-y-5">
+
+                <!-- Destination as headline input -->
+                <div class="relative">
+                  <input id="trip-destination" v-model="state.trip.destination" type="text"
+                    placeholder="Where are you going?"
+                    autocomplete="off"
+                    @input="onDestinationInput"
+                    @blur="onDestinationBlur"
+                    @keydown.escape="showDestSuggestions = false"
+                    @keydown.enter.prevent="destSuggestions[0] && selectDestination(destSuggestions[0])"
+                    class="dest-headline-input" />
+                  <svg v-if="destSearching" class="absolute right-1 top-2 animate-spin text-slate-300 pointer-events-none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                  <!-- Autocomplete dropdown -->
+                  <div v-if="showDestSuggestions && destSuggestions.length"
+                    class="absolute top-full left-0 right-0 mt-2 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                    <button v-for="s in destSuggestions" :key="s.label"
+                      @mousedown.prevent="selectDestination(s)"
+                      class="w-full text-left flex items-start gap-2.5 px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                      <svg class="shrink-0 mt-0.5 text-slate-300" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                      <span class="truncate">{{ s.label }}</span>
+                    </button>
                   </div>
                 </div>
-                <div class="grid grid-cols-2 gap-4">
-                  <div>
-                    <label for="trip-start-date" class="block text-xs font-medium text-slate-500 mb-1.5">Start Date</label>
+
+                <!-- Date row — understated, inline -->
+                <div class="flex items-center gap-3">
+                  <div class="flex-1 min-w-0">
+                    <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">From</p>
                     <input id="trip-start-date" v-model="state.trip.startDate" type="date"
-                      class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+                      class="date-input-understated" />
                   </div>
-                  <div>
-                    <label for="trip-end-date" class="block text-xs font-medium text-slate-500 mb-1.5">End Date</label>
+                  <span class="text-slate-300 text-lg font-light mt-4 shrink-0">→</span>
+                  <div class="flex-1 min-w-0">
+                    <p class="text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1">To</p>
                     <input id="trip-end-date" v-model="state.trip.endDate" type="date"
-                      class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+                      class="date-input-understated" />
                   </div>
                 </div>
-                <div v-if="tripDuration > 0" class="flex items-center gap-2.5 px-4 py-3 bg-emerald-50 rounded-xl border border-emerald-100">
-                  <svg class="text-emerald-500 shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
-                  <span class="text-sm font-medium text-emerald-700">{{ tripDuration }}-day trip</span>
-                  <span v-if="daysUntilTrip !== null" class="ml-auto text-xs font-medium text-emerald-600 bg-emerald-100 px-2.5 py-1 rounded-full">
-                    {{ daysUntilTrip > 0 ? `${daysUntilTrip} days away` : daysUntilTrip === 0 ? '🎉 Today!' : 'In progress' }}
-                  </span>
-                </div>
-                <div>
-                  <label for="trip-budget" class="block text-xs font-medium text-slate-500 mb-1.5">Budget Cap <span class="text-slate-300">(optional)</span></label>
-                  <div class="relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
-                    <input id="trip-budget" v-model.number="state.budget" type="number" min="0" step="1" placeholder="0"
-                      class="w-full pl-7 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+
+                <!-- Duration + budget row -->
+                <div class="flex items-center gap-3 pt-1 border-t border-slate-100">
+                  <!-- Duration badge -->
+                  <div v-if="tripDuration > 0" class="flex items-center gap-1.5 shrink-0">
+                    <span class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 border border-emerald-100 text-xs font-semibold text-emerald-700">
+                      <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                      {{ tripDuration }} days
+                    </span>
+                    <span v-if="daysUntilTrip !== null" class="text-xs text-slate-400">
+                      {{ daysUntilTrip > 0 ? `· ${daysUntilTrip} to go` : daysUntilTrip === 0 ? '· 🎉 Today!' : '· In progress' }}
+                    </span>
+                  </div>
+                  <div v-else class="text-xs text-slate-300 italic">Set dates to see duration</div>
+
+                  <!-- Budget input — right-aligned -->
+                  <div class="ml-auto flex items-center gap-1.5 shrink-0">
+                    <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Budget</span>
+                    <div class="relative">
+                      <span class="absolute left-0 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
+                      <input id="trip-budget" v-model.number="state.budget" type="number" min="0" step="1" placeholder="—"
+                        class="budget-inline-input w-24 text-right" />
+                    </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Summary card -->
-              <div class="lg:col-span-2 bg-gradient-to-br from-teal-500 via-teal-600 to-teal-700 rounded-2xl p-6 text-white shadow-xl shadow-teal-200/60 flex flex-col">
+              <!-- Summary card — receipt-header style -->
+              <div v-if="totalTripCost > 0 || state.trip.startDate" class="lg:col-span-2 bg-gradient-to-br from-teal-500 via-teal-600 to-teal-700 rounded-2xl p-6 text-white shadow-xl shadow-teal-200/60 flex flex-col">
+                <!-- Cost hero -->
                 <div>
-                  <p class="text-white/70 text-xs font-semibold uppercase tracking-wider">Total Trip Cost</p>
-                  <p class="text-5xl font-extrabold mt-2 leading-none">${{ fmt(totalTripCost) }}</p>
+                  <p class="text-white/60 text-[10px] font-bold uppercase tracking-widest">Total Trip Cost</p>
+                  <div class="flex items-end gap-3 mt-1.5">
+                    <p class="cost-hero-number text-white leading-none">${{ fmt(totalTripCost) }}</p>
+                    <span v-if="costPerPerson > 0" class="mb-1.5 px-2.5 py-1 rounded-full bg-white/20 text-white text-xs font-bold whitespace-nowrap">${{ fmt(costPerPerson) }} pp</span>
+                  </div>
                 </div>
-                <div class="mt-auto space-y-3 pt-5">
-                  <div class="flex justify-between items-center text-sm">
-                    <span class="text-white/70">Per person</span>
-                    <span class="font-bold text-base">${{ fmt(costPerPerson) }}</span>
+
+                <!-- Breakdown — small secondary details -->
+                <div class="mt-auto pt-5 space-y-2">
+                  <div class="flex justify-between items-center text-xs text-white/70">
+                    <span>{{ totalParticipants }} traveler{{ totalParticipants !== 1 ? 's' : '' }}</span>
+                    <span class="font-semibold text-white/90">${{ fmt(baseGroupCost) }} base</span>
                   </div>
-                  <div class="flex justify-between items-center text-sm">
-                    <span class="text-white/70">Travelers</span>
-                    <span class="font-semibold">{{ totalParticipants }} people</span>
+                  <div class="flex justify-between items-center text-xs text-white/70">
+                    <span>Itinerary</span>
+                    <span class="font-semibold text-white/90">${{ fmt(totalEventCost) }}</span>
                   </div>
-                  <div class="flex justify-between items-center text-sm">
-                    <span class="text-white/70">Base pricing</span>
-                    <span class="font-semibold">${{ fmt(baseGroupCost) }}</span>
-                  </div>
-                  <div class="flex justify-between items-center text-sm">
-                    <span class="text-white/70">Itinerary</span>
-                    <span class="font-semibold">${{ fmt(totalEventCost) }}</span>
-                  </div>
-                  <div v-if="(state.budget || 0) > 0" class="pt-1">
-                    <div class="flex justify-between text-xs text-white/70 mb-1.5">
+
+                  <!-- Budget progress -->
+                  <div v-if="(state.budget || 0) > 0" class="pt-3">
+                    <div class="flex justify-between text-[10px] text-white/60 mb-2 uppercase tracking-wider font-semibold">
                       <span>Budget used</span>
                       <span>{{ Math.min(100, Math.round(totalTripCost / state.budget * 100)) }}%</span>
                     </div>
-                    <div class="h-2 bg-white/20 rounded-full overflow-hidden">
+                    <div class="h-2.5 bg-white/20 rounded-full overflow-hidden">
                       <div class="h-full rounded-full transition-all duration-700"
                         :class="totalTripCost > state.budget ? 'bg-rose-400' : 'bg-white'"
                         :style="`width: ${Math.min(100, (totalTripCost / state.budget * 100)).toFixed(1)}%`"></div>
                     </div>
-                    <p v-if="totalTripCost > state.budget" class="text-xs text-rose-300 mt-1.5">
+                    <p v-if="totalTripCost > state.budget" class="text-xs text-rose-300 mt-1.5 font-medium">
                       ${{ fmt(totalTripCost - state.budget) }} over budget
                     </p>
                   </div>
                 </div>
               </div>
-            </div>
-
-            <!-- Quick stats -->
-            <div class="bg-slate-100 rounded-2xl overflow-hidden grid grid-cols-2 sm:grid-cols-4 gap-px">
-              <div v-for="stat in quickStats" :key="stat.label" class="bg-white p-5">
-                <div class="flex items-start justify-between mb-3">
-                  <p class="text-xs text-slate-400 font-medium">{{ stat.label }}</p>
-                  <div :class="['p-2 rounded-xl', stat.iconBg]" v-html="stat.icon"></div>
-                </div>
-                <p class="text-2xl font-bold text-slate-800">{{ stat.value }}</p>
+              <div v-else class="lg:col-span-2 rounded-2xl border-2 border-dashed border-slate-200 p-6 flex flex-col items-center justify-center text-center gap-3">
+                <p class="text-4xl">🗺️</p>
+                <p class="text-sm font-semibold text-slate-600">Your trip summary will appear here</p>
+                <p class="text-xs text-slate-400 leading-relaxed">Add your destination and dates<br>to get started</p>
               </div>
             </div>
 
             <!-- Weather widget -->
-            <div v-if="state.trip.destination" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-              <div class="flex items-center justify-between mb-4">
-                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Weather Forecast</h2>
-                <span class="text-xs text-slate-400 truncate max-w-[160px]">{{ state.trip.destination }}</span>
+            <div v-if="state.trip.destination" class="bg-white rounded-2xl border border-slate-100 shadow-sm px-6 pt-5 pb-6">
+              <div class="flex items-center justify-between mb-5">
+                <div>
+                  <h2 class="text-xs font-bold text-slate-500 uppercase tracking-wider">Weather Forecast</h2>
+                  <p class="text-sm font-medium text-slate-700 mt-0.5 truncate max-w-[220px]">{{ state.trip.destination }}</p>
+                </div>
+                <span class="text-xl">🌍</span>
               </div>
               <div v-if="weatherLoading" class="flex items-center gap-2 text-slate-400 text-sm py-2">
                 <svg class="animate-spin shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
                 Loading weather…
               </div>
               <p v-else-if="weatherError" class="text-sm text-rose-500">{{ weatherError }}</p>
-              <div v-else-if="weather.length" class="overflow-x-auto -mx-1 px-1 pb-1">
-                <div class="flex gap-3" style="min-width: max-content">
-                  <div v-for="day in weather" :key="day.date"
-                    class="flex flex-col items-center gap-1.5 p-3.5 rounded-2xl bg-slate-50 border border-slate-100 w-[96px] shrink-0">
-                    <p class="text-xs font-semibold text-slate-500">{{ formatDate(day.date) }}</p>
-                    <span class="text-2xl leading-none">{{ weatherEmoji(day.code) }}</span>
-                    <p class="text-xs text-slate-500 text-center leading-tight">{{ weatherLabel(day.code) }}</p>
-                    <div class="flex items-center gap-1.5 text-xs font-bold mt-0.5">
-                      <span class="text-rose-500">{{ day.high }}°</span>
-                      <span class="text-slate-300">·</span>
-                      <span class="text-blue-500">{{ day.low }}°</span>
+              <div v-else-if="weather.length" class="overflow-x-auto -mx-2 px-2 pb-1 scrollbar-hide">
+                <div class="flex gap-2.5" style="min-width: max-content">
+                  <div v-for="day in weather" :key="day.date" class="weather-day-card">
+                    <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ formatDate(day.date) }}</p>
+                    <span class="text-3xl leading-none">{{ weatherEmoji(day.code) }}</span>
+                    <p class="text-[10px] text-slate-400 text-center leading-tight">{{ weatherLabel(day.code) }}</p>
+                    <div class="flex items-baseline gap-1.5 font-bold">
+                      <span class="text-sm text-rose-500">{{ day.high }}°</span>
+                      <span class="text-slate-200 text-xs">/</span>
+                      <span class="text-xs text-blue-400">{{ day.low }}°</span>
                     </div>
-                    <div class="pt-2 border-t border-slate-200 w-full space-y-1">
-                      <div class="flex items-center justify-center gap-1 text-xs text-amber-500">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                    <div class="w-full pt-2 border-t border-slate-100 space-y-1">
+                      <div class="flex items-center justify-center gap-1 text-[10px] text-amber-500 font-medium">
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
                         {{ fmtTime(day.sunrise) }}
                       </div>
-                      <div class="flex items-center justify-center gap-1 text-xs text-slate-400">
-                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/></svg>
+                      <div class="flex items-center justify-center gap-1 text-[10px] text-slate-300 font-medium">
+                        <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/></svg>
                         {{ fmtTime(day.sunset) }}
                       </div>
                     </div>
@@ -487,7 +777,7 @@
 
               <!-- Group size -->
               <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-6">Group Size</h2>
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-6">Who's coming</h2>
                 <div class="space-y-1">
                   <div class="flex items-center justify-between py-4 border-b border-slate-50">
                     <div>
@@ -538,10 +828,10 @@
 
               <!-- Pricing -->
               <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-6">Base Pricing</h2>
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-6">Base costs</h2>
                 <div class="space-y-4">
                   <div>
-                    <label for="adult-price" class="block text-xs font-medium text-slate-500 mb-1.5">Per adult</label>
+                    <label for="adult-price" class="block text-xs font-medium text-slate-500 mb-1.5">Per person</label>
                     <div class="relative">
                       <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">$</span>
                       <input id="adult-price" v-model.number="state.attendance.adultPrice" type="number" min="0" step="0.01" placeholder="0.00"
@@ -567,7 +857,7 @@
                     <span class="font-medium text-slate-700">${{ fmt(state.attendance.kids * (state.attendance.kidPrice || 0)) }}</span>
                   </div>
                   <div class="flex justify-between text-sm font-bold text-indigo-700 bg-indigo-50 px-4 py-3 rounded-xl mt-3">
-                    <span>Base Group Total</span>
+                    <span>Trip base total</span>
                     <span>${{ fmt(baseGroupCost) }}</span>
                   </div>
                 </div>
@@ -580,43 +870,33 @@
                ========================================= -->
           <div v-else-if="currentTab === 'itinerary'" key="itinerary" class="space-y-5">
 
-            <!-- Add event form -->
+            <!-- ── ADD EVENT FORM — conversational, not bureaucratic ── -->
             <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
-              <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-5">Add Event</h2>
-              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
-                <div class="sm:col-span-2 lg:col-span-1">
-                  <label for="new-event-name" class="block text-xs font-medium text-slate-500 mb-1.5">Event Name</label>
-                  <input id="new-event-name" v-model="newEvent.name" @keydown.enter="addEvent" type="text" placeholder="e.g. Eiffel Tower visit" maxlength="120"
-                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
-                </div>
-                <div>
-                  <label for="new-event-date" class="block text-xs font-medium text-slate-500 mb-1.5">Date</label>
-                  <input id="new-event-date" v-model="newEvent.date" type="date"
-                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
-                </div>
-                <div>
-                  <label for="new-event-time" class="block text-xs font-medium text-slate-500 mb-1.5">Time</label>
-                  <input id="new-event-time" v-model="newEvent.time" type="time"
-                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
-                </div>
-                <div>
-                  <label for="new-event-category" class="block text-xs font-medium text-slate-500 mb-1.5">Category</label>
+              <!-- Event name — the star of the form -->
+              <input id="new-event-name" v-model="newEvent.name" @keydown.enter="addEvent" type="text"
+                placeholder="What's the plan? e.g. Eiffel Tower visit" maxlength="120"
+                class="itinerary-name-input w-full mb-5" />
+
+              <!-- Row 1: Category · Cost · Type -->
+              <div class="flex flex-wrap gap-3 mb-4">
+                <div class="flex-1 min-w-[120px]">
+                  <label for="new-event-category" class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Category</label>
                   <select id="new-event-category" v-model="newEvent.category"
-                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white">
+                    class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white text-slate-700">
                     <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
                   </select>
                 </div>
-                <div>
-                  <label for="new-event-cost" class="block text-xs font-medium text-slate-500 mb-1.5">Cost ($)</label>
+                <div class="flex-1 min-w-[100px]">
+                  <label for="new-event-cost" class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Cost</label>
                   <div class="relative">
-                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">$</span>
-                    <input id="new-event-cost" v-model.number="newEvent.cost" type="number" min="0" step="0.01" placeholder="0.00"
-                      class="w-full pl-7 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
+                    <input id="new-event-cost" v-model.number="newEvent.cost" type="number" min="0" step="0.01" placeholder="0"
+                      class="w-full pl-7 pr-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
                   </div>
                 </div>
-                <div>
-                  <label class="block text-xs font-medium text-slate-500 mb-1.5">Cost Type</label>
-                  <div class="flex gap-2 h-[42px]">
+                <div class="flex-1 min-w-[140px]">
+                  <label class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Cost Type</label>
+                  <div class="flex gap-1.5 h-[38px]">
                     <button @click="newEvent.perPerson = false"
                       :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
                         !newEvent.perPerson ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'border-slate-200 text-slate-500 hover:bg-slate-50']">
@@ -629,31 +909,57 @@
                     </button>
                   </div>
                 </div>
-                <div class="sm:col-span-2 lg:col-span-3">
-                  <label for="new-event-notes" class="block text-xs font-medium text-slate-500 mb-1.5">Notes <span class="text-slate-300">(optional)</span></label>
-                  <textarea id="new-event-notes" v-model="newEvent.notes" rows="2" placeholder="Booking refs, addresses, reminders…" maxlength="500"
-                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"></textarea>
+              </div>
+
+              <!-- Row 2: Date · Time -->
+              <div class="flex gap-3 mb-5">
+                <div class="flex-1">
+                  <label for="new-event-date" class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Date</label>
+                  <input id="new-event-date" v-model="newEvent.date" type="date"
+                    class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                </div>
+                <div class="flex-1">
+                  <label for="new-event-time" class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Time</label>
+                  <input id="new-event-time" v-model="newEvent.time" type="time"
+                    class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
                 </div>
               </div>
+
+              <!-- Notes — subtle, full-width -->
+              <div class="mb-5">
+                <label for="new-event-notes" class="block text-[10px] font-semibold text-slate-400 uppercase tracking-wider mb-1.5">Notes <span class="normal-case font-normal text-slate-300">(optional)</span></label>
+                <textarea id="new-event-notes" v-model="newEvent.notes" rows="2" placeholder="Booking refs, addresses, reminders…" maxlength="500"
+                  class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"></textarea>
+              </div>
+
+              <!-- CTA — pill-shaped, full-accent, positive -->
               <button @click="addEvent" :disabled="!newEvent.name.trim()"
-                :class="['mt-5 w-full sm:w-auto px-6 py-2.5 text-white text-sm font-semibold rounded-xl disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-all shadow-sm border',
+                :class="['itinerary-add-btn disabled:opacity-40 disabled:cursor-not-allowed transition-all',
                   addEventSuccess
-                    ? 'bg-emerald-500 border-emerald-500 shadow-emerald-200 btn-success-pop'
-                    : 'bg-indigo-600 hover:bg-indigo-700 border-indigo-600 shadow-indigo-200']">
-                {{ addEventSuccess ? '✓ Added!' : 'Add to Itinerary' }}
+                    ? 'bg-emerald-500 border-emerald-500 shadow-emerald-200/60 btn-success-pop'
+                    : 'bg-indigo-600 hover:bg-indigo-700 border-indigo-600 shadow-indigo-200/60']">
+                <span v-if="addEventSuccess">✓ Added to your itinerary!</span>
+                <span v-else>Add to Itinerary</span>
               </button>
             </div>
 
-            <!-- Empty state -->
-            <div v-if="state.events.length === 0" class="bg-white rounded-2xl border border-dashed border-slate-200 p-16 text-center">
-              <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4 text-slate-400">
-                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            <!-- ── EMPTY STATE — open journal page ── -->
+            <div v-if="state.events.length === 0" class="bg-white rounded-2xl border-2 border-dashed border-slate-200 py-16 px-8 text-center">
+              <!-- Dashed timeline hint -->
+              <div class="flex flex-col items-center gap-0 mb-6">
+                <div class="w-px h-8 border-l-2 border-dashed border-slate-200"></div>
+                <div class="w-3 h-3 rounded-full border-2 border-dashed border-slate-300 bg-white"></div>
+                <div class="w-px h-6 border-l-2 border-dashed border-slate-200"></div>
+                <div class="text-4xl my-2 select-none">🗺️</div>
+                <div class="w-px h-6 border-l-2 border-dashed border-slate-200"></div>
+                <div class="w-3 h-3 rounded-full border-2 border-dashed border-slate-300 bg-white"></div>
+                <div class="w-px h-8 border-l-2 border-dashed border-slate-200"></div>
               </div>
-              <p class="font-semibold text-slate-400">No events yet</p>
-              <p class="text-sm text-slate-300 mt-1">Start building your adventure — add flights, dinners, hikes, and everything in between.</p>
+              <p class="text-xl font-bold text-slate-600 leading-snug">Your adventure is waiting</p>
+              <p class="text-sm text-slate-400 mt-2 max-w-xs mx-auto leading-relaxed">Start adding flights, dinners, hikes, and hidden gems. Every great trip begins with a plan.</p>
             </div>
 
-            <!-- Events list + toolbar -->
+            <!-- ── EVENTS LIST + TOOLBAR ── -->
             <div v-else class="space-y-4">
 
               <!-- Toolbar -->
@@ -667,14 +973,17 @@
                 </button>
               </div>
 
-              <!-- ── FLAT DRAGGABLE VIEW ── -->
-              <div v-if="!groupByDay">
-                <transition-group name="slide-up" tag="div" class="space-y-2">
+              <!-- ── FLAT TIMELINE VIEW ── -->
+              <div v-if="!groupByDay" class="relative">
+                <!-- Vertical timeline spine -->
+                <div class="itinerary-spine"></div>
+
+                <transition-group name="slide-up" tag="div" class="space-y-1">
                   <template v-for="event in sortedEvents" :key="event.id">
 
                     <!-- Edit mode -->
                     <div v-if="editingId === event.id"
-                      class="bg-white rounded-2xl border-2 border-indigo-300 shadow-md p-5">
+                      class="ml-10 bg-white rounded-2xl border-2 border-indigo-300 shadow-md p-5 mb-2">
                       <p class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-4">Editing Event</p>
                       <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
                         <div class="sm:col-span-2 lg:col-span-1">
@@ -740,7 +1049,7 @@
                       </div>
                     </div>
 
-                    <!-- View mode (draggable) -->
+                    <!-- Timeline event entry (draggable) -->
                     <div v-else
                       draggable="true"
                       @dragstart="onDragStart($event, event.id)"
@@ -748,44 +1057,58 @@
                       @dragleave="onDragLeave(event.id)"
                       @drop.prevent="onDrop($event, event.id)"
                       @dragend="onDragEnd"
-                      :class="['bg-white rounded-2xl border shadow-sm p-4 flex items-start gap-3 group select-none transition-all',
-                        draggedId === event.id  ? 'opacity-40 scale-[0.99] shadow-none' : 'opacity-100',
-                        dragOverId === event.id ? 'border-2 border-indigo-400 shadow-md shadow-indigo-100' : 'border-slate-100 hover:border-slate-200']">
-                      <!-- Grip handle — desktop only; drag API doesn't work on touch -->
-                      <div class="hidden lg:block pt-1.5 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors shrink-0">
-                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
-                          <circle cx="9"  cy="5"  r="1.5"/><circle cx="15" cy="5"  r="1.5"/>
-                          <circle cx="9"  cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
-                          <circle cx="9"  cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
+                      :class="['relative flex items-start gap-0 group select-none py-2 transition-all',
+                        draggedId === event.id  ? 'opacity-40' : 'opacity-100',
+                        dragOverId === event.id ? 'itinerary-drag-over' : '']">
+
+                      <!-- Drag handle — subtle, left of dot -->
+                      <div class="hidden lg:flex items-center justify-center w-5 shrink-0 pt-3 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-400 transition-colors z-10">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
+                          <circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/>
+                          <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
+                          <circle cx="9" cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
                         </svg>
                       </div>
-                      <!-- Category icon -->
-                      <div :class="['w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5', catColors[event.category]?.dot]" v-html="catIcons[event.category]"></div>
-                      <!-- Info -->
-                      <div class="flex-1 min-w-0">
-                        <p class="font-semibold text-slate-800 text-sm truncate">{{ event.name }}</p>
-                        <div class="flex items-center gap-2 mt-1 flex-wrap">
-                          <span v-if="event.date" class="text-xs text-slate-400">{{ formatDate(event.date) }}<span v-if="event.time"> · {{ event.time }}</span></span>
-                          <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', catColors[event.category]?.badge]">{{ event.category }}</span>
-                          <span v-if="event.perPerson" class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Per person</span>
+
+                      <!-- Timeline dot — category colored -->
+                      <div class="relative flex flex-col items-center shrink-0 z-10 mr-4" style="width:24px;">
+                        <div :class="['w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center mt-2.5 shrink-0', catColors[event.category]?.dot]">
+                          <span class="text-[8px] leading-none" v-html="catIcons[event.category]"></span>
                         </div>
-                        <p v-if="event.notes" class="text-xs text-slate-400 mt-1.5 italic leading-relaxed line-clamp-2">{{ event.notes }}</p>
                       </div>
-                      <!-- Cost -->
-                      <div class="text-right shrink-0">
-                        <p class="font-bold text-slate-800">${{ fmt(event.perPerson ? event.cost * totalParticipants : event.cost) }}</p>
-                        <p v-if="event.perPerson && totalParticipants > 1" class="text-xs text-slate-400 mt-0.5">${{ fmt(event.cost) }}/person</p>
-                      </div>
-                      <!-- Actions -->
-                      <div class="flex flex-col gap-1 shrink-0 opacity-0 group-hover:opacity-100 touch-visible transition-all -mr-1">
-                        <button @click.stop="startEdit(event)" :aria-label="`Edit ${event.name}`"
-                          class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 transition-all">
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                        </button>
-                        <button @click.stop="removeEvent(event.id)" :aria-label="`Delete ${event.name}`"
-                          class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
-                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                        </button>
+
+                      <!-- Event content -->
+                      <div class="flex-1 min-w-0 bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3.5 hover:border-slate-200 hover:shadow-md transition-all">
+                        <div class="flex items-start gap-2">
+                          <div class="flex-1 min-w-0">
+                            <!-- Event name — headline -->
+                            <p class="font-semibold text-slate-800 text-base leading-snug truncate">{{ event.name }}</p>
+                            <!-- Metadata row -->
+                            <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                              <span v-if="event.date" class="text-xs text-slate-400">{{ formatDate(event.date) }}<span v-if="event.time" class="text-slate-300"> · </span><span v-if="event.time" class="text-slate-400">{{ event.time }}</span></span>
+                              <span :class="['text-[11px] px-2 py-0.5 rounded-full font-semibold', catColors[event.category]?.badge]">{{ event.category }}</span>
+                              <span v-if="event.perPerson" class="text-[11px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Per person</span>
+                            </div>
+                            <!-- Notes -->
+                            <p v-if="event.notes" class="text-xs text-slate-400 mt-2 leading-relaxed pl-3 border-l-2 border-slate-100 line-clamp-2">{{ event.notes }}</p>
+                          </div>
+                          <!-- Cost — right-aligned, secondary -->
+                          <div class="text-right shrink-0 ml-2">
+                            <p class="font-bold text-slate-700 text-sm">${{ fmt(event.perPerson ? event.cost * totalParticipants : event.cost) }}</p>
+                            <p v-if="event.perPerson && totalParticipants > 1" class="text-[11px] text-slate-400 mt-0.5">${{ fmt(event.cost) }}/pp</p>
+                          </div>
+                          <!-- Actions -->
+                          <div class="flex flex-col gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 touch-visible transition-all">
+                            <button @click.stop="startEdit(event)" :aria-label="`Edit ${event.name}`"
+                              class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 transition-all">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                            </button>
+                            <button @click.stop="removeEvent(event.id)" :aria-label="`Delete ${event.name}`"
+                              class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
+                              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                            </button>
+                          </div>
+                        </div>
                       </div>
                     </div>
 
@@ -793,117 +1116,135 @@
                 </transition-group>
               </div>
 
-              <!-- ── GROUPED BY DAY VIEW ── -->
-              <div v-else class="space-y-6">
+              <!-- ── GROUPED BY DAY VIEW — journal chapters ── -->
+              <div v-else class="space-y-8">
                 <div v-for="group in groupedEvents" :key="group.date || '__none__'">
-                  <!-- Day header -->
-                  <div class="flex items-center gap-3 mb-3">
-                    <div class="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold whitespace-nowrap shadow-sm shadow-indigo-200">
-                      {{ group.label }}
-                    </div>
-                    <div class="flex-1 h-px bg-slate-200"></div>
-                    <span class="text-xs font-semibold text-slate-400">${{ fmt(group.total) }}</span>
+
+                  <!-- Chapter / Day header -->
+                  <div class="flex items-baseline justify-between mb-4 pb-3 border-b border-slate-100">
+                    <h3 class="text-lg font-bold text-slate-800 leading-none">{{ group.label }}</h3>
+                    <span class="text-xs font-semibold text-slate-400 ml-3 whitespace-nowrap">${{ fmt(group.total) }}</span>
                   </div>
-                  <!-- Events in this day -->
-                  <div class="space-y-2 pl-3 border-l-2 border-indigo-100 ml-1">
-                    <div v-for="event in group.events" :key="event.id"
-                      :class="['bg-white rounded-2xl border shadow-sm p-4 flex items-start gap-3 group transition-all',
-                        editingId === event.id ? 'border-2 border-indigo-300' : 'border-slate-100 hover:border-slate-200']">
 
-                      <!-- Inline edit inside group view -->
-                      <div v-if="editingId === event.id" class="flex-1">
-                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
-                          <div>
-                            <label class="block text-xs font-medium text-slate-500 mb-1">Event Name</label>
-                            <input v-model="editForm.name" type="text"
-                              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                          </div>
-                          <div>
-                            <label class="block text-xs font-medium text-slate-500 mb-1">Date</label>
-                            <input v-model="editForm.date" type="date"
-                              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                          </div>
-                          <div>
-                            <label class="block text-xs font-medium text-slate-500 mb-1">Time</label>
-                            <input v-model="editForm.time" type="time"
-                              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                          </div>
-                          <div>
-                            <label class="block text-xs font-medium text-slate-500 mb-1">Category</label>
-                            <select v-model="editForm.category"
-                              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
-                              <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
-                            </select>
-                          </div>
-                          <div>
-                            <label class="block text-xs font-medium text-slate-500 mb-1">Cost ($)</label>
-                            <div class="relative">
-                              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
-                              <input v-model.number="editForm.cost" type="number" min="0" step="0.01"
-                                class="w-full pl-7 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  <!-- Events in this day — timeline treatment -->
+                  <div class="relative">
+                    <!-- Day timeline spine -->
+                    <div class="itinerary-day-spine"></div>
+
+                    <div class="space-y-1">
+                      <div v-for="event in group.events" :key="event.id"
+                        :class="['relative flex items-start gap-0 group transition-all',
+                          editingId === event.id ? '' : '']">
+
+                        <!-- Inline edit inside group view -->
+                        <div v-if="editingId === event.id" class="flex-1 ml-8 bg-white rounded-2xl border-2 border-indigo-300 shadow-md p-5 mb-2">
+                          <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                            <div>
+                              <label class="block text-xs font-medium text-slate-500 mb-1">Event Name</label>
+                              <input v-model="editForm.name" type="text"
+                                class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                            </div>
+                            <div>
+                              <label class="block text-xs font-medium text-slate-500 mb-1">Date</label>
+                              <input v-model="editForm.date" type="date"
+                                class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                            </div>
+                            <div>
+                              <label class="block text-xs font-medium text-slate-500 mb-1">Time</label>
+                              <input v-model="editForm.time" type="time"
+                                class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                            </div>
+                            <div>
+                              <label class="block text-xs font-medium text-slate-500 mb-1">Category</label>
+                              <select v-model="editForm.category"
+                                class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                                <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+                              </select>
+                            </div>
+                            <div>
+                              <label class="block text-xs font-medium text-slate-500 mb-1">Cost ($)</label>
+                              <div class="relative">
+                                <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
+                                <input v-model.number="editForm.cost" type="number" min="0" step="0.01"
+                                  class="w-full pl-7 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                              </div>
+                            </div>
+                            <div>
+                              <label class="block text-xs font-medium text-slate-500 mb-1">Cost Type</label>
+                              <div class="flex gap-2 h-[38px]">
+                                <button @click="editForm.perPerson = false"
+                                  :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
+                                    !editForm.perPerson ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-500']">Flat</button>
+                                <button @click="editForm.perPerson = true"
+                                  :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
+                                    editForm.perPerson ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-500']">Per Person</button>
+                              </div>
+                            </div>
+                            <div class="sm:col-span-2">
+                              <label class="block text-xs font-medium text-slate-500 mb-1">Notes</label>
+                              <textarea v-model="editForm.notes" rows="2"
+                                class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
                             </div>
                           </div>
-                          <div>
-                            <label class="block text-xs font-medium text-slate-500 mb-1">Cost Type</label>
-                            <div class="flex gap-2 h-[38px]">
-                              <button @click="editForm.perPerson = false"
-                                :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
-                                  !editForm.perPerson ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-500']">Flat</button>
-                              <button @click="editForm.perPerson = true"
-                                :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
-                                  editForm.perPerson ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-500']">Per Person</button>
+                          <div class="flex gap-2">
+                            <button @click="saveEdit" :disabled="!editForm.name.trim()"
+                              class="px-4 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-40 transition-colors">Save Changes</button>
+                            <button @click="cancelEdit"
+                              class="px-4 py-1.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+                          </div>
+                        </div>
+
+                        <!-- Normal event entry inside group view -->
+                        <template v-else>
+                          <!-- Timeline dot -->
+                          <div class="relative flex flex-col items-center shrink-0 z-10 mr-4" style="width:24px;">
+                            <div :class="['w-5 h-5 rounded-full border-2 border-white shadow-sm flex items-center justify-center mt-2.5 shrink-0', catColors[event.category]?.dot]">
+                              <span class="text-[8px] leading-none" v-html="catIcons[event.category]"></span>
                             </div>
                           </div>
-                          <div class="sm:col-span-2">
-                            <label class="block text-xs font-medium text-slate-500 mb-1">Notes</label>
-                            <textarea v-model="editForm.notes" rows="2"
-                              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+
+                          <!-- Event card -->
+                          <div class="flex-1 min-w-0 bg-white rounded-2xl border border-slate-100 shadow-sm px-4 py-3.5 hover:border-slate-200 hover:shadow-md transition-all mb-1">
+                            <div class="flex items-start gap-2">
+                              <div class="flex-1 min-w-0">
+                                <p class="font-semibold text-slate-800 text-base leading-snug">{{ event.name }}</p>
+                                <div class="flex items-center gap-2 mt-1.5 flex-wrap">
+                                  <span v-if="event.time" class="text-xs text-slate-400">{{ event.time }}</span>
+                                  <span :class="['text-[11px] px-2 py-0.5 rounded-full font-semibold', catColors[event.category]?.badge]">{{ event.category }}</span>
+                                  <span v-if="event.perPerson" class="text-[11px] bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Per person</span>
+                                </div>
+                                <p v-if="event.notes" class="text-xs text-slate-400 mt-2 leading-relaxed pl-3 border-l-2 border-slate-100 line-clamp-2">{{ event.notes }}</p>
+                              </div>
+                              <div class="text-right shrink-0 ml-2">
+                                <p class="font-bold text-slate-700 text-sm">${{ fmt(event.perPerson ? event.cost * totalParticipants : event.cost) }}</p>
+                                <p v-if="event.perPerson && totalParticipants > 1" class="text-[11px] text-slate-400 mt-0.5">${{ fmt(event.cost) }}/pp</p>
+                              </div>
+                              <div class="flex flex-col gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 touch-visible transition-all">
+                                <button @click="startEdit(event)" :aria-label="`Edit ${event.name}`"
+                                  class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 transition-all">
+                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                                </button>
+                                <button @click="removeEvent(event.id)" :aria-label="`Delete ${event.name}`"
+                                  class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
+                                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                                </button>
+                              </div>
+                            </div>
                           </div>
-                        </div>
-                        <div class="flex gap-2">
-                          <button @click="saveEdit" :disabled="!editForm.name.trim()"
-                            class="px-4 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-40 transition-colors">Save Changes</button>
-                          <button @click="cancelEdit"
-                            class="px-4 py-1.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
-                        </div>
+                        </template>
                       </div>
-
-                      <!-- Normal card inside group view -->
-                      <template v-else>
-                        <div :class="['w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5', catColors[event.category]?.dot]" v-html="catIcons[event.category]"></div>
-                        <div class="flex-1 min-w-0">
-                          <p class="font-semibold text-slate-800 text-sm">{{ event.name }}</p>
-                          <div class="flex items-center gap-2 mt-1 flex-wrap">
-                            <span v-if="event.time" class="text-xs text-slate-400">{{ event.time }}</span>
-                            <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', catColors[event.category]?.badge]">{{ event.category }}</span>
-                            <span v-if="event.perPerson" class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Per person</span>
-                          </div>
-                          <p v-if="event.notes" class="text-xs text-slate-400 mt-1.5 italic leading-relaxed line-clamp-2">{{ event.notes }}</p>
-                        </div>
-                        <div class="text-right shrink-0">
-                          <p class="font-bold text-slate-800">${{ fmt(event.perPerson ? event.cost * totalParticipants : event.cost) }}</p>
-                          <p v-if="event.perPerson && totalParticipants > 1" class="text-xs text-slate-400 mt-0.5">${{ fmt(event.cost) }}/person</p>
-                        </div>
-                        <div class="flex flex-col gap-1 shrink-0 opacity-0 group-hover:opacity-100 touch-visible transition-all -mr-1">
-                          <button @click="startEdit(event)" :aria-label="`Edit ${event.name}`"
-                            class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 transition-all">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                          </button>
-                          <button @click="removeEvent(event.id)" :aria-label="`Delete ${event.name}`"
-                            class="w-9 h-9 rounded-lg flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
-                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
-                          </button>
-                        </div>
-                      </template>
                     </div>
                   </div>
                 </div>
               </div>
 
-              <!-- Total bar -->
-              <div class="flex items-center justify-between bg-indigo-600 rounded-2xl px-6 py-4 text-white">
-                <span class="font-semibold">Itinerary Total</span>
-                <span class="text-2xl font-extrabold">${{ fmt(totalEventCost) }}</span>
+              <!-- Total — receipt footer style -->
+              <div class="flex items-center gap-4 pt-4 mt-2">
+                <div class="flex-1 h-px bg-slate-200"></div>
+                <div class="flex items-baseline gap-3 shrink-0">
+                  <span class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Itinerary Total</span>
+                  <span class="text-2xl font-extrabold text-slate-800">${{ fmt(totalEventCost) }}</span>
+                </div>
               </div>
             </div>
           </div>
@@ -1007,147 +1348,219 @@
           <div v-else-if="currentTab === 'splitter'" key="splitter" class="space-y-5">
             <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
 
-              <!-- Friends -->
-              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
-                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Group Members</h2>
+              <!-- ── Group Members ── -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-5">
+                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Who's on this trip</h2>
+
+                <!-- Add member input -->
                 <div class="flex gap-2">
-                  <input v-model="newFriendName" @keydown.enter="addFriend" type="text" placeholder="Name" maxlength="50"
-                    class="flex-1 min-w-0 px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  <input v-model="newFriendName" @keydown.enter="addFriend" type="text" placeholder="Add a name…" maxlength="50"
+                    class="flex-1 min-w-0 px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent placeholder-slate-300" />
                   <button @click="addFriend" :disabled="!newFriendName.trim()" aria-label="Add group member"
                     class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 disabled:opacity-40 transition-colors shrink-0">
                     <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
                   </button>
                 </div>
-                <div v-if="state.friends.length === 0" class="py-8 text-center">
-                  <p class="text-sm text-slate-300 font-medium">Add group members to start splitting costs</p>
+
+                <!-- Empty state -->
+                <div v-if="state.friends.length === 0" class="py-6 text-center">
+                  <p class="text-2xl mb-2">👥</p>
+                  <p class="text-sm text-slate-400 font-medium">Add your crew to get started</p>
                 </div>
-                <ul v-else class="space-y-2">
-                  <li v-for="friend in state.friends" :key="friend.id"
-                    class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 group">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+
+                <!-- Member chips grid -->
+                <div v-else class="grid grid-cols-2 gap-2.5">
+                  <div v-for="friend in state.friends" :key="friend.id"
+                    class="splitter-member-chip group relative flex flex-col items-center gap-2 p-3 rounded-2xl bg-slate-50 hover:bg-indigo-50 transition-colors cursor-default">
+                    <!-- Avatar -->
+                    <div class="w-12 h-12 rounded-full bg-gradient-to-br from-teal-400 to-cyan-500 flex items-center justify-center text-white text-lg font-bold shadow-sm shrink-0">
                       {{ friendInitial(friend.name) }}
                     </div>
-                    <span class="text-sm font-medium text-slate-700 flex-1 truncate">{{ friend.name }}</span>
+                    <!-- Name -->
+                    <span class="text-xs font-semibold text-slate-700 truncate w-full text-center leading-tight">{{ friend.name }}</span>
+                    <!-- Remove button — revealed on hover -->
                     <button @click="removeFriend(friend.id)" :aria-label="`Remove ${friend.name}`"
-                      class="opacity-0 group-hover:opacity-100 touch-visible w-9 h-9 -mr-1 flex items-center justify-center rounded-lg text-slate-300 hover:text-rose-400 transition-all shrink-0">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                      class="splitter-remove-btn absolute top-1.5 right-1.5 w-5 h-5 flex items-center justify-center rounded-full bg-white text-slate-300 hover:text-rose-400 hover:bg-rose-50 shadow-sm transition-all">
+                      <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
-                  </li>
-                </ul>
+                  </div>
+                </div>
               </div>
 
-              <!-- Log payment -->
-              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
-                <div class="flex items-center justify-between">
-                  <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ editingPaymentId ? 'Edit Payment' : 'Log a Payment' }}</h2>
-                  <button v-if="editingPaymentId" @click="cancelEdit" class="text-xs text-slate-400 hover:text-slate-600">Cancel</button>
+              <!-- ── Log a Payment ── -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm overflow-hidden">
+                <!-- Receipt header strip -->
+                <div class="splitter-receipt-header px-6 pt-5 pb-4">
+                  <div class="flex items-center justify-between">
+                    <h2 class="text-xs font-semibold text-teal-700 uppercase tracking-wider">{{ editingPaymentId ? '✏️ Edit Expense' : '🧾 Log an Expense' }}</h2>
+                    <button v-if="editingPaymentId" @click="cancelEdit" class="text-xs text-teal-600 hover:text-teal-800 font-medium">Cancel</button>
+                  </div>
                 </div>
-                <div v-if="state.friends.length < 2" class="py-8 text-center">
-                  <p class="text-sm text-slate-300 font-medium">Add at least 2 members to log payments</p>
-                </div>
-                <div v-else class="space-y-3">
-                  <div>
-                    <label for="payment-paid-by" class="block text-xs font-medium text-slate-500 mb-1.5">Who paid?</label>
-                    <select id="payment-paid-by" v-model="newPayment.paidById"
-                      class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
-                      <option value="">Select person…</option>
-                      <option v-for="f in state.friends" :key="f.id" :value="f.id">{{ f.name }}</option>
-                    </select>
+
+                <div class="px-6 pb-6">
+                  <!-- Not enough members guard -->
+                  <div v-if="state.friends.length < 2" class="py-10 text-center">
+                    <p class="text-2xl mb-2">🧑‍🤝‍🧑</p>
+                    <p class="text-sm text-slate-400 font-medium">Add at least 2 members to split costs</p>
                   </div>
-                  <div>
-                    <label for="payment-amount" class="block text-xs font-medium text-slate-500 mb-1.5">Amount</label>
-                    <div class="relative">
-                      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">$</span>
-                      <input id="payment-amount" v-model.number="newPayment.amount" type="number" min="0" step="0.01" placeholder="0.00"
-                        class="w-full pl-7 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                    </div>
-                  </div>
-                  <div>
-                    <label for="payment-description" class="block text-xs font-medium text-slate-500 mb-1.5">Description</label>
-                    <input id="payment-description" v-model="newPayment.description" @keydown.enter="addPayment" type="text" placeholder="e.g. Dinner at Le Jules Verne" maxlength="120"
-                      class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                  </div>
-                  <div>
-                    <div class="flex items-center justify-between mb-2">
-                      <label class="text-xs font-medium text-slate-500">Split among</label>
-                      <button @click="toggleAllSplit" class="text-xs text-indigo-500 hover:text-indigo-700 font-medium">
-                        {{ newPayment.splitAmong.length === state.friends.length ? 'Deselect all' : 'Select all' }}
-                      </button>
-                    </div>
-                    <div class="space-y-2">
-                      <div v-for="f in state.friends" :key="f.id" class="flex items-center gap-2.5">
-                        <input type="checkbox" :checked="newPayment.splitAmong.includes(f.id)" @change="toggleSplitFriend(f.id)"
-                          class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer shrink-0" />
-                        <span class="text-sm text-slate-700 flex-1 truncate">{{ f.name }}</span>
-                        <template v-if="newPayment.splitAmong.includes(f.id)">
-                          <div class="relative shrink-0">
-                            <input type="number" min="0" max="100" step="0.01"
-                              :value="newPayment.splitPercentages[f.id] ?? 0"
-                              @input="newPayment.splitPercentages[f.id] = parseFloat($event.target.value) || 0"
-                              class="w-16 pr-5 pl-2 py-1 border border-slate-200 rounded-lg text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-500" />
-                            <span class="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none">%</span>
-                          </div>
-                          <span v-if="newPayment.amount" class="text-xs text-slate-400 w-12 text-right shrink-0">
-                            ${{ fmt(newPayment.amount * (newPayment.splitPercentages[f.id] || 0) / 100) }}
-                          </span>
-                        </template>
+
+                  <div v-else class="space-y-5 pt-1">
+                    <!-- Amount — hero field -->
+                    <div>
+                      <label for="payment-amount" class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">Amount</label>
+                      <div class="relative">
+                        <span class="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 text-2xl font-light pointer-events-none">$</span>
+                        <input id="payment-amount" v-model.number="newPayment.amount" type="number" min="0" step="0.01" placeholder="0.00"
+                          class="splitter-amount-input w-full pl-10 pr-4 py-3 border-0 border-b-2 border-slate-200 bg-transparent text-3xl font-bold text-slate-800 focus:outline-none focus:border-teal-400 transition-colors placeholder-slate-200" />
                       </div>
                     </div>
-                    <div v-if="newPayment.splitAmong.length > 0" class="mt-2 flex items-center justify-between">
-                      <span class="text-xs" :class="splitValid ? 'text-slate-400' : 'text-rose-500 font-medium'">
-                        Total: {{ splitPercentageTotal }}%
-                      </span>
-                      <button @click="redistributeEqual" class="text-xs text-indigo-400 hover:text-indigo-600">Reset equal</button>
+
+                    <!-- Description -->
+                    <div>
+                      <label for="payment-description" class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2">What was it for?</label>
+                      <input id="payment-description" v-model="newPayment.description" @keydown.enter="addPayment" type="text" placeholder="e.g. Dinner at Le Jules Verne" maxlength="120"
+                        class="w-full px-3.5 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 text-slate-700 placeholder-slate-300" />
                     </div>
+
+                    <!-- Who paid — avatar chip selector -->
+                    <div>
+                      <label class="block text-[11px] font-semibold text-slate-400 uppercase tracking-wider mb-2.5">Who paid?</label>
+                      <div class="flex flex-wrap gap-2">
+                        <button v-for="f in state.friends" :key="f.id"
+                          @click="newPayment.paidById = f.id"
+                          :class="[
+                            'splitter-payer-chip flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all',
+                            newPayment.paidById === f.id
+                              ? 'bg-teal-500 border-teal-500 text-white shadow-sm'
+                              : 'bg-slate-50 border-slate-200 text-slate-600 hover:border-teal-300 hover:bg-teal-50 hover:text-teal-700'
+                          ]">
+                          <span :class="['w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0',
+                            newPayment.paidById === f.id ? 'bg-white/25 text-white' : 'bg-gradient-to-br from-teal-400 to-cyan-500 text-white']">
+                            {{ friendInitial(f.name) }}
+                          </span>
+                          <span class="truncate max-w-[72px]">{{ f.name }}</span>
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- Split among — toggle chips with percentage -->
+                    <div>
+                      <div class="flex items-center justify-between mb-2.5">
+                        <label class="text-[11px] font-semibold text-slate-400 uppercase tracking-wider">Split among</label>
+                        <button @click="toggleAllSplit" class="text-xs text-indigo-500 hover:text-indigo-700 font-semibold">
+                          {{ newPayment.splitAmong.length === state.friends.length ? 'Deselect all' : 'Select all' }}
+                        </button>
+                      </div>
+                      <div class="space-y-1.5">
+                        <div v-for="f in state.friends" :key="f.id"
+                          class="flex items-center gap-2.5 rounded-xl transition-colors"
+                          :class="newPayment.splitAmong.includes(f.id) ? 'bg-indigo-50' : ''">
+                          <!-- Toggle chip label -->
+                          <button @click="toggleSplitFriend(f.id)"
+                            :class="['flex items-center gap-2 flex-1 min-w-0 px-3 py-2 rounded-xl text-left transition-colors',
+                              newPayment.splitAmong.includes(f.id) ? '' : 'hover:bg-slate-50']">
+                            <span :class="['w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-all',
+                              newPayment.splitAmong.includes(f.id)
+                                ? 'bg-indigo-500 border-indigo-500'
+                                : 'border-slate-300 bg-white']">
+                              <svg v-if="newPayment.splitAmong.includes(f.id)" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+                            </span>
+                            <span :class="['text-sm font-medium truncate',
+                              newPayment.splitAmong.includes(f.id) ? 'text-indigo-700' : 'text-slate-600']">{{ f.name }}</span>
+                          </button>
+                          <!-- Percentage input (only when selected) -->
+                          <template v-if="newPayment.splitAmong.includes(f.id)">
+                            <div class="relative shrink-0">
+                              <input type="number" min="0" max="100" step="0.01"
+                                :value="newPayment.splitPercentages[f.id] ?? 0"
+                                @input="newPayment.splitPercentages[f.id] = parseFloat($event.target.value) || 0"
+                                class="w-16 pr-5 pl-2 py-1.5 border border-indigo-200 bg-white rounded-lg text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-500 font-semibold text-indigo-700" />
+                              <span class="absolute right-1.5 top-1/2 -translate-y-1/2 text-indigo-400 text-xs pointer-events-none font-medium">%</span>
+                            </div>
+                            <span v-if="newPayment.amount" class="text-xs text-indigo-400 w-12 text-right shrink-0 font-medium pr-3">
+                              ${{ fmt(newPayment.amount * (newPayment.splitPercentages[f.id] || 0) / 100) }}
+                            </span>
+                          </template>
+                          <span v-else class="pr-3"></span>
+                        </div>
+                      </div>
+                      <!-- Percentage total indicator -->
+                      <div v-if="newPayment.splitAmong.length > 0" class="mt-2.5 flex items-center justify-between px-1">
+                        <span class="text-xs font-medium" :class="splitValid ? 'text-slate-400' : 'text-rose-500'">
+                          Total: {{ splitPercentageTotal }}%
+                          <span v-if="!splitValid" class="ml-1">— must equal 100%</span>
+                        </span>
+                        <button @click="redistributeEqual" class="text-xs text-indigo-400 hover:text-indigo-600 font-semibold">Reset equal</button>
+                      </div>
+                    </div>
+
+                    <!-- Submit -->
+                    <button @click="addPayment"
+                      :disabled="!newPayment.paidById || !(newPayment.amount > 0) || newPayment.splitAmong.length === 0 || !splitValid"
+                      class="w-full py-3 bg-indigo-600 text-white text-sm font-bold rounded-2xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all shadow-md shadow-indigo-200/60">
+                      {{ editingPaymentId ? '✓ Update Expense' : '+ Log Expense' }}
+                    </button>
                   </div>
-                  <button @click="addPayment"
-                    :disabled="!newPayment.paidById || !(newPayment.amount > 0) || newPayment.splitAmong.length === 0 || !splitValid"
-                    class="w-full py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all shadow-sm shadow-indigo-200">
-                    {{ editingPaymentId ? 'Update Payment' : 'Log Payment' }}
-                  </button>
                 </div>
               </div>
 
-              <!-- Settlements -->
+              <!-- ── Who Owes What ── -->
               <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
-                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Who Owes What</h2>
-                <div v-if="state.payments.length === 0" class="py-8 text-center">
-                  <p class="text-sm text-slate-300 font-medium">Log payments to calculate settlements</p>
+                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Who Owes What</h2>
+
+                <!-- No payments yet -->
+                <div v-if="state.payments.length === 0" class="py-10 text-center">
+                  <p class="text-2xl mb-2">💸</p>
+                  <p class="text-sm text-slate-400 font-medium">Log expenses to see who owes what</p>
                 </div>
-                <div v-else-if="settlements.length === 0" class="py-8 text-center">
-                  <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-3 text-emerald-500">
-                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
-                  </div>
-                  <p class="text-sm font-semibold text-emerald-600">All settled up!</p>
-                  <p class="text-xs text-slate-400 mt-1">Everyone is square</p>
-                  <p class="text-xs text-slate-300 mt-1">Time to focus on the fun part. ✈️</p>
+
+                <!-- All settled! -->
+                <div v-else-if="settlements.length === 0" class="splitter-settled-empty py-8 text-center rounded-2xl">
+                  <p class="text-4xl mb-3 leading-none">🎉</p>
+                  <p class="text-base font-bold text-emerald-700">All settled up!</p>
+                  <p class="text-sm text-emerald-600 mt-1">Everyone's square — time to enjoy the trip.</p>
                 </div>
-                <div v-else class="space-y-2.5">
+
+                <!-- Settlement rows -->
+                <div v-else class="space-y-3">
                   <div v-for="(tx, i) in settlements" :key="i"
-                    :class="isSettled(tx.from, tx.to) ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'"
-                    class="p-3.5 rounded-xl border transition-colors">
-                    <div class="flex items-center gap-2 mb-1">
-                      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-slate-400 to-slate-500 flex items-center justify-center text-white text-xs font-bold shrink-0"
-                        :class="isSettled(tx.from, tx.to) ? 'opacity-40' : ''">
+                    :class="['splitter-settlement-row rounded-2xl border p-4 transition-all duration-300',
+                      isSettled(tx.from, tx.to)
+                        ? 'bg-emerald-50 border-emerald-100 opacity-60'
+                        : 'bg-white border-slate-100 shadow-sm hover:shadow-md hover:border-rose-100']">
+                    <!-- Sentence layout: Avatar Name owes Avatar Name -->
+                    <div class="flex items-center gap-2 min-w-0">
+                      <!-- From avatar -->
+                      <div :class="['w-9 h-9 rounded-full bg-gradient-to-br from-rose-300 to-rose-400 flex items-center justify-center text-white text-sm font-bold shrink-0',
+                        isSettled(tx.from, tx.to) ? 'grayscale opacity-60' : '']">
                         {{ friendInitial(friendName(tx.from)) }}
                       </div>
-                      <svg class="text-slate-400 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
-                      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-xs font-bold shrink-0"
-                        :class="isSettled(tx.from, tx.to) ? 'opacity-40' : ''">
+                      <div class="flex-1 min-w-0">
+                        <p class="text-sm leading-snug">
+                          <span :class="['font-semibold', isSettled(tx.from, tx.to) ? 'text-slate-400' : 'text-slate-800']">{{ friendName(tx.from) }}</span>
+                          <span class="text-slate-400 font-normal"> owes </span>
+                          <span :class="['font-semibold', isSettled(tx.from, tx.to) ? 'text-slate-400' : 'text-slate-800']">{{ friendName(tx.to) }}</span>
+                        </p>
+                        <!-- Amount -->
+                        <p :class="['text-xl font-bold leading-tight mt-0.5',
+                          isSettled(tx.from, tx.to) ? 'text-slate-400 line-through' : 'text-slate-900']">
+                          ${{ fmt(tx.amount) }}
+                        </p>
+                      </div>
+                      <!-- To avatar -->
+                      <div :class="['w-9 h-9 rounded-full bg-gradient-to-br from-teal-400 to-emerald-500 flex items-center justify-center text-white text-sm font-bold shrink-0',
+                        isSettled(tx.from, tx.to) ? 'grayscale opacity-60' : '']">
                         {{ friendInitial(friendName(tx.to)) }}
                       </div>
-                      <span class="text-sm font-bold ml-auto" :class="isSettled(tx.from, tx.to) ? 'text-slate-400 line-through' : 'text-slate-800'">${{ fmt(tx.amount) }}</span>
                     </div>
-                    <div class="flex items-center justify-between pl-1">
-                      <p class="text-xs text-slate-500 flex items-center gap-1 min-w-0">
-                        <span class="font-medium truncate max-w-[90px] shrink-0" :class="isSettled(tx.from, tx.to) ? 'text-slate-400' : 'text-rose-600'">{{ friendName(tx.from) }}</span>
-                        <span class="text-slate-400 shrink-0"> owes </span>
-                        <span class="font-medium truncate max-w-[90px] shrink-0" :class="isSettled(tx.from, tx.to) ? 'text-slate-400' : 'text-emerald-600'">{{ friendName(tx.to) }}</span>
-                      </p>
-                      <label class="flex items-center gap-1.5 cursor-pointer">
+                    <!-- Mark paid -->
+                    <div class="mt-3 flex justify-end">
+                      <label class="flex items-center gap-2 cursor-pointer select-none">
                         <input type="checkbox" :checked="isSettled(tx.from, tx.to)" @change="toggleSettled(tx.from, tx.to)"
-                          class="w-3.5 h-3.5 rounded text-emerald-500 border-slate-300 focus:ring-emerald-400 cursor-pointer" />
-                        <span class="text-xs" :class="isSettled(tx.from, tx.to) ? 'text-emerald-600 font-medium' : 'text-slate-400'">Paid</span>
+                          class="w-4 h-4 rounded text-emerald-500 border-slate-300 focus:ring-emerald-400 cursor-pointer" />
+                        <span :class="['text-xs font-semibold', isSettled(tx.from, tx.to) ? 'text-emerald-600' : 'text-slate-400']">
+                          {{ isSettled(tx.from, tx.to) ? '✓ Paid' : 'Mark paid' }}
+                        </span>
                       </label>
                     </div>
                   </div>
@@ -1155,107 +1568,66 @@
               </div>
             </div>
 
-            <!-- Payment history -->
+            <!-- ── Payment History ── social feed -->
             <div v-if="state.payments.length > 0" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
               <div class="flex items-center justify-between mb-5">
-                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Payment History</h2>
-                <span class="text-xs text-slate-400">{{ state.payments.length }} payment{{ state.payments.length !== 1 ? 's' : '' }} · ${{ fmt(totalPayments) }}</span>
+                <h2 class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Expense Feed</h2>
+                <span class="text-xs text-slate-400 font-medium bg-slate-50 px-3 py-1 rounded-full">{{ state.payments.length }} expense{{ state.payments.length !== 1 ? 's' : '' }} · <span class="text-teal-600">${{ fmt(totalPayments) }}</span></span>
               </div>
+
               <div class="divide-y divide-slate-50">
                 <div v-for="payment in state.payments" :key="payment.id"
-                  class="flex items-start justify-between py-3.5 group"
-                  :class="payment.settled ? 'opacity-50' : ''">
-                  <div class="flex items-start gap-3 flex-1 min-w-0">
-                    <div class="w-8 h-8 rounded-full bg-gradient-to-br flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5"
-                      :class="payment.settled ? 'from-slate-300 to-slate-400' : 'from-indigo-400 to-violet-500'">
+                  class="flex items-start justify-between py-4 group transition-opacity duration-200"
+                  :class="payment.settled ? 'opacity-45' : ''">
+
+                  <!-- Left: avatar + text -->
+                  <div class="flex items-start gap-3.5 flex-1 min-w-0">
+                    <!-- Payer avatar -->
+                    <div :class="['w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-0.5 shadow-sm',
+                      payment.settled
+                        ? 'bg-gradient-to-br from-slate-300 to-slate-400'
+                        : 'bg-gradient-to-br from-teal-400 to-cyan-500']">
                       {{ friendInitial(friendName(payment.paidById)) }}
                     </div>
-                    <div class="min-w-0">
-                      <p class="text-sm font-semibold truncate" :class="payment.settled ? 'text-slate-400 line-through' : 'text-slate-800'">{{ payment.description || 'Payment' }}</p>
-                      <p class="text-xs text-slate-400 mt-0.5">
-                        <span class="font-medium" :class="payment.settled ? 'text-slate-400' : 'text-indigo-500'">{{ friendName(payment.paidById) }}</span> paid ·
-                        split {{ payment.splitAmong.length === state.friends.length ? 'among everyone' : `among ${payment.splitAmong.map(id => friendName(id)).join(', ')}` }}
+
+                    <div class="min-w-0 flex-1">
+                      <!-- Description headline -->
+                      <p :class="['text-sm font-semibold leading-snug truncate',
+                        payment.settled ? 'text-slate-400' : 'text-slate-800']">
+                        {{ payment.description || 'Expense' }}
+                        <span v-if="payment.settled" class="ml-1 text-emerald-500 font-bold">✓</span>
+                      </p>
+                      <!-- Meta caption -->
+                      <p class="text-xs text-slate-400 mt-0.5 leading-relaxed">
+                        <span :class="['font-semibold', payment.settled ? 'text-slate-400' : 'text-teal-600']">{{ friendName(payment.paidById) }}</span>
+                        <span> paid · </span>
+                        <span>{{ payment.splitAmong.length === state.friends.length ? 'split with everyone' : `split with ${payment.splitAmong.map(id => friendName(id)).join(', ')}` }}</span>
                       </p>
                     </div>
                   </div>
-                  <div class="flex items-center gap-3 shrink-0 ml-4">
+
+                  <!-- Right: amount + controls -->
+                  <div class="flex items-center gap-2 shrink-0 ml-4 pt-0.5">
+                    <!-- Settled toggle -->
                     <label class="flex items-center gap-1.5 cursor-pointer">
                       <input type="checkbox" v-model="payment.settled"
                         class="w-3.5 h-3.5 rounded text-emerald-500 border-slate-300 focus:ring-emerald-400 cursor-pointer" />
-                      <span class="text-xs" :class="payment.settled ? 'text-emerald-600 font-medium' : 'text-slate-400'">Settled</span>
+                      <span :class="['text-xs font-semibold', payment.settled ? 'text-emerald-600' : 'text-slate-400']">
+                        {{ payment.settled ? 'Settled' : 'Settle' }}
+                      </span>
                     </label>
-                    <span class="text-sm font-bold" :class="payment.settled ? 'text-slate-400 line-through' : 'text-slate-800'">${{ fmt(payment.amount) }}</span>
+                    <!-- Amount -->
+                    <span :class="['text-base font-bold tabular-nums', payment.settled ? 'text-slate-400' : 'text-slate-800']">
+                      ${{ fmt(payment.amount) }}
+                    </span>
+                    <!-- Edit -->
                     <button @click="editPayment(payment)" aria-label="Edit payment"
-                      class="opacity-0 group-hover:opacity-100 touch-visible w-9 h-9 flex items-center justify-center rounded-lg text-slate-300 hover:text-indigo-400 transition-all">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                      class="opacity-0 group-hover:opacity-100 touch-visible w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-indigo-400 hover:bg-indigo-50 transition-all">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                     </button>
+                    <!-- Delete -->
                     <button @click="removePayment(payment.id)" aria-label="Remove payment"
-                      class="opacity-0 group-hover:opacity-100 touch-visible w-9 h-9 flex items-center justify-center rounded-lg text-slate-300 hover:text-rose-400 transition-all">
-                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-                    </button>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- =========================================
-               TAB: PACKING
-               ========================================= -->
-          <div v-else-if="currentTab === 'packing'" key="packing" class="space-y-5">
-            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
-              <!-- Add form -->
-              <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
-                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Add Item</h2>
-                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
-                  <input v-model="newPackItem.name" @keyup.enter="addPackItem" type="text" placeholder="Item name…" maxlength="80" aria-label="Packing item name"
-                    class="sm:col-span-2 px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
-                  <select v-model="newPackItem.category" aria-label="Item category"
-                    class="px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-white">
-                    <option v-for="cat in packCategories" :key="cat">{{ cat }}</option>
-                  </select>
-                </div>
-                <button @click="addPackItem"
-                  class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors">
-                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-                  Add to List
-                </button>
-              </div>
-              <!-- Progress card -->
-              <div class="bg-gradient-to-br from-teal-500 via-teal-600 to-teal-700 rounded-2xl p-6 text-white shadow-xl shadow-teal-200/60 flex flex-col justify-between">
-                <p class="text-white/70 text-xs font-semibold uppercase tracking-wider">{{ packProgress === 100 ? 'All packed! 🎉' : 'Packed' }}</p>
-                <div>
-                  <p :class="['text-5xl font-extrabold leading-none mt-2', packProgress === 100 ? 'packed-pulse' : '']">{{ packProgress }}<span class="text-2xl font-normal ml-1">%</span></p>
-                  <p class="text-white/70 text-sm mt-1">{{ state.packingList.filter(p => p.checked).length }} / {{ state.packingList.length }} items</p>
-                </div>
-                <div class="mt-4">
-                  <div class="h-2 bg-white/20 rounded-full overflow-hidden">
-                    <div class="h-full bg-white rounded-full transition-all duration-500" :style="`width: ${packProgress}%`"></div>
-                  </div>
-                </div>
-              </div>
-            </div>
-
-            <div v-if="state.packingList.length === 0" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
-              <p class="text-4xl mb-3">🧳</p>
-              <p class="text-sm font-medium text-slate-500">Your suitcase is empty.</p>
-              <p class="text-xs text-slate-400 mt-1">Add what you need — then check it off as you pack.</p>
-            </div>
-            <div v-else class="space-y-4">
-              <div v-for="(items, cat) in packByCategory" :key="cat" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
-                <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{{ cat }}</h3>
-                <div class="space-y-1.5">
-                  <div v-for="item in items" :key="item.id"
-                    class="flex items-center gap-3 py-2 px-2 -mx-2 group rounded-xl hover:bg-slate-50 transition-colors">
-                    <button @click="togglePackItem(item.id)"
-                      :class="['w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
-                        item.checked ? 'bg-indigo-600 border-indigo-600' : 'border-slate-200 hover:border-indigo-400',
-                        packToggleAnim[item.id] ? 'check-pop' : '']">
-                      <svg v-if="item.checked" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
-                    </button>
-                    <span :class="['text-sm flex-1', item.checked ? 'line-through text-slate-300' : 'text-slate-700']">{{ item.name }}</span>
-                    <button @click="removePackItem(item.id)" :aria-label="`Remove ${item.name}`"
-                      class="opacity-0 group-hover:opacity-100 touch-visible w-9 h-9 -mr-1 flex items-center justify-center rounded-lg text-slate-300 hover:text-rose-400 transition-all">
+                      class="opacity-0 group-hover:opacity-100 touch-visible w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-rose-400 hover:bg-rose-50 transition-all">
                       <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
                     </button>
                   </div>
@@ -1415,7 +1787,6 @@ createApp({
       friends: [],
       payments: [],
       settledPairs: [],
-      packingList: [],
       photos: [],
     });
 
@@ -1506,11 +1877,10 @@ createApp({
 
     const tabs = [
       { id: 'overview',   label: 'Overview',   desc: 'Trip summary and totals',          icon: makeIcon('<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>') },
-      { id: 'attendance', label: 'Attendance', desc: 'Group size and base pricing',       icon: makeIcon('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>') },
+      { id: 'attendance', label: 'Group', desc: "Who's coming and base costs",            icon: makeIcon('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>') },
       { id: 'itinerary',  label: 'Itinerary',  desc: 'Events and activities',             icon: makeIcon('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>') },
-      { id: 'analytics',  label: 'Analytics',  desc: 'Visual cost breakdown by category', icon: makeIcon('<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>') },
+      { id: 'analytics',  label: 'Spending',   desc: 'Where your money is going',         icon: makeIcon('<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>') },
       { id: 'splitter',   label: 'Splitter',   desc: 'Settle who owes what',              icon: makeIcon('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>') },
-      { id: 'packing',    label: 'Packing',    desc: 'Shared packing checklist',           icon: makeIcon('<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>') },
       { id: 'photos',     label: 'Photos',     desc: 'Trip photo wall',                    icon: makeIcon('<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>') },
     ];
 
@@ -1600,13 +1970,6 @@ createApp({
     const totalPayments = computed(() =>
       state.payments.reduce((s, p) => s + (p.amount || 0), 0)
     );
-
-    const quickStats = computed(() => [
-      { label: 'Total Cost',   value: `$${fmt(totalTripCost.value)}`,  iconBg: 'bg-indigo-100 text-indigo-600',  icon: makeIcon('<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>') },
-      { label: 'Per Person',   value: `$${fmt(costPerPerson.value)}`,  iconBg: 'bg-violet-100 text-violet-600', icon: makeIcon('<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>') },
-      { label: 'Events',       value: state.events.length,             iconBg: 'bg-emerald-100 text-emerald-600', icon: makeIcon('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>') },
-      { label: 'Trip Days',    value: tripDuration.value || '—',       iconBg: 'bg-amber-100 text-amber-600',   icon: makeIcon('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>') },
-    ]);
 
     const currentTabLabel = computed(() => tabs.find(t => t.id === currentTab.value)?.label || '');
     const currentTabDesc  = computed(() => tabs.find(t => t.id === currentTab.value)?.desc  || '');
@@ -1842,64 +2205,6 @@ createApp({
       clearTimeout(weatherTimer);
       weatherTimer = setTimeout(fetchWeather, 900);
     }, { immediate: true });
-
-    // ── Packing list ─────────────────────────────────────────────
-    const packCategories = ['Clothing', 'Documents', 'Toiletries', 'Electronics', 'Other'];
-    const newPackItem = reactive({ name: '', category: 'Other' });
-
-    function addPackItem() {
-      if (!newPackItem.name.trim()) return;
-      state.packingList.push({ id: genId(), name: newPackItem.name.trim(), category: newPackItem.category, checked: false });
-      Object.assign(newPackItem, { name: '', category: 'Other' });
-    }
-
-    async function removePackItem(id) {
-      if (!await showConfirm('Remove this packing item?')) return;
-      const idx = state.packingList.findIndex(p => p.id === id);
-      if (idx !== -1) state.packingList.splice(idx, 1);
-    }
-
-    const packToggleAnim = ref({});
-
-    function togglePackItem(id) {
-      const item = state.packingList.find(p => p.id === id);
-      if (!item) return;
-      item.checked = !item.checked;
-      packToggleAnim.value = { ...packToggleAnim.value, [id]: true };
-      setTimeout(() => {
-        const next = { ...packToggleAnim.value };
-        delete next[id];
-        packToggleAnim.value = next;
-      }, 300);
-    }
-
-    const packProgress = computed(() => {
-      if (!state.packingList.length) return 0;
-      return Math.round(state.packingList.filter(p => p.checked).length / state.packingList.length * 100);
-    });
-
-    const packByCategory = computed(() => {
-      const result = {};
-      packCategories.forEach(cat => {
-        const items = state.packingList.filter(p => p.category === cat);
-        if (items.length) result[cat] = items;
-      });
-      return result;
-    });
-
-    let confettiFired = false;
-    watch(packProgress, async (val, old) => {
-      if (val === 100 && old !== 100 && !confettiFired) {
-        confettiFired = true;
-        try {
-          const { default: confetti } = await import('https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js');
-          confetti({ particleCount: 140, spread: 80, origin: { y: 0.6 },
-            colors: ['#14b8a6', '#2dd4bf', '#0d9488', '#f59e0b', '#f97316', '#fbbf24'] });
-        } catch (e) { /* confetti is non-critical */ }
-        setTimeout(() => { confettiFired = false; }, 6000);
-      }
-      if (val < 100) confettiFired = false;
-    });
 
     // ── Photos ───────────────────────────────────────────────────
     const photoUploading = ref(false);
@@ -2189,7 +2494,7 @@ createApp({
       catColors, catIcons,
       totalParticipants, baseGroupCost, totalEventCost, totalTripCost,
       costPerPerson, daysUntilTrip, tripDuration, sortedEvents, groupedEvents,
-      categoryBreakdown, totalPayments, quickStats, settlements,
+      categoryBreakdown, totalPayments, settlements,
       currentTabLabel, currentTabDesc,
       syncStatus, linkCopied,
       destSuggestions, showDestSuggestions, destSearching,
@@ -2205,8 +2510,6 @@ createApp({
       copyShareLink,
       darkMode, toggleDark,
       weather, weatherLoading, weatherError, weatherEmoji, weatherLabel, fmtTime,
-      packCategories, newPackItem, packProgress, packByCategory,
-      addPackItem, removePackItem, togglePackItem, packToggleAnim,
       addEventSuccess, photoJustUploaded,
       photoUploading, photoError, uploadPhoto, removePhoto,
       lightboxPhoto, lightboxEl, lightboxIndex, photoCopied, canShare,
