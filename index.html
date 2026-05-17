@@ -2314,11 +2314,11 @@ createApp({
     }
     function confirmOk() {
       confirmDialog.value.resolve(true);
-      confirmDialog.value = { show: false, title: '', message: '', resolve: null };
+      confirmDialog.value = { show: false, title: '', message: '', okLabel: 'Delete', okClass: 'bg-rose-500 hover:bg-rose-600', resolve: null };
     }
     function confirmCancel() {
       confirmDialog.value.resolve(false);
-      confirmDialog.value = { show: false, title: '', message: '', resolve: null };
+      confirmDialog.value = { show: false, title: '', message: '', okLabel: 'Delete', okClass: 'bg-rose-500 hover:bg-rose-600', resolve: null };
     }
 
     // ── Drag-to-reorder ──────────────────────────────────────────
