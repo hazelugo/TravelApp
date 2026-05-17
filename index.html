@@ -1874,6 +1874,51 @@ createApp({
       setTimeout(() => { linkCopied.value = false; }, 2000);
     }
 
+    async function startNewTrip() {
+      const ok = await showConfirm(
+        'Start a new trip?',
+        'Your current trip is saved and you can switch back anytime.',
+        'New Trip',
+        'bg-teal-600 hover:bg-teal-700'
+      );
+      if (!ok) return;
+      clearTimeout(saveTimer);
+      await saveTrip();
+      const newId = crypto.randomUUID();
+      localStorage.setItem('travelapp_trip_id', newId);
+      const url = new URL(window.location.href);
+      url.searchParams.set('trip', newId);
+      window.location.href = url.toString();
+    }
+
+    async function switchTrip(id) {
+      if (id === tripId) { tripsOpen.value = false; return; }
+      const hasContent = !!(state.trip.destination || state.events.length || state.friends.length);
+      if (hasContent) {
+        const ok = await showConfirm(
+          'Switch trips?',
+          'Your current trip is already saved.',
+          'Switch',
+          'bg-teal-600 hover:bg-teal-700'
+        );
+        if (!ok) return;
+      }
+      clearTimeout(saveTimer);
+      await saveTrip();
+      localStorage.setItem('travelapp_trip_id', id);
+      const url = new URL(window.location.href);
+      url.searchParams.set('trip', id);
+      window.location.href = url.toString();
+    }
+
+    async function copyTripLink(id) {
+      const url = new URL(window.location.href);
+      url.searchParams.set('trip', id);
+      await navigator.clipboard.writeText(url.toString());
+      tripsCopiedId.value = id;
+      setTimeout(() => { if (tripsCopiedId.value === id) tripsCopiedId.value = null; }, 2000);
+    }
+
     // ── Dark mode ────────────────────────────────────────────────
     const darkMode = ref(false);
 
@@ -2524,6 +2569,7 @@ createApp({
       costPerPerson, daysUntilTrip, tripDuration, sortedEvents, groupedEvents,
       categoryBreakdown, totalPayments, settlements,
       currentTabLabel, currentTabDesc,
+      tripIndex, tripsOpen, tripsCopiedId,
       syncStatus, linkCopied,
       destSuggestions, showDestSuggestions, destSearching,
       onDestinationInput, onDestinationBlur, selectDestination,
@@ -2536,6 +2582,7 @@ createApp({
       toggleAllSplit, toggleSplitFriend, redistributeEqual, splitPercentageTotal, splitValid,
       isSettled, toggleSettled,
       copyShareLink,
+      startNewTrip, switchTrip, copyTripLink,
       darkMode, toggleDark,
       weather, weatherLoading, weatherError, weatherEmoji, weatherLabel, fmtTime,
       addEventSuccess, photoJustUploaded,
