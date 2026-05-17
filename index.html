@@ -1,0 +1,2148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>TravelApp — Plan & Budget</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.9.2/dist/confetti.browser.min.js"></script>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&display=swap" rel="stylesheet" />
+  <style>
+    body { font-family: 'Inter', sans-serif; }
+    [v-cloak] { display: none !important; }
+    .fade-enter-active, .fade-leave-active { transition: opacity 0.18s ease; }
+    .fade-enter-from, .fade-leave-to { opacity: 0; }
+    .slide-up-enter-active { transition: all 0.22s cubic-bezier(0.4,0,0.2,1); }
+    .slide-up-leave-active { transition: all 0.18s cubic-bezier(0.4,0,0.2,1); }
+    .slide-up-enter-from, .slide-up-leave-to { opacity: 0; transform: translateY(10px); }
+    ::-webkit-scrollbar { width: 4px; height: 4px; }
+    ::-webkit-scrollbar-thumb { background: #e2e8f0; border-radius: 99px; }
+    input[type=number] { -moz-appearance: textfield; }
+    input[type=number]::-webkit-outer-spin-button,
+    input[type=number]::-webkit-inner-spin-button { -webkit-appearance: none; }
+
+    /* ── Primary: tropical teal (replaces indigo/violet SaaS default) ── */
+    :root {
+      --p50:#f0fdfa; --p100:#ccfbf1; --p200:#99f6e4;
+      --p400:#2dd4bf; --p500:#14b8a6; --p600:#0d9488; --p700:#0f766e;
+    }
+    .bg-indigo-50   { background-color: var(--p50)  !important; }
+    .bg-indigo-100  { background-color: var(--p100) !important; }
+    .bg-indigo-600  { background-color: var(--p600) !important; }
+    .hover\:bg-indigo-700:hover { background-color: var(--p700) !important; }
+    .text-indigo-700 { color: var(--p700) !important; }
+    .text-indigo-600 { color: var(--p600) !important; }
+    .text-indigo-500 { color: var(--p500) !important; }
+    .text-indigo-400 { color: var(--p400) !important; }
+    .border-indigo-100 { border-color: var(--p100) !important; }
+    .shadow-indigo-200\/60 { --tw-shadow-color: rgb(153 246 228 / 0.45) !important; }
+    .focus\:ring-indigo-500:focus { --tw-ring-color: var(--p500) !important; }
+
+    /* ── Dark mode ── */
+    html.dark { color-scheme: dark; }
+    html.dark body,
+    html.dark .bg-slate-50  { background-color: #0f1117 !important; color: #e2e8f0; }
+    html.dark .bg-white     { background-color: #1a1f2e !important; }
+    html.dark .bg-slate-100 { background-color: #1e2535 !important; }
+    html.dark .bg-slate-200 { background-color: #253047 !important; }
+    html.dark .border-slate-100,
+    html.dark .border-slate-200 { border-color: #2a3347 !important; }
+    html.dark .text-slate-900 { color: #f1f5f9 !important; }
+    html.dark .text-slate-800 { color: #e2e8f0 !important; }
+    html.dark .text-slate-700 { color: #cbd5e1 !important; }
+    html.dark .text-slate-600 { color: #94a3b8 !important; }
+    html.dark .text-slate-500 { color: #64748b !important; }
+    html.dark .text-slate-400 { color: #8b9ab0 !important; }
+    html.dark .text-slate-300 { color: #6b7280 !important; }
+    html.dark input:not([type=range]),
+    html.dark select,
+    html.dark textarea { background-color: #1e2535 !important; color: #e2e8f0 !important; border-color: #2a3347 !important; }
+    html.dark input::placeholder,
+    html.dark textarea::placeholder { color: #4a5568 !important; }
+    html.dark .hover\:bg-slate-50:hover  { background-color: #1e2535 !important; }
+    html.dark .hover\:bg-slate-100:hover { background-color: #253047 !important; }
+    html.dark .hover\:bg-slate-200:hover { background-color: #2a3a56 !important; }
+    html.dark .divide-slate-50  > * + * { border-color: #1e2535 !important; }
+    html.dark .divide-slate-100 > * + * { border-color: #2a3347 !important; }
+    html.dark .bg-indigo-50  { background-color: oklch(22% 0.05 195) !important; }
+    html.dark .bg-teal-50    { background-color: oklch(22% 0.05 195) !important; }
+    html.dark .bg-cyan-50    { background-color: oklch(22% 0.04 200) !important; }
+    html.dark .bg-emerald-50 { background-color: #052e16 !important; }
+    html.dark .bg-rose-50    { background-color: #2d0a0a !important; }
+    html.dark .bg-amber-50   { background-color: #271d03 !important; }
+    html.dark .bg-violet-50  { background-color: oklch(22% 0.05 195) !important; }
+    html.dark .bg-blue-100   { background-color: #1e3a5f !important; }
+    html.dark .bg-emerald-100 { background-color: #064e3b !important; }
+    html.dark .bg-amber-100  { background-color: #3d2100 !important; }
+    html.dark .bg-violet-100 { background-color: #2e1065 !important; }
+    html.dark .bg-indigo-100 { background-color: oklch(25% 0.07 195) !important; }
+    html.dark .border-indigo-100 { border-color: oklch(32% 0.09 195) !important; }
+    html.dark .border-teal-100   { border-color: oklch(32% 0.09 195) !important; }
+    html.dark .border-emerald-100 { border-color: #064e3b !important; }
+    html.dark .border-rose-100    { border-color: #7f1d1d !important; }
+    html.dark .border-slate-200   { border-color: #2a3347 !important; }
+    html.dark .shadow-sm { box-shadow: 0 1px 3px 0 rgba(0,0,0,.4) !important; }
+    html.dark ::-webkit-scrollbar-thumb { background: #2a3347; }
+
+    /* ── Delight ── */
+    @keyframes check-pop {
+      0%   { transform: scale(1); }
+      45%  { transform: scale(1.35); }
+      100% { transform: scale(1); }
+    }
+    .check-pop { animation: check-pop 0.22s cubic-bezier(0.25, 1, 0.5, 1); }
+
+    .photo-grid-enter-from { opacity: 0; transform: scale(0.85); }
+    .photo-grid-enter-active { transition: opacity 0.28s cubic-bezier(0.25, 1, 0.5, 1), transform 0.28s cubic-bezier(0.25, 1, 0.5, 1); }
+    .photo-grid-leave-to { opacity: 0; transform: scale(0.88); }
+    .photo-grid-leave-active { transition: opacity 0.15s ease-in, transform 0.15s ease-in; }
+
+    .lightbox-enter-active { transition: opacity 0.2s ease; }
+    .lightbox-leave-active { transition: opacity 0.18s ease; }
+    .lightbox-enter-from, .lightbox-leave-to { opacity: 0; }
+    .lightbox-img-enter-active { transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.25,1,0.5,1); }
+    .lightbox-img-enter-from { opacity: 0; transform: scale(0.93); }
+
+    @keyframes today-bounce {
+      0%, 100% { transform: translateY(0); }
+      50%       { transform: translateY(-3px); }
+    }
+    .today-bounce { animation: today-bounce 2s ease-in-out infinite; }
+
+    button:not([disabled]):active { transform: scale(0.97); transition: transform 0.08s cubic-bezier(0.25, 1, 0.5, 1) !important; }
+
+    /* ── Mobile ── */
+    button { touch-action: manipulation; }
+    .safe-bottom { padding-bottom: env(safe-area-inset-bottom, 0px); }
+    .scrollbar-hide::-webkit-scrollbar { display: none; }
+    .scrollbar-hide { -ms-overflow-style: none; scrollbar-width: none; }
+    /* Reveal hover-only actions on touch devices */
+    @media (pointer: coarse) {
+      .touch-visible { opacity: 0.55 !important; }
+    }
+    /* Prevent iOS auto-zoom on input focus */
+    @media (max-width: 1023px) {
+      input:not([type=checkbox]):not([type=radio]), select, textarea { font-size: 16px !important; }
+    }
+    /* Dark mode bottom nav */
+    html.dark nav.mobile-nav { background-color: #1a1f2e !important; border-color: #2a3347 !important; }
+
+    /* ── Focus visible ── */
+    button:focus-visible, [role="button"]:focus-visible {
+      outline: none;
+      box-shadow: 0 0 0 2px #fff, 0 0 0 4px var(--p500);
+    }
+    html.dark button:focus-visible, html.dark [role="button"]:focus-visible {
+      box-shadow: 0 0 0 2px #1a1f2e, 0 0 0 4px var(--p400);
+    }
+
+    /* ── Reduced motion ── */
+    @media (prefers-reduced-motion: reduce) {
+      *, *::before, *::after {
+        animation-duration: 0.01ms !important;
+        animation-iteration-count: 1 !important;
+        transition-duration: 0.01ms !important;
+      }
+    }
+
+    /* ── Touch visible: slightly more opaque ── */
+    @media (pointer: coarse) {
+      .touch-visible { opacity: 0.72 !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased">
+<div id="app" v-cloak class="flex h-screen overflow-hidden">
+
+  <!-- ===== SIDEBAR ===== -->
+  <aside class="hidden lg:flex flex-col w-60 bg-white border-r border-slate-100 shrink-0 overflow-y-auto">
+    <div class="px-5 pt-6 pb-5 border-b border-slate-100">
+      <div class="flex items-center gap-3">
+        <div class="w-9 h-9 rounded-xl bg-gradient-to-br from-teal-400 to-cyan-600 flex items-center justify-center shadow-md shadow-teal-200">
+          <svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+        </div>
+        <div>
+          <p class="font-bold text-slate-900 text-sm leading-tight">TravelApp</p>
+          <p class="text-xs text-slate-400">Plan & Budget</p>
+        </div>
+      </div>
+    </div>
+
+    <nav class="flex-1 px-3 py-4 space-y-0.5" aria-label="Sidebar navigation">
+      <button v-for="tab in tabs" :key="tab.id" @click="currentTab = tab.id"
+        :aria-current="currentTab === tab.id ? 'page' : undefined"
+        :class="['w-full flex items-center gap-3 px-3 py-2.5 rounded-xl text-sm font-medium transition-all duration-150 text-left',
+          currentTab === tab.id ? 'bg-indigo-50 text-indigo-700' : 'text-slate-500 hover:bg-slate-50 hover:text-slate-700']">
+        <span :class="currentTab === tab.id ? 'text-indigo-600' : 'text-slate-400'" v-html="tab.icon"></span>
+        {{ tab.label }}
+      </button>
+    </nav>
+
+    <div v-if="daysUntilTrip !== null" class="m-3 p-4 rounded-2xl bg-teal-50 border border-teal-100">
+      <template v-if="daysUntilTrip === 0">
+        <p class="text-xs text-teal-500 font-bold uppercase tracking-wider">It's today!</p>
+        <p class="text-3xl font-extrabold text-teal-700 mt-0.5 leading-none today-bounce">🎉</p>
+        <p class="text-sm font-semibold text-teal-600 mt-1">Have an amazing trip!</p>
+      </template>
+      <template v-else>
+        <p class="text-xs text-indigo-400 font-semibold uppercase tracking-wider">Departing in</p>
+        <p class="text-3xl font-bold text-indigo-700 mt-0.5 leading-none">{{ Math.max(0, daysUntilTrip) }}<span class="text-base font-normal ml-1">days</span></p>
+      </template>
+      <p class="text-xs text-slate-400 mt-2 truncate">{{ state.trip.destination || 'Your destination' }}</p>
+    </div>
+    <div v-else class="m-3 p-4 rounded-2xl bg-slate-50 border border-slate-100">
+      <p class="text-xs text-slate-400 font-medium">Set your travel dates to see the countdown</p>
+    </div>
+  </aside>
+
+  <!-- ===== MAIN ===== -->
+  <div class="flex-1 flex flex-col min-w-0 overflow-hidden">
+
+    <header class="bg-white border-b border-slate-100 px-6 py-4 flex items-center justify-between shrink-0 gap-4">
+      <div class="min-w-0">
+        <h1 class="text-base font-semibold text-slate-900">{{ currentTabLabel }}</h1>
+        <p class="text-xs text-slate-400 mt-0.5">{{ currentTabDesc }}</p>
+      </div>
+
+      <!-- Sync status + share -->
+      <div class="hidden lg:flex items-center gap-2 shrink-0">
+        <!-- Sync pill -->
+        <div :class="['flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all',
+          syncStatus === 'saving' ? 'bg-amber-50 text-amber-600' :
+          syncStatus === 'saved'  ? 'bg-emerald-50 text-emerald-600' :
+          syncStatus === 'error'  ? 'bg-rose-50 text-rose-600' :
+          'bg-slate-50 text-slate-400']">
+          <!-- Spinner when saving -->
+          <svg v-if="syncStatus === 'saving'" class="animate-spin" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+          <!-- Check when saved -->
+          <svg v-else-if="syncStatus === 'saved'" width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <!-- Dot when idle -->
+          <span v-else class="w-1.5 h-1.5 rounded-full" :class="syncStatus === 'error' ? 'bg-rose-400' : 'bg-slate-300'"></span>
+          <span>{{ syncStatus === 'saving' ? 'Saving…' : syncStatus === 'saved' ? 'Saved' : syncStatus === 'error' ? 'Error' : 'Synced' }}</span>
+        </div>
+        <!-- Dark mode toggle -->
+        <button @click="toggleDark" :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'"
+          class="w-8 h-8 flex items-center justify-center rounded-lg border border-slate-200 text-slate-500 hover:bg-slate-50 transition-all">
+          <svg v-if="darkMode" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg v-else width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <!-- Share button -->
+        <button @click="copyShareLink"
+          :class="['flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
+            linkCopied ? 'bg-emerald-600 text-white border-emerald-600' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50']">
+          <svg v-if="!linkCopied" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <svg v-else width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+          {{ linkCopied ? 'Copied!' : 'Share Trip' }}
+        </button>
+      </div>
+
+      <!-- Mobile header actions -->
+      <div class="flex lg:hidden items-center gap-0.5 shrink-0">
+        <span :class="['w-2 h-2 rounded-full shrink-0 mr-1', syncStatus === 'saving' ? 'bg-amber-400 animate-pulse' : syncStatus === 'error' ? 'bg-rose-400' : 'bg-teal-400 opacity-50']" :aria-label="syncStatus === 'saving' ? 'Saving…' : syncStatus === 'error' ? 'Save error' : 'Synced'" role="status"></span>
+        <button @click="toggleDark" :aria-label="darkMode ? 'Switch to light mode' : 'Switch to dark mode'" class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-500 hover:bg-slate-50">
+          <svg v-if="darkMode" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+        <button @click="copyShareLink" :aria-label="linkCopied ? 'Link copied!' : 'Copy share link'"
+          :class="['w-10 h-10 flex items-center justify-center rounded-xl transition-all', linkCopied ? 'text-teal-600' : 'text-slate-500 hover:bg-slate-50']">
+          <svg v-if="!linkCopied" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+          <svg v-else width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+        </button>
+      </div>
+    </header>
+
+    <main class="flex-1 overflow-y-auto px-4 pt-5 pb-28 lg:p-8">
+      <div class="max-w-5xl mx-auto">
+        <transition name="fade" mode="out-in">
+
+          <!-- =========================================
+               TAB: OVERVIEW
+               ========================================= -->
+          <div v-if="currentTab === 'overview'" key="overview" class="space-y-5">
+
+            <!-- Mobile countdown — sidebar has this on desktop -->
+            <div v-if="daysUntilTrip !== null" class="lg:hidden flex items-center gap-4 px-4 py-3.5 bg-teal-50 rounded-2xl border border-teal-100">
+              <template v-if="daysUntilTrip === 0">
+                <span class="text-3xl today-bounce">🎉</span>
+                <div>
+                  <p class="text-xs font-bold text-teal-500 uppercase tracking-wider">It's today!</p>
+                  <p class="text-sm font-semibold text-teal-600">Have an amazing trip!</p>
+                </div>
+              </template>
+              <template v-else>
+                <div class="shrink-0">
+                  <p class="text-3xl font-extrabold text-teal-700 leading-none">{{ Math.max(0, daysUntilTrip) }}</p>
+                  <p class="text-[10px] font-semibold text-teal-500 uppercase tracking-wider">days</p>
+                </div>
+                <div class="min-w-0">
+                  <p class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Departing in</p>
+                  <p class="text-sm font-semibold text-slate-700 truncate">{{ state.trip.destination || 'Your destination' }}</p>
+                </div>
+              </template>
+            </div>
+
+            <div class="grid grid-cols-1 lg:grid-cols-5 gap-5">
+              <!-- Trip Details -->
+              <div class="lg:col-span-3 bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Trip Details</h2>
+                <div>
+                  <label for="trip-destination" class="block text-xs font-medium text-slate-500 mb-1.5">Destination</label>
+                  <div class="relative">
+                    <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none z-10" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                    <svg v-if="destSearching" class="absolute right-3 top-1/2 -translate-y-1/2 animate-spin text-slate-300 pointer-events-none" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                    <input id="trip-destination" v-model="state.trip.destination" type="text" placeholder="Where are you going?"
+                      autocomplete="off"
+                      @input="onDestinationInput"
+                      @blur="onDestinationBlur"
+                      @keydown.escape="showDestSuggestions = false"
+                      @keydown.enter.prevent="destSuggestions[0] && selectDestination(destSuggestions[0])"
+                      class="w-full pl-9 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+                    <!-- Autocomplete dropdown -->
+                    <div v-if="showDestSuggestions && destSuggestions.length"
+                      class="absolute top-full left-0 right-0 mt-1.5 bg-white border border-slate-200 rounded-xl shadow-lg z-50 overflow-hidden">
+                      <button v-for="s in destSuggestions" :key="s.label"
+                        @mousedown.prevent="selectDestination(s)"
+                        class="w-full text-left flex items-start gap-2.5 px-3 py-2.5 text-sm text-slate-700 hover:bg-slate-50 transition-colors border-b border-slate-50 last:border-0">
+                        <svg class="shrink-0 mt-0.5 text-slate-300" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
+                        <span class="truncate">{{ s.label }}</span>
+                      </button>
+                    </div>
+                  </div>
+                </div>
+                <div class="grid grid-cols-2 gap-4">
+                  <div>
+                    <label for="trip-start-date" class="block text-xs font-medium text-slate-500 mb-1.5">Start Date</label>
+                    <input id="trip-start-date" v-model="state.trip.startDate" type="date"
+                      class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+                  </div>
+                  <div>
+                    <label for="trip-end-date" class="block text-xs font-medium text-slate-500 mb-1.5">End Date</label>
+                    <input id="trip-end-date" v-model="state.trip.endDate" type="date"
+                      class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+                  </div>
+                </div>
+                <div v-if="tripDuration > 0" class="flex items-center gap-2.5 px-4 py-3 bg-emerald-50 rounded-xl border border-emerald-100">
+                  <svg class="text-emerald-500 shrink-0" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+                  <span class="text-sm font-medium text-emerald-700">{{ tripDuration }}-day trip</span>
+                  <span v-if="daysUntilTrip !== null" class="ml-auto text-xs font-medium text-emerald-600 bg-emerald-100 px-2.5 py-1 rounded-full">
+                    {{ daysUntilTrip > 0 ? `${daysUntilTrip} days away` : daysUntilTrip === 0 ? '🎉 Today!' : 'In progress' }}
+                  </span>
+                </div>
+                <div>
+                  <label for="trip-budget" class="block text-xs font-medium text-slate-500 mb-1.5">Budget Cap <span class="text-slate-300">(optional)</span></label>
+                  <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-medium">$</span>
+                    <input id="trip-budget" v-model.number="state.budget" type="number" min="0" step="1" placeholder="0"
+                      class="w-full pl-7 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+                  </div>
+                </div>
+              </div>
+
+              <!-- Summary card -->
+              <div class="lg:col-span-2 bg-gradient-to-br from-teal-500 via-teal-600 to-teal-700 rounded-2xl p-6 text-white shadow-xl shadow-teal-200/60 flex flex-col">
+                <div>
+                  <p class="text-white/70 text-xs font-semibold uppercase tracking-wider">Total Trip Cost</p>
+                  <p class="text-5xl font-extrabold mt-2 leading-none">${{ fmt(totalTripCost) }}</p>
+                </div>
+                <div class="mt-auto space-y-3 pt-5">
+                  <div class="flex justify-between items-center text-sm">
+                    <span class="text-white/70">Per person</span>
+                    <span class="font-bold text-base">${{ fmt(costPerPerson) }}</span>
+                  </div>
+                  <div class="flex justify-between items-center text-sm">
+                    <span class="text-white/70">Travelers</span>
+                    <span class="font-semibold">{{ totalParticipants }} people</span>
+                  </div>
+                  <div class="flex justify-between items-center text-sm">
+                    <span class="text-white/70">Base pricing</span>
+                    <span class="font-semibold">${{ fmt(baseGroupCost) }}</span>
+                  </div>
+                  <div class="flex justify-between items-center text-sm">
+                    <span class="text-white/70">Itinerary</span>
+                    <span class="font-semibold">${{ fmt(totalEventCost) }}</span>
+                  </div>
+                  <div v-if="(state.budget || 0) > 0" class="pt-1">
+                    <div class="flex justify-between text-xs text-white/70 mb-1.5">
+                      <span>Budget used</span>
+                      <span>{{ Math.min(100, Math.round(totalTripCost / state.budget * 100)) }}%</span>
+                    </div>
+                    <div class="h-2 bg-white/20 rounded-full overflow-hidden">
+                      <div class="h-full rounded-full transition-all duration-700"
+                        :class="totalTripCost > state.budget ? 'bg-rose-400' : 'bg-white'"
+                        :style="`width: ${Math.min(100, (totalTripCost / state.budget * 100)).toFixed(1)}%`"></div>
+                    </div>
+                    <p v-if="totalTripCost > state.budget" class="text-xs text-rose-300 mt-1.5">
+                      ${{ fmt(totalTripCost - state.budget) }} over budget
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Quick stats -->
+            <div class="bg-slate-100 rounded-2xl overflow-hidden grid grid-cols-2 sm:grid-cols-4 gap-px">
+              <div v-for="stat in quickStats" :key="stat.label" class="bg-white p-5">
+                <div class="flex items-start justify-between mb-3">
+                  <p class="text-xs text-slate-400 font-medium">{{ stat.label }}</p>
+                  <div :class="['p-2 rounded-xl', stat.iconBg]" v-html="stat.icon"></div>
+                </div>
+                <p class="text-2xl font-bold text-slate-800">{{ stat.value }}</p>
+              </div>
+            </div>
+
+            <!-- Weather widget -->
+            <div v-if="state.trip.destination" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+              <div class="flex items-center justify-between mb-4">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Weather Forecast</h2>
+                <span class="text-xs text-slate-400 truncate max-w-[160px]">{{ state.trip.destination }}</span>
+              </div>
+              <div v-if="weatherLoading" class="flex items-center gap-2 text-slate-400 text-sm py-2">
+                <svg class="animate-spin shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                Loading weather…
+              </div>
+              <p v-else-if="weatherError" class="text-sm text-rose-500">{{ weatherError }}</p>
+              <div v-else-if="weather.length" class="overflow-x-auto -mx-1 px-1 pb-1">
+                <div class="flex gap-3" style="min-width: max-content">
+                  <div v-for="day in weather" :key="day.date"
+                    class="flex flex-col items-center gap-1.5 p-3.5 rounded-2xl bg-slate-50 border border-slate-100 w-[96px] shrink-0">
+                    <p class="text-xs font-semibold text-slate-500">{{ formatDate(day.date) }}</p>
+                    <span class="text-2xl leading-none">{{ weatherEmoji(day.code) }}</span>
+                    <p class="text-xs text-slate-500 text-center leading-tight">{{ weatherLabel(day.code) }}</p>
+                    <div class="flex items-center gap-1.5 text-xs font-bold mt-0.5">
+                      <span class="text-rose-500">{{ day.high }}°</span>
+                      <span class="text-slate-300">·</span>
+                      <span class="text-blue-500">{{ day.low }}°</span>
+                    </div>
+                    <div class="pt-2 border-t border-slate-200 w-full space-y-1">
+                      <div class="flex items-center justify-center gap-1 text-xs text-amber-500">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+                        {{ fmtTime(day.sunrise) }}
+                      </div>
+                      <div class="flex items-center justify-center gap-1 text-xs text-slate-400">
+                        <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M17 18a5 5 0 0 0-10 0"/><line x1="12" y1="9" x2="12" y2="2"/><line x1="4.22" y1="10.22" x2="5.64" y2="11.64"/><line x1="1" y1="18" x2="3" y2="18"/><line x1="21" y1="18" x2="23" y2="18"/><line x1="18.36" y1="11.64" x2="19.78" y2="10.22"/></svg>
+                        {{ fmtTime(day.sunset) }}
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              </div>
+              <p v-else class="text-sm text-slate-400">Set your travel dates to see the forecast.</p>
+            </div>
+          </div>
+
+          <!-- =========================================
+               TAB: ATTENDANCE
+               ========================================= -->
+          <div v-else-if="currentTab === 'attendance'" key="attendance" class="space-y-5">
+            <div class="grid grid-cols-1 lg:grid-cols-2 gap-5">
+
+              <!-- Group size -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-6">Group Size</h2>
+                <div class="space-y-1">
+                  <div class="flex items-center justify-between py-4 border-b border-slate-50">
+                    <div>
+                      <p class="font-semibold text-slate-800">Adults</p>
+                      <p class="text-xs text-slate-400 mt-0.5">Age 13 and up</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <button @click="state.attendance.adults = Math.max(0, state.attendance.adults - 1)"
+                        aria-label="Decrease adults"
+                        class="w-11 h-11 rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 hover:border-slate-300 active:scale-95 transition-all">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </button>
+                      <span aria-live="polite" aria-atomic="true" class="text-2xl font-bold text-slate-800 w-8 text-center select-none">{{ state.attendance.adults }}</span>
+                      <button @click="state.attendance.adults++"
+                        aria-label="Increase adults"
+                        class="w-11 h-11 rounded-xl bg-indigo-600 flex items-center justify-center text-white hover:bg-indigo-700 active:scale-95 transition-all shadow-sm shadow-indigo-200">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="flex items-center justify-between py-4 border-b border-slate-50">
+                    <div>
+                      <p class="font-semibold text-slate-800">Kids</p>
+                      <p class="text-xs text-slate-400 mt-0.5">Under 13</p>
+                    </div>
+                    <div class="flex items-center gap-3">
+                      <button @click="state.attendance.kids = Math.max(0, state.attendance.kids - 1)"
+                        aria-label="Decrease kids"
+                        class="w-11 h-11 rounded-xl border border-slate-200 flex items-center justify-center text-slate-500 hover:bg-slate-50 hover:border-slate-300 active:scale-95 transition-all">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </button>
+                      <span aria-live="polite" aria-atomic="true" class="text-2xl font-bold text-slate-800 w-8 text-center select-none">{{ state.attendance.kids }}</span>
+                      <button @click="state.attendance.kids++"
+                        aria-label="Increase kids"
+                        class="w-11 h-11 rounded-xl bg-indigo-600 flex items-center justify-center text-white hover:bg-indigo-700 active:scale-95 transition-all shadow-sm shadow-indigo-200">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                      </button>
+                    </div>
+                  </div>
+                  <div class="pt-4">
+                    <div class="flex items-center justify-between px-4 py-3.5 bg-indigo-50 rounded-xl">
+                      <span class="text-sm font-semibold text-indigo-700">Total Travelers</span>
+                      <span class="text-2xl font-extrabold text-indigo-600">{{ totalParticipants }}</span>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Pricing -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-6">Base Pricing</h2>
+                <div class="space-y-4">
+                  <div>
+                    <label for="adult-price" class="block text-xs font-medium text-slate-500 mb-1.5">Per adult</label>
+                    <div class="relative">
+                      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">$</span>
+                      <input id="adult-price" v-model.number="state.attendance.adultPrice" type="number" min="0" step="0.01" placeholder="0.00"
+                        class="w-full pl-7 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    </div>
+                  </div>
+                  <div>
+                    <label for="kid-price" class="block text-xs font-medium text-slate-500 mb-1.5">Per child</label>
+                    <div class="relative">
+                      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">$</span>
+                      <input id="kid-price" v-model.number="state.attendance.kidPrice" type="number" min="0" step="0.01" placeholder="0.00"
+                        class="w-full pl-7 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                    </div>
+                  </div>
+                </div>
+                <div class="mt-6 border-t border-slate-100 pt-5 space-y-2.5">
+                  <div class="flex justify-between text-sm">
+                    <span class="text-slate-500">{{ state.attendance.adults }} adult{{ state.attendance.adults !== 1 ? 's' : '' }} × ${{ fmt(state.attendance.adultPrice || 0) }}</span>
+                    <span class="font-medium text-slate-700">${{ fmt(state.attendance.adults * (state.attendance.adultPrice || 0)) }}</span>
+                  </div>
+                  <div class="flex justify-between text-sm">
+                    <span class="text-slate-500">{{ state.attendance.kids }} kid{{ state.attendance.kids !== 1 ? 's' : '' }} × ${{ fmt(state.attendance.kidPrice || 0) }}</span>
+                    <span class="font-medium text-slate-700">${{ fmt(state.attendance.kids * (state.attendance.kidPrice || 0)) }}</span>
+                  </div>
+                  <div class="flex justify-between text-sm font-bold text-indigo-700 bg-indigo-50 px-4 py-3 rounded-xl mt-3">
+                    <span>Base Group Total</span>
+                    <span>${{ fmt(baseGroupCost) }}</span>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =========================================
+               TAB: ITINERARY
+               ========================================= -->
+          <div v-else-if="currentTab === 'itinerary'" key="itinerary" class="space-y-5">
+
+            <!-- Add event form -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+              <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-5">Add Event</h2>
+              <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+                <div class="sm:col-span-2 lg:col-span-1">
+                  <label for="new-event-name" class="block text-xs font-medium text-slate-500 mb-1.5">Event Name</label>
+                  <input id="new-event-name" v-model="newEvent.name" @keydown.enter="addEvent" type="text" placeholder="e.g. Eiffel Tower visit" maxlength="120"
+                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                </div>
+                <div>
+                  <label for="new-event-date" class="block text-xs font-medium text-slate-500 mb-1.5">Date</label>
+                  <input id="new-event-date" v-model="newEvent.date" type="date"
+                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                </div>
+                <div>
+                  <label for="new-event-time" class="block text-xs font-medium text-slate-500 mb-1.5">Time</label>
+                  <input id="new-event-time" v-model="newEvent.time" type="time"
+                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                </div>
+                <div>
+                  <label for="new-event-category" class="block text-xs font-medium text-slate-500 mb-1.5">Category</label>
+                  <select id="new-event-category" v-model="newEvent.category"
+                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-white">
+                    <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+                  </select>
+                </div>
+                <div>
+                  <label for="new-event-cost" class="block text-xs font-medium text-slate-500 mb-1.5">Cost ($)</label>
+                  <div class="relative">
+                    <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">$</span>
+                    <input id="new-event-cost" v-model.number="newEvent.cost" type="number" min="0" step="0.01" placeholder="0.00"
+                      class="w-full pl-7 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  </div>
+                </div>
+                <div>
+                  <label class="block text-xs font-medium text-slate-500 mb-1.5">Cost Type</label>
+                  <div class="flex gap-2 h-[42px]">
+                    <button @click="newEvent.perPerson = false"
+                      :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
+                        !newEvent.perPerson ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'border-slate-200 text-slate-500 hover:bg-slate-50']">
+                      Flat Rate
+                    </button>
+                    <button @click="newEvent.perPerson = true"
+                      :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
+                        newEvent.perPerson ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'border-slate-200 text-slate-500 hover:bg-slate-50']">
+                      Per Person
+                    </button>
+                  </div>
+                </div>
+                <div class="sm:col-span-2 lg:col-span-3">
+                  <label for="new-event-notes" class="block text-xs font-medium text-slate-500 mb-1.5">Notes <span class="text-slate-300">(optional)</span></label>
+                  <textarea id="new-event-notes" v-model="newEvent.notes" rows="2" placeholder="Booking refs, addresses, reminders…" maxlength="500"
+                    class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent resize-none"></textarea>
+                </div>
+              </div>
+              <button @click="addEvent" :disabled="!newEvent.name.trim()"
+                class="mt-5 w-full sm:w-auto px-6 py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed active:scale-95 transition-all shadow-sm shadow-indigo-200">
+                Add to Itinerary
+              </button>
+            </div>
+
+            <!-- Empty state -->
+            <div v-if="state.events.length === 0" class="bg-white rounded-2xl border border-dashed border-slate-200 p-16 text-center">
+              <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4 text-slate-400">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+              </div>
+              <p class="font-semibold text-slate-400">No events yet</p>
+              <p class="text-sm text-slate-300 mt-1">Add your first activity, meal, or transport above</p>
+            </div>
+
+            <!-- Events list + toolbar -->
+            <div v-else class="space-y-4">
+
+              <!-- Toolbar -->
+              <div class="flex items-center justify-between">
+                <span class="text-xs text-slate-400 font-medium">{{ state.events.length }} event{{ state.events.length !== 1 ? 's' : '' }}<span v-if="!groupByDay" class="ml-1 text-slate-300 hidden lg:inline">· drag to reorder</span></span>
+                <button @click="groupByDay = !groupByDay"
+                  :class="['flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
+                    groupByDay ? 'bg-indigo-600 text-white border-indigo-600 shadow-sm' : 'bg-white border-slate-200 text-slate-500 hover:bg-slate-50']">
+                  <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+                  Group by Day
+                </button>
+              </div>
+
+              <!-- ── FLAT DRAGGABLE VIEW ── -->
+              <div v-if="!groupByDay">
+                <transition-group name="slide-up" tag="div" class="space-y-2">
+                  <template v-for="event in sortedEvents" :key="event.id">
+
+                    <!-- Edit mode -->
+                    <div v-if="editingId === event.id"
+                      class="bg-white rounded-2xl border-2 border-indigo-300 shadow-md p-5">
+                      <p class="text-xs font-bold text-indigo-500 uppercase tracking-wider mb-4">Editing Event</p>
+                      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                        <div class="sm:col-span-2 lg:col-span-1">
+                          <label class="block text-xs font-medium text-slate-500 mb-1.5">Event Name</label>
+                          <input v-model="editForm.name" type="text"
+                            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <div>
+                          <label class="block text-xs font-medium text-slate-500 mb-1.5">Date</label>
+                          <input v-model="editForm.date" type="date"
+                            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <div>
+                          <label class="block text-xs font-medium text-slate-500 mb-1.5">Time</label>
+                          <input v-model="editForm.time" type="time"
+                            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                        </div>
+                        <div>
+                          <label class="block text-xs font-medium text-slate-500 mb-1.5">Category</label>
+                          <select v-model="editForm.category"
+                            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                            <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+                          </select>
+                        </div>
+                        <div>
+                          <label class="block text-xs font-medium text-slate-500 mb-1.5">Cost ($)</label>
+                          <div class="relative">
+                            <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">$</span>
+                            <input v-model.number="editForm.cost" type="number" min="0" step="0.01"
+                              class="w-full pl-7 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          </div>
+                        </div>
+                        <div>
+                          <label class="block text-xs font-medium text-slate-500 mb-1.5">Cost Type</label>
+                          <div class="flex gap-2 h-[42px]">
+                            <button @click="editForm.perPerson = false"
+                              :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
+                                !editForm.perPerson ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-500 hover:bg-slate-50']">
+                              Flat Rate
+                            </button>
+                            <button @click="editForm.perPerson = true"
+                              :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
+                                editForm.perPerson ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-500 hover:bg-slate-50']">
+                              Per Person
+                            </button>
+                          </div>
+                        </div>
+                        <div class="sm:col-span-2 lg:col-span-3">
+                          <label class="block text-xs font-medium text-slate-500 mb-1.5">Notes</label>
+                          <textarea v-model="editForm.notes" rows="2"
+                            class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+                        </div>
+                      </div>
+                      <div class="flex gap-2 mt-4">
+                        <button @click="saveEdit" :disabled="!editForm.name.trim()"
+                          class="px-5 py-2 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-40 transition-colors shadow-sm">
+                          Save Changes
+                        </button>
+                        <button @click="cancelEdit"
+                          class="px-5 py-2 bg-slate-100 text-slate-600 text-sm font-semibold rounded-xl hover:bg-slate-200 transition-colors">
+                          Cancel
+                        </button>
+                      </div>
+                    </div>
+
+                    <!-- View mode (draggable) -->
+                    <div v-else
+                      draggable="true"
+                      @dragstart="onDragStart($event, event.id)"
+                      @dragover.prevent="onDragOver($event, event.id)"
+                      @dragleave="onDragLeave(event.id)"
+                      @drop.prevent="onDrop($event, event.id)"
+                      @dragend="onDragEnd"
+                      :class="['bg-white rounded-2xl border shadow-sm p-4 flex items-start gap-3 group select-none transition-all',
+                        draggedId === event.id  ? 'opacity-40 scale-[0.99] shadow-none' : 'opacity-100',
+                        dragOverId === event.id ? 'border-2 border-indigo-400 shadow-md shadow-indigo-100' : 'border-slate-100 hover:border-slate-200']">
+                      <!-- Grip handle — desktop only; drag API doesn't work on touch -->
+                      <div class="hidden lg:block pt-1.5 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-500 transition-colors shrink-0">
+                        <svg width="13" height="13" viewBox="0 0 24 24" fill="currentColor">
+                          <circle cx="9"  cy="5"  r="1.5"/><circle cx="15" cy="5"  r="1.5"/>
+                          <circle cx="9"  cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
+                          <circle cx="9"  cy="19" r="1.5"/><circle cx="15" cy="19" r="1.5"/>
+                        </svg>
+                      </div>
+                      <!-- Category icon -->
+                      <div :class="['w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5', catColors[event.category]?.dot]" v-html="catIcons[event.category]"></div>
+                      <!-- Info -->
+                      <div class="flex-1 min-w-0">
+                        <p class="font-semibold text-slate-800 text-sm">{{ event.name }}</p>
+                        <div class="flex items-center gap-2 mt-1 flex-wrap">
+                          <span v-if="event.date" class="text-xs text-slate-400">{{ formatDate(event.date) }}<span v-if="event.time"> · {{ event.time }}</span></span>
+                          <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', catColors[event.category]?.badge]">{{ event.category }}</span>
+                          <span v-if="event.perPerson" class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Per person</span>
+                        </div>
+                        <p v-if="event.notes" class="text-xs text-slate-400 mt-1.5 italic leading-relaxed line-clamp-2">{{ event.notes }}</p>
+                      </div>
+                      <!-- Cost -->
+                      <div class="text-right shrink-0">
+                        <p class="font-bold text-slate-800">${{ fmt(event.perPerson ? event.cost * totalParticipants : event.cost) }}</p>
+                        <p v-if="event.perPerson && totalParticipants > 1" class="text-xs text-slate-400 mt-0.5">${{ fmt(event.cost) }}/person</p>
+                      </div>
+                      <!-- Actions -->
+                      <div class="flex flex-col gap-1 shrink-0 opacity-0 group-hover:opacity-100 touch-visible transition-all">
+                        <button @click.stop="startEdit(event)" :aria-label="`Edit ${event.name}`"
+                          class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 transition-all">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                        </button>
+                        <button @click.stop="removeEvent(event.id)" :aria-label="`Delete ${event.name}`"
+                          class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
+                          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                        </button>
+                      </div>
+                    </div>
+
+                  </template>
+                </transition-group>
+              </div>
+
+              <!-- ── GROUPED BY DAY VIEW ── -->
+              <div v-else class="space-y-6">
+                <div v-for="group in groupedEvents" :key="group.date || '__none__'">
+                  <!-- Day header -->
+                  <div class="flex items-center gap-3 mb-3">
+                    <div class="px-3 py-1.5 bg-indigo-600 text-white rounded-xl text-xs font-bold whitespace-nowrap shadow-sm shadow-indigo-200">
+                      {{ group.label }}
+                    </div>
+                    <div class="flex-1 h-px bg-slate-200"></div>
+                    <span class="text-xs font-semibold text-slate-400">${{ fmt(group.total) }}</span>
+                  </div>
+                  <!-- Events in this day -->
+                  <div class="space-y-2 pl-3 border-l-2 border-indigo-100 ml-1">
+                    <div v-for="event in group.events" :key="event.id"
+                      :class="['bg-white rounded-2xl border shadow-sm p-4 flex items-start gap-3 group transition-all',
+                        editingId === event.id ? 'border-2 border-indigo-300' : 'border-slate-100 hover:border-slate-200']">
+
+                      <!-- Inline edit inside group view -->
+                      <div v-if="editingId === event.id" class="flex-1">
+                        <div class="grid grid-cols-1 sm:grid-cols-2 gap-3 mb-3">
+                          <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Event Name</label>
+                            <input v-model="editForm.name" type="text"
+                              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          </div>
+                          <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Date</label>
+                            <input v-model="editForm.date" type="date"
+                              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          </div>
+                          <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Time</label>
+                            <input v-model="editForm.time" type="time"
+                              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                          </div>
+                          <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Category</label>
+                            <select v-model="editForm.category"
+                              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                              <option v-for="cat in categories" :key="cat" :value="cat">{{ cat }}</option>
+                            </select>
+                          </div>
+                          <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Cost ($)</label>
+                            <div class="relative">
+                              <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm">$</span>
+                              <input v-model.number="editForm.cost" type="number" min="0" step="0.01"
+                                class="w-full pl-7 pr-4 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                            </div>
+                          </div>
+                          <div>
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Cost Type</label>
+                            <div class="flex gap-2 h-[38px]">
+                              <button @click="editForm.perPerson = false"
+                                :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
+                                  !editForm.perPerson ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-500']">Flat</button>
+                              <button @click="editForm.perPerson = true"
+                                :class="['flex-1 rounded-xl text-xs font-semibold border transition-all',
+                                  editForm.perPerson ? 'bg-indigo-600 text-white border-indigo-600' : 'border-slate-200 text-slate-500']">Per Person</button>
+                            </div>
+                          </div>
+                          <div class="sm:col-span-2">
+                            <label class="block text-xs font-medium text-slate-500 mb-1">Notes</label>
+                            <textarea v-model="editForm.notes" rows="2"
+                              class="w-full px-3 py-2 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 resize-none"></textarea>
+                          </div>
+                        </div>
+                        <div class="flex gap-2">
+                          <button @click="saveEdit" :disabled="!editForm.name.trim()"
+                            class="px-4 py-1.5 bg-indigo-600 text-white text-xs font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-40 transition-colors">Save Changes</button>
+                          <button @click="cancelEdit"
+                            class="px-4 py-1.5 bg-slate-100 text-slate-600 text-xs font-semibold rounded-xl hover:bg-slate-200 transition-colors">Cancel</button>
+                        </div>
+                      </div>
+
+                      <!-- Normal card inside group view -->
+                      <template v-else>
+                        <div :class="['w-10 h-10 rounded-xl flex items-center justify-center shrink-0 mt-0.5', catColors[event.category]?.dot]" v-html="catIcons[event.category]"></div>
+                        <div class="flex-1 min-w-0">
+                          <p class="font-semibold text-slate-800 text-sm">{{ event.name }}</p>
+                          <div class="flex items-center gap-2 mt-1 flex-wrap">
+                            <span v-if="event.time" class="text-xs text-slate-400">{{ event.time }}</span>
+                            <span :class="['text-xs px-2 py-0.5 rounded-full font-medium', catColors[event.category]?.badge]">{{ event.category }}</span>
+                            <span v-if="event.perPerson" class="text-xs bg-slate-100 text-slate-500 px-2 py-0.5 rounded-full">Per person</span>
+                          </div>
+                          <p v-if="event.notes" class="text-xs text-slate-400 mt-1.5 italic leading-relaxed line-clamp-2">{{ event.notes }}</p>
+                        </div>
+                        <div class="text-right shrink-0">
+                          <p class="font-bold text-slate-800">${{ fmt(event.perPerson ? event.cost * totalParticipants : event.cost) }}</p>
+                          <p v-if="event.perPerson && totalParticipants > 1" class="text-xs text-slate-400 mt-0.5">${{ fmt(event.cost) }}/person</p>
+                        </div>
+                        <div class="flex flex-col gap-1 shrink-0 opacity-0 group-hover:opacity-100 touch-visible transition-all">
+                          <button @click="startEdit(event)" :aria-label="`Edit ${event.name}`"
+                            class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-300 hover:text-indigo-500 hover:bg-indigo-50 transition-all">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                          </button>
+                          <button @click="removeEvent(event.id)" :aria-label="`Delete ${event.name}`"
+                            class="w-7 h-7 rounded-lg flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 transition-all">
+                            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
+                          </button>
+                        </div>
+                      </template>
+                    </div>
+                  </div>
+                </div>
+              </div>
+
+              <!-- Total bar -->
+              <div class="flex items-center justify-between bg-indigo-600 rounded-2xl px-6 py-4 text-white">
+                <span class="font-semibold">Itinerary Total</span>
+                <span class="text-2xl font-extrabold">${{ fmt(totalEventCost) }}</span>
+              </div>
+            </div>
+          </div>
+
+          <!-- =========================================
+               TAB: ANALYTICS
+               ========================================= -->
+          <div v-else-if="currentTab === 'analytics'" key="analytics" class="space-y-5">
+
+            <!-- Category stat cards -->
+            <div class="bg-slate-100 rounded-2xl overflow-hidden grid grid-cols-2 sm:grid-cols-4 gap-px">
+              <div v-for="(cat, key) in categoryBreakdown" :key="key" class="bg-white p-5">
+                <div :class="['w-10 h-10 rounded-xl flex items-center justify-center mb-3', catColors[key]?.dot]" v-html="catIcons[key]"></div>
+                <p class="text-xs text-slate-400 font-medium">{{ key }}</p>
+                <p class="text-2xl font-bold text-slate-800 mt-1">${{ fmt(cat.total) }}</p>
+                <p class="text-xs text-slate-400 mt-1">{{ cat.count }} event{{ cat.count !== 1 ? 's' : '' }}</p>
+              </div>
+            </div>
+
+            <!-- Stacked bar + legend -->
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+              <div class="flex items-center justify-between mb-5">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Cost Breakdown</h2>
+                <span class="text-sm font-bold text-slate-800">Total: ${{ fmt(totalTripCost) }}</span>
+              </div>
+
+              <div v-if="totalTripCost > 0">
+                <div class="h-12 rounded-xl overflow-hidden flex gap-0.5 mb-5">
+                  <div v-if="baseGroupCost > 0"
+                    class="bg-indigo-500 flex items-center justify-center text-white text-xs font-bold transition-all duration-700 overflow-hidden"
+                    :style="`width: ${(baseGroupCost / totalTripCost * 100).toFixed(2)}%`">
+                    <span v-if="baseGroupCost / totalTripCost > 0.1">{{ (baseGroupCost / totalTripCost * 100).toFixed(0) }}%</span>
+                  </div>
+                  <template v-for="(cat, key) in categoryBreakdown" :key="key">
+                    <div v-if="cat.total > 0"
+                      :class="['flex items-center justify-center text-white text-xs font-bold transition-all duration-700 overflow-hidden', catColors[key]?.bar]"
+                      :style="`width: ${(cat.total / totalTripCost * 100).toFixed(2)}%`">
+                      <span v-if="cat.total / totalTripCost > 0.1">{{ (cat.total / totalTripCost * 100).toFixed(0) }}%</span>
+                    </div>
+                  </template>
+                </div>
+                <div class="flex flex-wrap gap-x-5 gap-y-2.5">
+                  <div v-if="baseGroupCost > 0" class="flex items-center gap-2">
+                    <div class="w-3 h-3 rounded-full bg-indigo-500 shrink-0"></div>
+                    <span class="text-xs text-slate-600">Base Cost <span class="font-semibold">${{ fmt(baseGroupCost) }}</span></span>
+                  </div>
+                  <template v-for="(cat, key) in categoryBreakdown" :key="key">
+                    <div v-if="cat.total > 0" class="flex items-center gap-2">
+                      <div :class="['w-3 h-3 rounded-full shrink-0', catColors[key]?.bar]"></div>
+                      <span class="text-xs text-slate-600">{{ key }} <span class="font-semibold">${{ fmt(cat.total) }}</span></span>
+                    </div>
+                  </template>
+                </div>
+              </div>
+              <div v-else class="py-12 text-center">
+                <p class="text-slate-300 text-sm font-medium">No cost data to visualize yet</p>
+                <p class="text-xs text-slate-200 mt-1">Add events in the Itinerary tab</p>
+              </div>
+            </div>
+
+            <!-- Per-category detail -->
+            <template v-for="(cat, key) in categoryBreakdown" :key="key">
+              <div v-if="cat.events.length > 0" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+                <div class="flex items-center gap-3 mb-4">
+                  <div :class="['w-10 h-10 rounded-xl flex items-center justify-center shrink-0', catColors[key]?.dot]" v-html="catIcons[key]"></div>
+                  <div class="flex-1 min-w-0">
+                    <h3 class="font-semibold text-slate-800 text-sm">{{ key }}</h3>
+                    <p class="text-xs text-slate-400">{{ cat.count }} event{{ cat.count !== 1 ? 's' : '' }} · ${{ fmt(cat.total) }}</p>
+                  </div>
+                  <div class="flex items-center gap-2.5 ml-auto">
+                    <div class="w-28 h-2 bg-slate-100 rounded-full overflow-hidden">
+                      <div :class="['h-full rounded-full transition-all duration-500', catColors[key]?.bar]"
+                        :style="`width: ${totalTripCost > 0 ? (cat.total / totalTripCost * 100).toFixed(1) : 0}%`"></div>
+                    </div>
+                    <span class="text-xs text-slate-400 w-8 text-right">{{ totalTripCost > 0 ? (cat.total / totalTripCost * 100).toFixed(0) : 0 }}%</span>
+                  </div>
+                </div>
+                <div class="divide-y divide-slate-50">
+                  <div v-for="event in cat.events" :key="event.id" class="flex items-center justify-between py-2.5">
+                    <span class="text-sm text-slate-600 flex-1 truncate pr-4">{{ event.name }}</span>
+                    <span v-if="event.perPerson" class="text-xs text-slate-400 shrink-0 mr-3">{{ totalParticipants }}×${{ fmt(event.cost) }}</span>
+                    <span class="text-sm font-semibold text-slate-800 shrink-0">${{ fmt(event.perPerson ? event.cost * totalParticipants : event.cost) }}</span>
+                  </div>
+                </div>
+              </div>
+            </template>
+
+            <!-- Empty analytics state -->
+            <div v-if="totalTripCost === 0" class="bg-white rounded-2xl border border-dashed border-slate-200 p-16 text-center">
+              <div class="w-14 h-14 rounded-2xl bg-slate-100 flex items-center justify-center mx-auto mb-4 text-slate-400">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>
+              </div>
+              <p class="font-semibold text-slate-400">No data to analyze</p>
+              <p class="text-sm text-slate-300 mt-1">Add events or base pricing to see your cost breakdown</p>
+            </div>
+          </div>
+
+          <!-- =========================================
+               TAB: SPLITTER
+               ========================================= -->
+          <div v-else-if="currentTab === 'splitter'" key="splitter" class="space-y-5">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+
+              <!-- Friends -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Group Members</h2>
+                <div class="flex gap-2">
+                  <input v-model="newFriendName" @keydown.enter="addFriend" type="text" placeholder="Name" maxlength="50"
+                    class="flex-1 min-w-0 px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent" />
+                  <button @click="addFriend" :disabled="!newFriendName.trim()" aria-label="Add group member"
+                    class="w-10 h-10 bg-indigo-600 text-white rounded-xl flex items-center justify-center hover:bg-indigo-700 disabled:opacity-40 transition-colors shrink-0">
+                    <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  </button>
+                </div>
+                <div v-if="state.friends.length === 0" class="py-8 text-center">
+                  <p class="text-sm text-slate-300 font-medium">Add group members to start splitting costs</p>
+                </div>
+                <ul v-else class="space-y-2">
+                  <li v-for="friend in state.friends" :key="friend.id"
+                    class="flex items-center gap-3 p-2.5 rounded-xl bg-slate-50 group">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br from-indigo-400 to-violet-500 flex items-center justify-center text-white text-xs font-bold shrink-0">
+                      {{ friendInitial(friend.name) }}
+                    </div>
+                    <span class="text-sm font-medium text-slate-700 flex-1 truncate">{{ friend.name }}</span>
+                    <button @click="removeFriend(friend.id)" :aria-label="`Remove ${friend.name}`"
+                      class="opacity-0 group-hover:opacity-100 touch-visible text-slate-300 hover:text-rose-400 transition-all shrink-0">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </li>
+                </ul>
+              </div>
+
+              <!-- Log payment -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+                <div class="flex items-center justify-between">
+                  <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">{{ editingPaymentId ? 'Edit Payment' : 'Log a Payment' }}</h2>
+                  <button v-if="editingPaymentId" @click="cancelEdit" class="text-xs text-slate-400 hover:text-slate-600">Cancel</button>
+                </div>
+                <div v-if="state.friends.length < 2" class="py-8 text-center">
+                  <p class="text-sm text-slate-300 font-medium">Add at least 2 members to log payments</p>
+                </div>
+                <div v-else class="space-y-3">
+                  <div>
+                    <label for="payment-paid-by" class="block text-xs font-medium text-slate-500 mb-1.5">Who paid?</label>
+                    <select id="payment-paid-by" v-model="newPayment.paidById"
+                      class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 bg-white">
+                      <option value="">Select person…</option>
+                      <option v-for="f in state.friends" :key="f.id" :value="f.id">{{ f.name }}</option>
+                    </select>
+                  </div>
+                  <div>
+                    <label for="payment-amount" class="block text-xs font-medium text-slate-500 mb-1.5">Amount</label>
+                    <div class="relative">
+                      <span class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 text-sm font-semibold">$</span>
+                      <input id="payment-amount" v-model.number="newPayment.amount" type="number" min="0" step="0.01" placeholder="0.00"
+                        class="w-full pl-7 pr-4 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                    </div>
+                  </div>
+                  <div>
+                    <label for="payment-description" class="block text-xs font-medium text-slate-500 mb-1.5">Description</label>
+                    <input id="payment-description" v-model="newPayment.description" @keydown.enter="addPayment" type="text" placeholder="e.g. Dinner at Le Jules Verne" maxlength="120"
+                      class="w-full px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                  </div>
+                  <div>
+                    <div class="flex items-center justify-between mb-2">
+                      <label class="text-xs font-medium text-slate-500">Split among</label>
+                      <button @click="toggleAllSplit" class="text-xs text-indigo-500 hover:text-indigo-700 font-medium">
+                        {{ newPayment.splitAmong.length === state.friends.length ? 'Deselect all' : 'Select all' }}
+                      </button>
+                    </div>
+                    <div class="space-y-2">
+                      <div v-for="f in state.friends" :key="f.id" class="flex items-center gap-2.5">
+                        <input type="checkbox" :checked="newPayment.splitAmong.includes(f.id)" @change="toggleSplitFriend(f.id)"
+                          class="w-4 h-4 rounded text-indigo-600 border-slate-300 focus:ring-indigo-500 cursor-pointer shrink-0" />
+                        <span class="text-sm text-slate-700 flex-1 truncate">{{ f.name }}</span>
+                        <template v-if="newPayment.splitAmong.includes(f.id)">
+                          <div class="relative shrink-0">
+                            <input type="number" min="0" max="100" step="0.01"
+                              :value="newPayment.splitPercentages[f.id] ?? 0"
+                              @input="newPayment.splitPercentages[f.id] = parseFloat($event.target.value) || 0"
+                              class="w-16 pr-5 pl-2 py-1 border border-slate-200 rounded-lg text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-500" />
+                            <span class="absolute right-1.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs pointer-events-none">%</span>
+                          </div>
+                          <span v-if="newPayment.amount" class="text-xs text-slate-400 w-12 text-right shrink-0">
+                            ${{ fmt(newPayment.amount * (newPayment.splitPercentages[f.id] || 0) / 100) }}
+                          </span>
+                        </template>
+                      </div>
+                    </div>
+                    <div v-if="newPayment.splitAmong.length > 0" class="mt-2 flex items-center justify-between">
+                      <span class="text-xs" :class="splitValid ? 'text-slate-400' : 'text-rose-500 font-medium'">
+                        Total: {{ splitPercentageTotal }}%
+                      </span>
+                      <button @click="redistributeEqual" class="text-xs text-indigo-400 hover:text-indigo-600">Reset equal</button>
+                    </div>
+                  </div>
+                  <button @click="addPayment"
+                    :disabled="!newPayment.paidById || !(newPayment.amount > 0) || newPayment.splitAmong.length === 0 || !splitValid"
+                    class="w-full py-2.5 bg-indigo-600 text-white text-sm font-semibold rounded-xl hover:bg-indigo-700 disabled:opacity-40 disabled:cursor-not-allowed active:scale-[0.98] transition-all shadow-sm shadow-indigo-200">
+                    {{ editingPaymentId ? 'Update Payment' : 'Log Payment' }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Settlements -->
+              <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Who Owes What</h2>
+                <div v-if="state.payments.length === 0" class="py-8 text-center">
+                  <p class="text-sm text-slate-300 font-medium">Log payments to calculate settlements</p>
+                </div>
+                <div v-else-if="settlements.length === 0" class="py-8 text-center">
+                  <div class="w-12 h-12 rounded-full bg-emerald-100 flex items-center justify-center mx-auto mb-3 text-emerald-500">
+                    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                  </div>
+                  <p class="text-sm font-semibold text-emerald-600">All settled up!</p>
+                  <p class="text-xs text-slate-400 mt-1">Everyone is square</p>
+                </div>
+                <div v-else class="space-y-2.5">
+                  <div v-for="(tx, i) in settlements" :key="i"
+                    :class="isSettled(tx.from, tx.to) ? 'bg-emerald-50 border-emerald-100' : 'bg-rose-50 border-rose-100'"
+                    class="p-3.5 rounded-xl border transition-colors">
+                    <div class="flex items-center gap-2 mb-1">
+                      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-slate-400 to-slate-500 flex items-center justify-center text-white text-xs font-bold shrink-0"
+                        :class="isSettled(tx.from, tx.to) ? 'opacity-40' : ''">
+                        {{ friendInitial(friendName(tx.from)) }}
+                      </div>
+                      <svg class="text-slate-400 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="5" y1="12" x2="19" y2="12"/><polyline points="12 5 19 12 12 19"/></svg>
+                      <div class="w-6 h-6 rounded-full bg-gradient-to-br from-emerald-400 to-teal-500 flex items-center justify-center text-white text-xs font-bold shrink-0"
+                        :class="isSettled(tx.from, tx.to) ? 'opacity-40' : ''">
+                        {{ friendInitial(friendName(tx.to)) }}
+                      </div>
+                      <span class="text-sm font-bold ml-auto" :class="isSettled(tx.from, tx.to) ? 'text-slate-400 line-through' : 'text-slate-800'">${{ fmt(tx.amount) }}</span>
+                    </div>
+                    <div class="flex items-center justify-between pl-1">
+                      <p class="text-xs text-slate-500">
+                        <span class="font-medium" :class="isSettled(tx.from, tx.to) ? 'text-slate-400' : 'text-rose-600'">{{ friendName(tx.from) }}</span>
+                        <span class="text-slate-400"> owes </span>
+                        <span class="font-medium" :class="isSettled(tx.from, tx.to) ? 'text-slate-400' : 'text-emerald-600'">{{ friendName(tx.to) }}</span>
+                      </p>
+                      <label class="flex items-center gap-1.5 cursor-pointer">
+                        <input type="checkbox" :checked="isSettled(tx.from, tx.to)" @change="toggleSettled(tx.from, tx.to)"
+                          class="w-3.5 h-3.5 rounded text-emerald-500 border-slate-300 focus:ring-emerald-400 cursor-pointer" />
+                        <span class="text-xs" :class="isSettled(tx.from, tx.to) ? 'text-emerald-600 font-medium' : 'text-slate-400'">Paid</span>
+                      </label>
+                    </div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <!-- Payment history -->
+            <div v-if="state.payments.length > 0" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+              <div class="flex items-center justify-between mb-5">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Payment History</h2>
+                <span class="text-xs text-slate-400">{{ state.payments.length }} payment{{ state.payments.length !== 1 ? 's' : '' }} · ${{ fmt(totalPayments) }}</span>
+              </div>
+              <div class="divide-y divide-slate-50">
+                <div v-for="payment in state.payments" :key="payment.id"
+                  class="flex items-start justify-between py-3.5 group"
+                  :class="payment.settled ? 'opacity-50' : ''">
+                  <div class="flex items-start gap-3 flex-1 min-w-0">
+                    <div class="w-8 h-8 rounded-full bg-gradient-to-br flex items-center justify-center text-white text-xs font-bold shrink-0 mt-0.5"
+                      :class="payment.settled ? 'from-slate-300 to-slate-400' : 'from-indigo-400 to-violet-500'">
+                      {{ friendInitial(friendName(payment.paidById)) }}
+                    </div>
+                    <div class="min-w-0">
+                      <p class="text-sm font-semibold truncate" :class="payment.settled ? 'text-slate-400 line-through' : 'text-slate-800'">{{ payment.description || 'Payment' }}</p>
+                      <p class="text-xs text-slate-400 mt-0.5">
+                        <span class="font-medium" :class="payment.settled ? 'text-slate-400' : 'text-indigo-500'">{{ friendName(payment.paidById) }}</span> paid ·
+                        split {{ payment.splitAmong.length === state.friends.length ? 'among everyone' : `among ${payment.splitAmong.map(id => friendName(id)).join(', ')}` }}
+                      </p>
+                    </div>
+                  </div>
+                  <div class="flex items-center gap-3 shrink-0 ml-4">
+                    <label class="flex items-center gap-1.5 cursor-pointer">
+                      <input type="checkbox" v-model="payment.settled"
+                        class="w-3.5 h-3.5 rounded text-emerald-500 border-slate-300 focus:ring-emerald-400 cursor-pointer" />
+                      <span class="text-xs" :class="payment.settled ? 'text-emerald-600 font-medium' : 'text-slate-400'">Settled</span>
+                    </label>
+                    <span class="text-sm font-bold" :class="payment.settled ? 'text-slate-400 line-through' : 'text-slate-800'">${{ fmt(payment.amount) }}</span>
+                    <button @click="editPayment(payment)" aria-label="Edit payment"
+                      class="opacity-0 group-hover:opacity-100 touch-visible text-slate-300 hover:text-indigo-400 transition-all">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                    </button>
+                    <button @click="removePayment(payment.id)" aria-label="Remove payment"
+                      class="opacity-0 group-hover:opacity-100 touch-visible text-slate-300 hover:text-rose-400 transition-all">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =========================================
+               TAB: PACKING
+               ========================================= -->
+          <div v-else-if="currentTab === 'packing'" key="packing" class="space-y-5">
+            <div class="grid grid-cols-1 lg:grid-cols-3 gap-5">
+              <!-- Add form -->
+              <div class="lg:col-span-2 bg-white rounded-2xl border border-slate-100 shadow-sm p-6 space-y-4">
+                <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider">Add Item</h2>
+                <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                  <input v-model="newPackItem.name" @keyup.enter="addPackItem" type="text" placeholder="Item name…" maxlength="80" aria-label="Packing item name"
+                    class="sm:col-span-2 px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all" />
+                  <select v-model="newPackItem.category" aria-label="Item category"
+                    class="px-3 py-2.5 border border-slate-200 rounded-xl text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent transition-all bg-white">
+                    <option v-for="cat in packCategories" :key="cat">{{ cat }}</option>
+                  </select>
+                </div>
+                <button @click="addPackItem"
+                  class="w-full flex items-center justify-center gap-2 px-4 py-2.5 bg-indigo-600 hover:bg-indigo-700 text-white text-sm font-semibold rounded-xl transition-colors">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  Add to List
+                </button>
+              </div>
+              <!-- Progress card -->
+              <div class="bg-gradient-to-br from-teal-500 via-teal-600 to-teal-700 rounded-2xl p-6 text-white shadow-xl shadow-teal-200/60 flex flex-col justify-between">
+                <p class="text-white/70 text-xs font-semibold uppercase tracking-wider">Packed</p>
+                <div>
+                  <p class="text-5xl font-extrabold leading-none mt-2">{{ packProgress }}<span class="text-2xl font-normal ml-1">%</span></p>
+                  <p class="text-white/70 text-sm mt-1">{{ state.packingList.filter(p => p.checked).length }} / {{ state.packingList.length }} items</p>
+                </div>
+                <div class="mt-4">
+                  <div class="h-2 bg-white/20 rounded-full overflow-hidden">
+                    <div class="h-full bg-white rounded-full transition-all duration-500" :style="`width: ${packProgress}%`"></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+
+            <div v-if="state.packingList.length === 0" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
+              <p class="text-4xl mb-3">🧳</p>
+              <p class="text-sm font-medium text-slate-500">Your suitcase is empty.</p>
+              <p class="text-xs text-slate-400 mt-1">Add what you need — then check it off as you pack.</p>
+            </div>
+            <div v-else class="space-y-4">
+              <div v-for="(items, cat) in packByCategory" :key="cat" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-5">
+                <h3 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-3">{{ cat }}</h3>
+                <div class="space-y-1.5">
+                  <div v-for="item in items" :key="item.id"
+                    class="flex items-center gap-3 py-2 px-2 -mx-2 group rounded-xl hover:bg-slate-50 transition-colors">
+                    <button @click="togglePackItem(item.id)"
+                      :class="['w-5 h-5 rounded-md border-2 flex items-center justify-center shrink-0 transition-all',
+                        item.checked ? 'bg-indigo-600 border-indigo-600' : 'border-slate-200 hover:border-indigo-400',
+                        packToggleAnim[item.id] ? 'check-pop' : '']">
+                      <svg v-if="item.checked" width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                    <span :class="['text-sm flex-1', item.checked ? 'line-through text-slate-300' : 'text-slate-700']">{{ item.name }}</span>
+                    <button @click="removePackItem(item.id)" :aria-label="`Remove ${item.name}`"
+                      class="opacity-0 group-hover:opacity-100 touch-visible text-slate-300 hover:text-rose-400 transition-all">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- =========================================
+               TAB: PHOTOS
+               ========================================= -->
+          <div v-else-if="currentTab === 'photos'" key="photos" class="space-y-5">
+            <div class="bg-white rounded-2xl border border-slate-100 shadow-sm p-6">
+              <h2 class="text-xs font-semibold text-slate-500 uppercase tracking-wider mb-4">Add Photos</h2>
+              <label class="block cursor-pointer">
+                <div :class="['border-2 border-dashed rounded-2xl p-8 text-center transition-colors',
+                  photoUploading ? 'border-indigo-200 bg-indigo-50' : 'border-slate-200 hover:border-indigo-300 hover:bg-slate-50']">
+                  <div v-if="photoUploading" class="flex flex-col items-center gap-2">
+                    <svg class="animate-spin text-indigo-400" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+                    <p class="text-sm text-indigo-400 font-medium">Uploading…</p>
+                  </div>
+                  <div v-else class="flex flex-col items-center gap-2">
+                    <svg class="text-slate-300" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
+                    <p class="text-sm font-medium text-slate-500">Click to upload a photo</p>
+                    <p class="text-xs text-slate-300">JPG, PNG, WEBP</p>
+                  </div>
+                </div>
+                <input type="file" accept="image/*" class="hidden" @change="uploadPhoto" :disabled="photoUploading" />
+              </label>
+              <p v-if="photoError" class="text-xs text-rose-500 mt-3">{{ photoError }}</p>
+            </div>
+
+            <div v-if="state.photos.length === 0" class="bg-white rounded-2xl border border-slate-100 shadow-sm p-12 text-center">
+              <p class="text-4xl mb-3">📷</p>
+              <p class="text-sm font-medium text-slate-500">No memories yet.</p>
+              <p class="text-xs text-slate-400 mt-1">Upload photos as you go — this wall is yours to fill.</p>
+            </div>
+            <transition-group v-else name="photo-grid" tag="div" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+              <div v-for="photo in state.photos" :key="photo.id"
+                @click="openLightbox(photo)"
+                class="group relative rounded-2xl overflow-hidden bg-slate-100 shadow-sm cursor-zoom-in" style="aspect-ratio:1">
+                <img :src="photo.url" loading="lazy" decoding="async"
+                  class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" :alt="photo.caption || 'Trip photo'" />
+                <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 touch-visible transition-opacity flex flex-col justify-end p-3">
+                  <input v-model="photo.caption" type="text" placeholder="Add caption…" @click.stop aria-label="Photo caption" maxlength="200"
+                    class="text-xs text-white bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg px-2.5 py-1.5 placeholder-white/60 focus:outline-none focus:ring-1 focus:ring-white/50 w-full" />
+                </div>
+                <button @click.stop="removePhoto(photo)" :aria-label="photo.caption ? `Delete photo: ${photo.caption}` : 'Delete photo'"
+                  class="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 touch-visible transition-opacity hover:bg-rose-500">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+                </button>
+              </div>
+            </transition-group>
+          </div>
+
+
+        </transition>
+      </div>
+    </main>
+
+    <!-- ===== MOBILE BOTTOM NAV ===== -->
+    <nav class="mobile-nav lg:hidden fixed bottom-0 left-0 right-0 bg-white border-t border-slate-100 z-50 safe-bottom" aria-label="Main navigation">
+      <div class="flex scrollbar-hide overflow-x-auto">
+        <button v-for="tab in tabs" :key="tab.id" @click="currentTab = tab.id"
+          :aria-current="currentTab === tab.id ? 'page' : undefined"
+          :class="['flex flex-col items-center justify-center gap-0.5 py-2.5 flex-1 min-w-[50px] transition-colors',
+            currentTab === tab.id ? 'text-teal-600' : 'text-slate-400']">
+          <div class="w-5 h-5 flex items-center justify-center" v-html="tab.icon"></div>
+          <span class="text-[10px] font-semibold tracking-wide">{{ tab.label }}</span>
+        </button>
+      </div>
+    </nav>
+
+    <!-- ── Lightbox ── -->
+    <teleport to="body">
+      <transition name="lightbox">
+        <div v-if="lightboxPhoto" class="fixed inset-0 z-50 flex items-center justify-center bg-black/90 backdrop-blur-sm"
+          @click.self="closeLightbox" @keydown.escape.prevent="closeLightbox" @keydown.left.prevent="lightboxPrev" @keydown.right.prevent="lightboxNext"
+          tabindex="0" ref="lightboxEl">
+          <button @click="closeLightbox" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors z-10">
+            <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+          <button v-if="lightboxIndex > 0" @click="lightboxPrev"
+            class="absolute left-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors z-10">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+          </button>
+          <button v-if="lightboxIndex < state.photos.length - 1" @click="lightboxNext"
+            class="absolute right-3 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors z-10">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
+          </button>
+          <div class="flex flex-col items-center max-w-5xl w-full px-10 sm:px-16 gap-4" @click.stop>
+            <transition name="lightbox-img" mode="out-in">
+              <img :key="lightboxPhoto.id" :src="lightboxPhoto.url" class="max-h-[78vh] max-w-full object-contain rounded-xl shadow-2xl" :alt="lightboxPhoto.caption || 'Trip photo'" />
+            </transition>
+            <div class="flex items-center justify-between w-full px-1">
+              <p class="text-white/80 text-sm">{{ lightboxPhoto.caption || '' }}</p>
+              <div class="flex items-center gap-2">
+                <span class="text-white/40 text-xs">{{ lightboxIndex + 1 }} / {{ state.photos.length }}</span>
+                <button v-if="canShare" @click="sharePhoto(lightboxPhoto)"
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+                  Share
+                </button>
+                <button v-else @click="copyPhotoUrl(lightboxPhoto)"
+                  class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-white/10 hover:bg-white/20 text-white text-xs font-medium transition-colors">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><rect x="9" y="9" width="13" height="13" rx="2"/><path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/></svg>
+                  {{ photoCopied ? 'Copied!' : 'Copy link' }}
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </teleport>
+
+    <!-- ── Confirm Dialog ── -->
+    <teleport to="body">
+      <transition name="lightbox">
+        <div v-if="confirmDialog.show" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
+          @click.self="confirmCancel" @keydown.escape.prevent="confirmCancel">
+          <div role="dialog" aria-modal="true" aria-labelledby="confirm-title"
+            class="bg-white rounded-2xl shadow-2xl max-w-xs w-full p-6 flex flex-col gap-4">
+            <div class="flex flex-col gap-1">
+              <p id="confirm-title" class="text-sm font-semibold text-slate-800">{{ confirmDialog.title }}</p>
+              <p class="text-xs text-slate-500">{{ confirmDialog.message }}</p>
+            </div>
+            <div class="flex justify-end gap-2">
+              <button @click="confirmCancel" ref="confirmCancelBtn" class="px-4 py-2 text-sm text-slate-500 hover:bg-slate-100 rounded-xl transition-colors font-medium">Cancel</button>
+              <button @click="confirmOk" class="px-4 py-2 text-sm font-semibold text-white bg-rose-500 hover:bg-rose-600 rounded-xl transition-colors">Delete</button>
+            </div>
+          </div>
+        </div>
+      </transition>
+    </teleport>
+  </div>
+</div>
+
+<script type="module">
+import { createApp, ref, reactive, computed, watch, onMounted, nextTick } from 'https://unpkg.com/vue@3/dist/vue.esm-browser.prod.js';
+import { createClient } from 'https://esm.sh/@supabase/supabase-js@2';
+
+createApp({
+  setup() {
+    // ── State ────────────────────────────────────────────────────
+    const state = reactive({
+      trip: { destination: '', startDate: '', endDate: '' },
+      attendance: { adults: 2, kids: 0, adultPrice: 0, kidPrice: 0 },
+      budget: 0,
+      events: [],
+      friends: [],
+      payments: [],
+      settledPairs: [],
+      packingList: [],
+      photos: [],
+    });
+
+    const currentTab = ref('overview');
+    const categories = ['Transport', 'Lodging', 'Food', 'Activity'];
+
+    // ── Form state ───────────────────────────────────────────────
+    const newEvent = reactive({ name: '', date: '', time: '', category: 'Activity', cost: 0, perPerson: false, notes: '' });
+    const newFriendName = ref('');
+    const newPayment = reactive({ paidById: '', amount: 0, description: '', splitAmong: [], splitPercentages: {} });
+
+    // ── Supabase ─────────────────────────────────────────────────
+    const db = createClient(
+      'https://xedunxhvrhkyphcnllxa.supabase.co',
+      'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InhlZHVueGh2cmhreXBoY25sbHhhIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzQwNjM3NTQsImV4cCI6MjA4OTYzOTc1NH0.5AO5pXQtiVDc4uMI-Efm7Ip6lsXx06XUj3gUWm3MJ1I'
+    );
+
+    // Resolve trip ID: URL param → localStorage → new UUID
+    function resolveTripId() {
+      const urlId = new URLSearchParams(window.location.search).get('trip');
+      if (urlId) { localStorage.setItem('travelapp_trip_id', urlId); return urlId; }
+      const stored = localStorage.getItem('travelapp_trip_id');
+      if (stored) return stored;
+      const fresh = crypto.randomUUID();
+      localStorage.setItem('travelapp_trip_id', fresh);
+      return fresh;
+    }
+    const tripId = resolveTripId();
+
+    // Keep URL in sync so copying the address bar always shares the right trip
+    const shareUrl = new URL(window.location.href);
+    shareUrl.searchParams.set('trip', tripId);
+    window.history.replaceState({}, '', shareUrl);
+
+    const syncStatus = ref('idle'); // 'idle' | 'saving' | 'saved' | 'error'
+    const linkCopied = ref(false);
+    let saveTimer = null;
+
+    async function saveTrip() {
+      try {
+        await db.from('trips').upsert({
+          id: tripId,
+          data: JSON.parse(JSON.stringify(state)),
+          updated_at: new Date().toISOString(),
+        });
+        syncStatus.value = 'saved';
+        setTimeout(() => { if (syncStatus.value === 'saved') syncStatus.value = 'idle'; }, 2500);
+      } catch {
+        syncStatus.value = 'error';
+      }
+    }
+
+    function debouncedSave() {
+      if (remoteUpdate) return; // don't echo back remote changes
+      syncStatus.value = 'saving';
+      clearTimeout(saveTimer);
+      saveTimer = setTimeout(saveTrip, 1400);
+    }
+
+    async function copyShareLink() {
+      await navigator.clipboard.writeText(window.location.href);
+      linkCopied.value = true;
+      setTimeout(() => { linkCopied.value = false; }, 2000);
+    }
+
+    // ── Dark mode ────────────────────────────────────────────────
+    const darkMode = ref(false);
+
+    function toggleDark() {
+      darkMode.value = !darkMode.value;
+      document.documentElement.classList.toggle('dark', darkMode.value);
+      localStorage.setItem('travelapp_dark', darkMode.value ? '1' : '');
+    }
+
+    // ── Itinerary UI state ───────────────────────────────────────
+    const groupByDay  = ref(false);
+    const editingId   = ref(null);
+    const editForm    = reactive({ name: '', date: '', time: '', category: 'Activity', cost: 0, perPerson: false, notes: '' });
+    const draggedId   = ref(null);
+    const dragOverId  = ref(null);
+
+    // ── Navigation ───────────────────────────────────────────────
+    const makeIcon = (path) => `<svg width="17" height="17" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${path}</svg>`;
+
+    const tabs = [
+      { id: 'overview',   label: 'Overview',   desc: 'Trip summary and totals',          icon: makeIcon('<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>') },
+      { id: 'attendance', label: 'Attendance', desc: 'Group size and base pricing',       icon: makeIcon('<path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/>') },
+      { id: 'itinerary',  label: 'Itinerary',  desc: 'Events and activities',             icon: makeIcon('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>') },
+      { id: 'analytics',  label: 'Analytics',  desc: 'Visual cost breakdown by category', icon: makeIcon('<line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>') },
+      { id: 'splitter',   label: 'Splitter',   desc: 'Settle who owes what',              icon: makeIcon('<circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/>') },
+      { id: 'packing',    label: 'Packing',    desc: 'Shared packing checklist',           icon: makeIcon('<path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>') },
+      { id: 'photos',     label: 'Photos',     desc: 'Trip photo wall',                    icon: makeIcon('<rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>') },
+    ];
+
+    // ── Category styles ──────────────────────────────────────────
+    const catColors = {
+      Transport: { dot: 'bg-blue-100 text-blue-600',    bar: 'bg-blue-400',    badge: 'bg-blue-100 text-blue-600' },
+      Lodging:   { dot: 'bg-emerald-100 text-emerald-600', bar: 'bg-emerald-400', badge: 'bg-emerald-100 text-emerald-600' },
+      Food:      { dot: 'bg-amber-100 text-amber-600',  bar: 'bg-amber-400',   badge: 'bg-amber-100 text-amber-600' },
+      Activity:  { dot: 'bg-violet-100 text-violet-600', bar: 'bg-violet-400', badge: 'bg-violet-100 text-violet-600' },
+    };
+
+    const catIcons = {
+      Transport: makeIcon('<rect x="1" y="3" width="15" height="13"/><polygon points="16 8 20 8 23 11 23 16 16 16 16 8"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/>'),
+      Lodging:   makeIcon('<path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>'),
+      Food:      makeIcon('<path d="M18 8h1a4 4 0 0 1 0 8h-1"/><path d="M2 8h16v9a4 4 0 0 1-4 4H6a4 4 0 0 1-4-4V8z"/><line x1="6" y1="1" x2="6" y2="4"/><line x1="10" y1="1" x2="10" y2="4"/><line x1="14" y1="1" x2="14" y2="4"/>'),
+      Activity:  makeIcon('<polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/>'),
+    };
+
+    // ── Computed ─────────────────────────────────────────────────
+    const totalParticipants = computed(() => state.attendance.adults + state.attendance.kids);
+
+    const baseGroupCost = computed(() =>
+      (state.attendance.adults * (state.attendance.adultPrice || 0)) +
+      (state.attendance.kids   * (state.attendance.kidPrice   || 0))
+    );
+
+    const totalEventCost = computed(() =>
+      state.events.reduce((sum, e) => sum + (e.perPerson ? e.cost * totalParticipants.value : e.cost) || 0, 0)
+    );
+
+    const totalTripCost = computed(() => baseGroupCost.value + totalEventCost.value);
+
+    const costPerPerson = computed(() =>
+      totalParticipants.value > 0 ? totalTripCost.value / totalParticipants.value : 0
+    );
+
+    const daysUntilTrip = computed(() => {
+      if (!state.trip.startDate) return null;
+      const today = new Date(); today.setHours(0, 0, 0, 0);
+      const start = new Date(state.trip.startDate + 'T00:00:00');
+      return Math.ceil((start - today) / 86400000);
+    });
+
+    const tripDuration = computed(() => {
+      if (!state.trip.startDate || !state.trip.endDate) return 0;
+      const s = new Date(state.trip.startDate + 'T00:00:00');
+      const e = new Date(state.trip.endDate   + 'T00:00:00');
+      return Math.max(0, Math.ceil((e - s) / 86400000));
+    });
+
+    // Flat view: preserve manual drag order (array order IS the order)
+    const sortedEvents = computed(() => [...state.events]);
+
+    // Grouped view: bucket by date, sort buckets by date, sort within bucket by time
+    const groupedEvents = computed(() => {
+      const buckets = new Map();
+      state.events.forEach(ev => {
+        const key = ev.date || '';
+        if (!buckets.has(key)) buckets.set(key, []);
+        buckets.get(key).push(ev);
+      });
+      return [...buckets.entries()]
+        .sort(([a], [b]) => {
+          if (!a && !b) return 0;
+          if (!a) return 1;
+          if (!b) return -1;
+          return a.localeCompare(b);
+        })
+        .map(([date, evs]) => ({
+          date,
+          label: date ? formatDateFull(date) : 'No Date',
+          events: [...evs].sort((a, b) => (a.time || '').localeCompare(b.time || '')),
+          total: evs.reduce((s, e) => s + ((e.perPerson ? e.cost * totalParticipants.value : e.cost) || 0), 0),
+        }));
+    });
+
+    const categoryBreakdown = computed(() => {
+      const result = {};
+      categories.forEach(cat => {
+        const events = state.events.filter(e => e.category === cat);
+        const total = events.reduce((s, e) => s + ((e.perPerson ? e.cost * totalParticipants.value : e.cost) || 0), 0);
+        result[cat] = { total, count: events.length, events };
+      });
+      return result;
+    });
+
+    const totalPayments = computed(() =>
+      state.payments.reduce((s, p) => s + (p.amount || 0), 0)
+    );
+
+    const quickStats = computed(() => [
+      { label: 'Total Cost',   value: `$${fmt(totalTripCost.value)}`,  iconBg: 'bg-indigo-100 text-indigo-600',  icon: makeIcon('<line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/>') },
+      { label: 'Per Person',   value: `$${fmt(costPerPerson.value)}`,  iconBg: 'bg-violet-100 text-violet-600', icon: makeIcon('<path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/>') },
+      { label: 'Events',       value: state.events.length,             iconBg: 'bg-emerald-100 text-emerald-600', icon: makeIcon('<rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>') },
+      { label: 'Trip Days',    value: tripDuration.value || '—',       iconBg: 'bg-amber-100 text-amber-600',   icon: makeIcon('<circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>') },
+    ]);
+
+    const currentTabLabel = computed(() => tabs.find(t => t.id === currentTab.value)?.label || '');
+    const currentTabDesc  = computed(() => tabs.find(t => t.id === currentTab.value)?.desc  || '');
+
+    // ── Settlement algorithm (minimize transactions) ──────────────
+    const settlements = computed(() => {
+      if (state.friends.length < 2 || state.payments.length === 0) return [];
+
+      const bal = {};
+      state.friends.forEach(f => { bal[f.id] = 0; });
+
+      state.payments.forEach(p => {
+        if (!p.splitAmong.length || p.settled) return;
+        bal[p.paidById] = (bal[p.paidById] || 0) + p.amount;
+        p.splitAmong.forEach(id => {
+          const pct = p.splitPercentages?.[id] ?? (100 / p.splitAmong.length);
+          bal[id] = (bal[id] || 0) - p.amount * pct / 100;
+        });
+      });
+
+      const creditors = [], debtors = [];
+      Object.entries(bal).forEach(([id, b]) => {
+        const r = Math.round(b * 100) / 100;
+        if (r > 0.005) creditors.push({ id, amount: r });
+        else if (r < -0.005) debtors.push({ id, amount: -r });
+      });
+
+      creditors.sort((a, b) => b.amount - a.amount);
+      debtors.sort((a, b) => b.amount - a.amount);
+
+      const txs = [];
+      let ci = 0, di = 0;
+      while (ci < creditors.length && di < debtors.length) {
+        const transfer = Math.min(creditors[ci].amount, debtors[di].amount);
+        if (transfer > 0.005) {
+          txs.push({ from: debtors[di].id, to: creditors[ci].id, amount: Math.round(transfer * 100) / 100 });
+        }
+        creditors[ci].amount -= transfer;
+        debtors[di].amount  -= transfer;
+        if (creditors[ci].amount < 0.005) ci++;
+        if (debtors[di].amount  < 0.005) di++;
+      }
+      return txs;
+    });
+
+    // ── Helpers ──────────────────────────────────────────────────
+    const genId = () => Math.random().toString(36).slice(2, 9);
+
+    function fmt(n) {
+      return (+(n || 0)).toLocaleString('en-US', { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+    }
+
+    function formatDate(d) {
+      if (!d) return '';
+      return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' });
+    }
+
+    function formatDateFull(d) {
+      if (!d) return 'No Date';
+      return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'long', day: 'numeric' });
+    }
+
+    function friendName(id) {
+      return state.friends.find(f => f.id === id)?.name || '?';
+    }
+    function friendInitial(name) {
+      return ([...String(name || '?')][0] || '?').toUpperCase();
+    }
+
+    // ── Actions ──────────────────────────────────────────────────
+    function addEvent() {
+      if (!newEvent.name.trim()) return;
+      state.events.push({
+        id: genId(),
+        name: newEvent.name.trim(),
+        date: newEvent.date,
+        time: newEvent.time,
+        category: newEvent.category,
+        cost: newEvent.cost || 0,
+        perPerson: newEvent.perPerson,
+        notes: newEvent.notes.trim(),
+      });
+      Object.assign(newEvent, { name: '', date: '', time: '', category: 'Activity', cost: 0, perPerson: false, notes: '' });
+    }
+
+    async function removeEvent(id) {
+      if (!await showConfirm('Delete this event?')) return;
+      const idx = state.events.findIndex(e => e.id === id);
+      if (idx !== -1) state.events.splice(idx, 1);
+    }
+
+    // ── Edit ─────────────────────────────────────────────────────
+    function startEdit(event) {
+      editingId.value = event.id;
+      Object.assign(editForm, {
+        name: event.name, date: event.date, time: event.time,
+        category: event.category, cost: event.cost,
+        perPerson: event.perPerson, notes: event.notes || '',
+      });
+    }
+
+    function saveEdit() {
+      if (!editForm.name.trim()) return;
+      const idx = state.events.findIndex(e => e.id === editingId.value);
+      if (idx !== -1) {
+        Object.assign(state.events[idx], {
+          name: editForm.name.trim(), date: editForm.date, time: editForm.time,
+          category: editForm.category, cost: editForm.cost || 0,
+          perPerson: editForm.perPerson, notes: editForm.notes.trim(),
+        });
+      }
+      editingId.value = null;
+    }
+
+    function cancelEdit() { editingId.value = null; }
+
+    // ── Destination autocomplete ─────────────────────────────────
+    const destSuggestions = ref([]);
+    const showDestSuggestions = ref(false);
+    const destSearching = ref(false);
+    let destTimer = null;
+    let suppressDestSearch = false;
+
+    function formatPlace(r) {
+      const parts = [r.name, r.admin1, r.country].filter(Boolean);
+      return parts.join(', ');
+    }
+
+    function onDestinationInput() {
+      if (suppressDestSearch) { suppressDestSearch = false; return; }
+      clearTimeout(destTimer);
+      const q = state.trip.destination.trim();
+      if (q.length < 2) { destSuggestions.value = []; showDestSuggestions.value = false; destSearching.value = false; return; }
+      destSearching.value = true;
+      destTimer = setTimeout(async () => {
+        try {
+          const res = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=en&format=json`);
+          const data = await res.json();
+          destSuggestions.value = (data.results || []).map(r => ({ label: formatPlace(r) }));
+          showDestSuggestions.value = destSuggestions.value.length > 0;
+        } catch { /* silent — field still usable as plain text */ }
+        destSearching.value = false;
+      }, 350);
+    }
+
+    function selectDestination(s) {
+      suppressDestSearch = true;
+      state.trip.destination = s.label;
+      destSuggestions.value = [];
+      showDestSuggestions.value = false;
+    }
+
+    function onDestinationBlur() {
+      setTimeout(() => { showDestSuggestions.value = false; }, 180);
+    }
+
+    // ── Weather ──────────────────────────────────────────────────
+    const weather = ref([]);
+    const weatherLoading = ref(false);
+    const weatherError = ref('');
+
+    const WMO_LABEL = {
+      0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
+      45:'Foggy',48:'Foggy',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
+      61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',
+      80:'Showers',81:'Rain showers',82:'Heavy showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm',
+    };
+
+    function weatherEmoji(code) {
+      if (code <= 1) return '☀️';
+      if (code <= 3) return '⛅';
+      if (code <= 48) return '🌫️';
+      if (code <= 67) return '🌧️';
+      if (code <= 77) return '❄️';
+      if (code <= 82) return '🌦️';
+      return '⛈️';
+    }
+
+    function weatherLabel(code) { return WMO_LABEL[code] || 'Unknown'; }
+
+    function fmtTime(iso) {
+      if (!iso) return '';
+      // open-meteo returns "YYYY-MM-DDTHH:MM" — parse time part directly to avoid Safari/timezone issues
+      const timePart = iso.includes('T') ? iso.split('T')[1] : iso;
+      const [h, m] = timePart.split(':').map(Number);
+      const d = new Date(); d.setHours(h, m, 0, 0);
+      return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' });
+    }
+
+    async function fetchWeather() {
+      if (!state.trip.destination) { weather.value = []; return; }
+      weatherLoading.value = true;
+      weatherError.value = '';
+      try {
+        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(state.trip.destination)}&count=1&language=en&format=json`);
+        const geoData = await geoRes.json();
+        if (!geoData.results?.length) { weatherError.value = 'Location not found'; weatherLoading.value = false; return; }
+        const { latitude: lat, longitude: lon } = geoData.results[0];
+        const today = new Date().toISOString().slice(0, 10);
+        const maxEnd = new Date(Date.now() + 15 * 86400000).toISOString().slice(0, 10);
+        const tripStart = state.trip.startDate && state.trip.startDate >= today ? state.trip.startDate : today;
+        if (tripStart > maxEnd) {
+          weather.value = [];
+          weatherError.value = 'Forecast not available yet — check back closer to your trip.';
+          weatherLoading.value = false;
+          return;
+        }
+        const start = tripStart;
+        const endRaw = state.trip.endDate || start;
+        const end = endRaw > maxEnd ? maxEnd : (endRaw < start ? start : endRaw);
+        const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto&start_date=${start}&end_date=${end}`;
+        const wRes = await fetch(url);
+        const wData = await wRes.json();
+        if (wData.error) { weatherError.value = wData.reason || 'Could not load weather'; }
+        else if (wData.daily) {
+          weather.value = wData.daily.time.map((date, i) => ({
+            date,
+            code: (wData.daily.weather_code ?? wData.daily.weathercode)[i],
+            high: Math.round(wData.daily.temperature_2m_max[i]),
+            low: Math.round(wData.daily.temperature_2m_min[i]),
+            sunrise: wData.daily.sunrise[i],
+            sunset: wData.daily.sunset[i],
+          }));
+        }
+      } catch { weatherError.value = 'Could not load weather'; }
+      weatherLoading.value = false;
+    }
+
+    let weatherTimer = null;
+    watch(() => [state.trip.destination, state.trip.startDate, state.trip.endDate], () => {
+      clearTimeout(weatherTimer);
+      weatherTimer = setTimeout(fetchWeather, 900);
+    }, { immediate: true });
+
+    // ── Packing list ─────────────────────────────────────────────
+    const packCategories = ['Clothing', 'Documents', 'Toiletries', 'Electronics', 'Other'];
+    const newPackItem = reactive({ name: '', category: 'Other' });
+
+    function addPackItem() {
+      if (!newPackItem.name.trim()) return;
+      state.packingList.push({ id: genId(), name: newPackItem.name.trim(), category: newPackItem.category, checked: false });
+      Object.assign(newPackItem, { name: '', category: 'Other' });
+    }
+
+    async function removePackItem(id) {
+      if (!await showConfirm('Remove this packing item?')) return;
+      const idx = state.packingList.findIndex(p => p.id === id);
+      if (idx !== -1) state.packingList.splice(idx, 1);
+    }
+
+    const packToggleAnim = ref({});
+
+    function togglePackItem(id) {
+      const item = state.packingList.find(p => p.id === id);
+      if (!item) return;
+      item.checked = !item.checked;
+      packToggleAnim.value = { ...packToggleAnim.value, [id]: true };
+      setTimeout(() => {
+        const next = { ...packToggleAnim.value };
+        delete next[id];
+        packToggleAnim.value = next;
+      }, 300);
+    }
+
+    const packProgress = computed(() => {
+      if (!state.packingList.length) return 0;
+      return Math.round(state.packingList.filter(p => p.checked).length / state.packingList.length * 100);
+    });
+
+    const packByCategory = computed(() => {
+      const result = {};
+      packCategories.forEach(cat => {
+        const items = state.packingList.filter(p => p.category === cat);
+        if (items.length) result[cat] = items;
+      });
+      return result;
+    });
+
+    let confettiFired = false;
+    watch(packProgress, (val, old) => {
+      if (val === 100 && old !== 100 && !confettiFired) {
+        confettiFired = true;
+        window.confetti?.({ particleCount: 140, spread: 80, origin: { y: 0.6 },
+          colors: ['#14b8a6', '#2dd4bf', '#0d9488', '#f59e0b', '#f97316', '#fbbf24'] });
+        setTimeout(() => { confettiFired = false; }, 6000);
+      }
+      if (val < 100) confettiFired = false;
+    });
+
+    // ── Photos ───────────────────────────────────────────────────
+    const photoUploading = ref(false);
+    const photoError = ref('');
+
+    async function uploadPhoto(event) {
+      const file = event.target.files[0];
+      if (!file) return;
+      event.target.value = '';
+      photoUploading.value = true;
+      photoError.value = '';
+      try {
+        const ext = file.name.split('.').pop();
+        const path = `${tripId}/${Date.now()}.${ext}`;
+        const { data, error } = await db.storage.from('trip-photos').upload(path, file, { cacheControl: '3600' });
+        if (error) throw error;
+        const { data: urlData } = db.storage.from('trip-photos').getPublicUrl(data.path);
+        state.photos.push({ id: genId(), url: urlData.publicUrl, path: data.path, caption: '', uploadedAt: new Date().toISOString() });
+      } catch (e) {
+        const msg = e.message || '';
+        photoError.value = msg.includes('not found') || msg.includes('Bucket')
+          ? 'Create a public bucket called "trip-photos" in Supabase Storage first.'
+          : msg.includes('row-level security') || msg.includes('policy')
+          ? 'Storage permissions not set. Add INSERT/SELECT/DELETE policies on storage.objects for bucket_id = "trip-photos" in your Supabase SQL editor.'
+          : (msg || 'Upload failed — check Supabase Storage permissions.');
+      }
+      photoUploading.value = false;
+    }
+
+    async function removePhoto(photo) {
+      if (!await showConfirm('Delete this photo?')) return;
+      try { await db.storage.from('trip-photos').remove([photo.path]); } catch {}
+      const idx = state.photos.findIndex(p => p.id === photo.id);
+      if (idx !== -1) state.photos.splice(idx, 1);
+      if (lightboxPhoto.value?.id === photo.id) closeLightbox();
+    }
+
+    // ── Lightbox ─────────────────────────────────────────────────
+    const lightboxPhoto = ref(null);
+    const lightboxEl = ref(null);
+    const photoCopied = ref(false);
+    const canShare = typeof navigator !== 'undefined' && !!navigator.share;
+
+    const lightboxIndex = computed(() =>
+      lightboxPhoto.value ? state.photos.findIndex(p => p.id === lightboxPhoto.value.id) : -1
+    );
+
+    function openLightbox(photo) {
+      lightboxPhoto.value = photo;
+      nextTick(() => lightboxEl.value?.focus());
+    }
+    function closeLightbox() { lightboxPhoto.value = null; }
+    function lightboxPrev() {
+      const i = lightboxIndex.value;
+      if (i > 0) lightboxPhoto.value = state.photos[i - 1];
+    }
+    function lightboxNext() {
+      const i = lightboxIndex.value;
+      if (i < state.photos.length - 1) lightboxPhoto.value = state.photos[i + 1];
+    }
+    function photoProxyUrl(photo) {
+      return `${window.location.origin}/photos/${photo.path}`;
+    }
+    async function sharePhoto(photo) {
+      try { await navigator.share({ title: photo.caption || 'Trip photo', url: photoProxyUrl(photo) }); } catch {}
+    }
+    async function copyPhotoUrl(photo) {
+      try {
+        await navigator.clipboard.writeText(photoProxyUrl(photo));
+        photoCopied.value = true;
+        setTimeout(() => { photoCopied.value = false; }, 2000);
+      } catch {}
+    }
+
+    // ── Confirm dialog ───────────────────────────────────────────
+    const confirmDialog = ref({ show: false, title: '', message: '', resolve: null });
+    const confirmCancelBtn = ref(null);
+    function showConfirm(title, message = 'This cannot be undone.') {
+      return new Promise(resolve => {
+        confirmDialog.value = { show: true, title, message, resolve };
+        nextTick(() => confirmCancelBtn.value?.focus());
+      });
+    }
+    function confirmOk() {
+      confirmDialog.value.resolve(true);
+      confirmDialog.value = { show: false, title: '', message: '', resolve: null };
+    }
+    function confirmCancel() {
+      confirmDialog.value.resolve(false);
+      confirmDialog.value = { show: false, title: '', message: '', resolve: null };
+    }
+
+    // ── Drag-to-reorder ──────────────────────────────────────────
+    function onDragStart(e, id) {
+      draggedId.value = id;
+      e.dataTransfer.effectAllowed = 'move';
+      e.dataTransfer.setData('text/plain', id);
+    }
+
+    function onDragOver(e, id) {
+      e.preventDefault();
+      e.dataTransfer.dropEffect = 'move';
+      if (draggedId.value !== id) dragOverId.value = id;
+    }
+
+    function onDragLeave(id) {
+      if (dragOverId.value === id) dragOverId.value = null;
+    }
+
+    function onDrop(e, targetId) {
+      e.preventDefault();
+      if (!draggedId.value || draggedId.value === targetId) {
+        draggedId.value = null; dragOverId.value = null; return;
+      }
+      const from = state.events.findIndex(ev => ev.id === draggedId.value);
+      const to   = state.events.findIndex(ev => ev.id === targetId);
+      if (from === -1 || to === -1) return;
+      const [item] = state.events.splice(from, 1);
+      state.events.splice(to, 0, item);
+      draggedId.value = null; dragOverId.value = null;
+    }
+
+    function onDragEnd() { draggedId.value = null; dragOverId.value = null; }
+
+    function addFriend() {
+      const name = newFriendName.value.trim();
+      if (!name) return;
+      state.friends.push({ id: genId(), name });
+      newFriendName.value = '';
+    }
+
+    async function removeFriend(id) {
+      if (!await showConfirm('Remove this person?', 'Their payments will also be removed.')) return;
+      const idx = state.friends.findIndex(f => f.id === id);
+      if (idx !== -1) state.friends.splice(idx, 1);
+      // Clean up payments that referenced this friend
+      for (let i = state.payments.length - 1; i >= 0; i--) {
+        if (state.payments[i].paidById === id) { state.payments.splice(i, 1); continue; }
+        state.payments[i].splitAmong = state.payments[i].splitAmong.filter(sid => sid !== id);
+        if (state.payments[i].splitAmong.length === 0) state.payments.splice(i, 1);
+      }
+      if (newPayment.paidById === id) newPayment.paidById = '';
+      newPayment.splitAmong = newPayment.splitAmong.filter(sid => sid !== id);
+      delete newPayment.splitPercentages[id];
+      redistributeEqual();
+    }
+
+    const splitPercentageTotal = computed(() =>
+      Math.round(newPayment.splitAmong.reduce((s, id) => s + (newPayment.splitPercentages[id] || 0), 0) * 100) / 100
+    );
+    const splitValid = computed(() => newPayment.splitAmong.length === 0 || Math.abs(splitPercentageTotal.value - 100) < 0.01);
+
+    function redistributeEqual() {
+      const n = newPayment.splitAmong.length;
+      if (!n) return;
+      const base = Math.floor(10000 / n) / 100;
+      const remainder = Math.round((100 - base * (n - 1)) * 100) / 100;
+      newPayment.splitAmong.forEach((id, i) => {
+        newPayment.splitPercentages[id] = i === n - 1 ? remainder : base;
+      });
+    }
+
+    function toggleSplitFriend(id) {
+      const idx = newPayment.splitAmong.indexOf(id);
+      if (idx === -1) {
+        newPayment.splitAmong.push(id);
+      } else {
+        newPayment.splitAmong.splice(idx, 1);
+        delete newPayment.splitPercentages[id];
+      }
+      redistributeEqual();
+    }
+
+    const editingPaymentId = ref(null);
+
+    function editPayment(payment) {
+      editingPaymentId.value = payment.id;
+      newPayment.paidById = payment.paidById;
+      newPayment.amount = payment.amount;
+      newPayment.description = payment.description;
+      newPayment.splitAmong = [...payment.splitAmong];
+      newPayment.splitPercentages = payment.splitPercentages
+        ? { ...payment.splitPercentages }
+        : Object.fromEntries(payment.splitAmong.map(id => [id, 100 / payment.splitAmong.length]));
+    }
+
+    function cancelEdit() {
+      editingPaymentId.value = null;
+      Object.assign(newPayment, { paidById: '', amount: 0, description: '', splitAmong: [], splitPercentages: {} });
+    }
+
+    function addPayment() {
+      if (!newPayment.paidById || !(newPayment.amount > 0) || newPayment.splitAmong.length === 0 || !splitValid.value) return;
+      if (editingPaymentId.value) {
+        const idx = state.payments.findIndex(p => p.id === editingPaymentId.value);
+        if (idx !== -1) Object.assign(state.payments[idx], {
+          paidById: newPayment.paidById,
+          amount: newPayment.amount,
+          description: newPayment.description.trim(),
+          splitAmong: [...newPayment.splitAmong],
+          splitPercentages: { ...newPayment.splitPercentages },
+        });
+        editingPaymentId.value = null;
+      } else {
+        state.payments.push({
+          id: genId(),
+          paidById: newPayment.paidById,
+          amount: newPayment.amount,
+          description: newPayment.description.trim(),
+          splitAmong: [...newPayment.splitAmong],
+          splitPercentages: { ...newPayment.splitPercentages },
+          settled: false,
+        });
+      }
+      Object.assign(newPayment, { paidById: '', amount: 0, description: '', splitAmong: [], splitPercentages: {} });
+    }
+
+    function isSettled(from, to) { return state.settledPairs.includes(`${from}→${to}`); }
+    function toggleSettled(from, to) {
+      const key = `${from}→${to}`;
+      const idx = state.settledPairs.indexOf(key);
+      if (idx === -1) state.settledPairs.push(key);
+      else state.settledPairs.splice(idx, 1);
+    }
+
+    async function removePayment(id) {
+      if (!await showConfirm('Delete this payment?')) return;
+      const idx = state.payments.findIndex(p => p.id === id);
+      if (idx !== -1) state.payments.splice(idx, 1);
+    }
+
+    function toggleAllSplit() {
+      if (newPayment.splitAmong.length === state.friends.length) {
+        newPayment.splitAmong = [];
+        newPayment.splitPercentages = {};
+      } else {
+        newPayment.splitAmong = state.friends.map(f => f.id);
+        redistributeEqual();
+      }
+    }
+
+    // ── Persistence (Supabase) ───────────────────────────────────
+    let remoteUpdate = false;
+
+    onMounted(async () => {
+      // Restore dark mode preference
+      if (localStorage.getItem('travelapp_dark')) {
+        darkMode.value = true;
+        document.documentElement.classList.add('dark');
+      }
+
+      try {
+        const { data } = await db.from('trips').select('data').eq('id', tripId).single();
+        if (data?.data) Object.assign(state, data.data);
+      } catch {}
+
+      // Real-time: when another user saves, pull their changes in
+      db.channel(`trip:${tripId}`)
+        .on('postgres_changes', {
+          event: 'UPDATE',
+          schema: 'public',
+          table: 'trips',
+          filter: `id=eq.${tripId}`,
+        }, (payload) => {
+          if (payload.new?.data) {
+            remoteUpdate = true;
+            Object.assign(state, payload.new.data);
+            syncStatus.value = 'saved';
+            setTimeout(() => { remoteUpdate = false; }, 0);
+          }
+        })
+        .subscribe();
+    });
+
+    watch(state, debouncedSave, { deep: true });
+
+    watch(() => state.trip.destination, (dest) => {
+      document.title = dest ? `${dest} — TravelApp` : 'TravelApp — Plan & Budget';
+    });
+
+    return {
+      state, currentTab, tabs, categories,
+      newEvent, newFriendName, newPayment,
+      groupByDay, editingId, editForm, draggedId, dragOverId,
+      catColors, catIcons,
+      totalParticipants, baseGroupCost, totalEventCost, totalTripCost,
+      costPerPerson, daysUntilTrip, tripDuration, sortedEvents, groupedEvents,
+      categoryBreakdown, totalPayments, quickStats, settlements,
+      currentTabLabel, currentTabDesc,
+      syncStatus, linkCopied,
+      destSuggestions, showDestSuggestions, destSearching,
+      onDestinationInput, onDestinationBlur, selectDestination,
+      fmt, formatDate, formatDateFull, friendName, friendInitial,
+      addEvent, removeEvent,
+      startEdit, saveEdit, cancelEdit,
+      onDragStart, onDragOver, onDragLeave, onDrop, onDragEnd,
+      addFriend, removeFriend,
+      addPayment, removePayment, editPayment, cancelEdit, editingPaymentId,
+      toggleAllSplit, toggleSplitFriend, redistributeEqual, splitPercentageTotal, splitValid,
+      isSettled, toggleSettled,
+      copyShareLink,
+      darkMode, toggleDark,
+      weather, weatherLoading, weatherError, weatherEmoji, weatherLabel, fmtTime,
+      packCategories, newPackItem, packProgress, packByCategory,
+      addPackItem, removePackItem, togglePackItem, packToggleAnim,
+      photoUploading, photoError, uploadPhoto, removePhoto,
+      lightboxPhoto, lightboxEl, lightboxIndex, photoCopied, canShare,
+      openLightbox, closeLightbox, lightboxPrev, lightboxNext, sharePhoto, copyPhotoUrl,
+      confirmDialog, confirmCancelBtn, confirmOk, confirmCancel,
+    };
+  }
+}).mount('#app');
+</script>
+</body>
+</html>

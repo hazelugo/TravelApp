@@ -1,0 +1,8 @@
+Immediate (a11y blockers):
+
+1. /harden — Add aria-label to all icon buttons, aria-current to nav, aria-live to counters, fix stepper touch targets to 44px, add focus-visible to buttons
+2. Fix gradient card label contrast (text-indigo-200 → text-teal-100, text-slate-400 headers → text-slate-500)
+
+Short-term (quality & performance): 3. Switch Vue to vue.esm-browser.prod.js (1-line change) 4. Add loading="lazy" to photo img tags (1-attribute change) 5. Fix dynamic document.title from trip destination 6. /normalize — document the CSS variable map, prevent unmapped indigo classes from silently breaking
+
+Medium-term (polish): 7. /polish — Standardize empty state padding, improve touch-visible opacity, fix weather scroll margins, upgrade remove button default color 8. Verify Supabase RLS in dashboard
