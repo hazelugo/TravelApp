@@ -515,6 +515,60 @@
 
       <!-- Sync status + share -->
       <div class="hidden lg:flex items-center gap-2 shrink-0">
+        <!-- My Trips button + dropdown -->
+        <div class="relative">
+          <button @click="tripsOpen = !tripsOpen"
+            :class="['flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
+              tripsOpen ? 'bg-teal-50 border-teal-200 text-teal-700' : 'bg-white border-slate-200 text-slate-600 hover:bg-slate-50']"
+            aria-label="My trips">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+            My Trips
+            <span v-if="tripIndex.length > 0" class="bg-teal-100 text-teal-700 rounded-full px-1.5 text-[10px] font-bold leading-none py-0.5">{{ tripIndex.length }}</span>
+          </button>
+          <transition name="fade">
+            <div v-if="tripsOpen" class="absolute right-0 top-full mt-2 w-72 bg-white rounded-2xl border border-slate-100 shadow-xl shadow-slate-200/60 z-50 overflow-hidden">
+              <div class="px-4 pt-4 pb-2 border-b border-slate-50">
+                <p class="text-xs font-semibold text-slate-400 uppercase tracking-wider">My Trips</p>
+              </div>
+              <div class="max-h-60 overflow-y-auto">
+                <div v-for="trip in tripIndex" :key="trip.id"
+                  :class="['flex items-center gap-3 px-4 py-3 transition-colors', trip.id === tripId ? 'bg-teal-50/60' : 'hover:bg-slate-50']">
+                  <div class="flex-1 min-w-0">
+                    <p class="text-sm font-medium text-slate-800 truncate">
+                      {{ trip.name }}
+                      <span v-if="trip.id === tripId" class="ml-1 text-[10px] font-semibold bg-teal-100 text-teal-700 rounded-full px-1.5 py-0.5">current</span>
+                    </p>
+                    <p class="text-xs text-slate-400 mt-0.5">
+                      <template v-if="trip.startDate">{{ formatDate(trip.startDate) }}<template v-if="trip.endDate"> → {{ formatDate(trip.endDate) }}</template></template>
+                      <span v-else class="italic">No dates set</span>
+                    </p>
+                  </div>
+                  <div class="flex items-center gap-1 shrink-0">
+                    <button v-if="trip.id !== tripId" @click="switchTrip(trip.id)"
+                      class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-teal-600 hover:bg-teal-50 transition-all"
+                      aria-label="Switch to this trip">
+                      <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M5 12h14"/><path d="m12 5 7 7-7 7"/></svg>
+                    </button>
+                    <button @click="copyTripLink(trip.id)"
+                      :class="['w-7 h-7 flex items-center justify-center rounded-lg transition-all', tripsCopiedId === trip.id ? 'text-teal-600 bg-teal-50' : 'text-slate-400 hover:text-teal-600 hover:bg-teal-50']"
+                      :aria-label="tripsCopiedId === trip.id ? 'Copied!' : 'Copy link'">
+                      <svg v-if="tripsCopiedId !== trip.id" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
+                      <svg v-else width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
+                    </button>
+                  </div>
+                </div>
+                <div v-if="tripIndex.length === 0" class="px-4 py-6 text-center text-sm text-slate-400 italic">No trips saved yet.</div>
+              </div>
+              <div class="px-4 py-3 border-t border-slate-100">
+                <button @click="startNewTrip"
+                  class="w-full flex items-center justify-center gap-2 py-2 rounded-xl text-sm font-semibold text-teal-600 hover:bg-teal-50 transition-colors">
+                  <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+                  New Trip
+                </button>
+              </div>
+            </div>
+          </transition>
+        </div>
         <!-- Sync pill -->
         <div :class="['flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium transition-all',
           syncStatus === 'saving' ? 'bg-amber-50 text-amber-600' :
@@ -1753,6 +1807,8 @@
     <!-- ── Confirm Dialog ── -->
     <teleport to="body">
       <transition name="lightbox">
+        <!-- Trips panel click-outside overlay -->
+        <div v-if="tripsOpen" class="fixed inset-0 z-40 hidden lg:block" @click="tripsOpen = false" aria-hidden="true"></div>
         <div v-if="confirmDialog.show" class="fixed inset-0 z-[60] flex items-center justify-center bg-black/40 backdrop-blur-sm p-4"
           @click.self="confirmCancel" @keydown.escape.prevent="confirmCancel">
           <div role="dialog" aria-modal="true" aria-labelledby="confirm-title"
@@ -2569,6 +2625,7 @@ createApp({
       costPerPerson, daysUntilTrip, tripDuration, sortedEvents, groupedEvents,
       categoryBreakdown, totalPayments, settlements,
       currentTabLabel, currentTabDesc,
+      tripId,
       tripIndex, tripsOpen, tripsCopiedId,
       syncStatus, linkCopied,
       destSuggestions, showDestSuggestions, destSearching,
