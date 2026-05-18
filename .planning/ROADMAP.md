@@ -29,7 +29,10 @@ Decimal phases appear between their surrounding integers in numeric order.
   3. Dark mode toggle switches the `html.dark` class and the UI responds correctly in both dev and production builds
   4. Supabase client connects using `VITE_` env vars and the app throws a clear error at startup if vars are missing
   5. TypeScript domain interfaces (`TripState`, `TripEvent`, `Friend`, `Payment`, `Photo`) and generated Supabase types exist with no `any` escape hatches
-**Plans**: TBD
+**Plans**: 2 plans
+Plans:
+- [ ] 01-01-PLAN.md — Vite + Vue 3 + TypeScript scaffold with Tailwind v3 dark mode and vercel.json SPA rewrite
+- [ ] 01-02-PLAN.md — Supabase singleton, generated database types, and domain interfaces
 
 ### Phase 2: Data Layer
 **Goal**: Trip state, Supabase persistence, and real-time sync are owned by Pinia stores — components can mount and unmount freely without disconnecting the subscription
@@ -72,7 +75,7 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
-| 1. Scaffold | 0/TBD | Not started | - |
+| 1. Scaffold | 0/2 | Ready to execute | - |
 | 2. Data Layer | 0/TBD | Not started | - |
 | 3. UI Migration | 0/TBD | Not started | - |
 | 4. Authentication | 0/TBD | Not started | - |
