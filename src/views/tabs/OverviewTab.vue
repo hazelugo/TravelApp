@@ -1,8 +1,71 @@
 <script setup lang="ts">
-import { computed, ref } from 'vue'
+import { computed, ref, watch } from 'vue'
 import { useTripStore } from '@/stores/trips'
 
 const trip = useTripStore()
+
+// ── Weather ──────────────────────────────────────────────────────────────
+interface WeatherDay { date: string; code: number; high: number; low: number; sunrise: string; sunset: string }
+const weather = ref<WeatherDay[]>([])
+const weatherLoading = ref(false)
+const weatherError = ref('')
+
+const WMO: Record<number, string> = {
+  0:'Clear sky',1:'Mainly clear',2:'Partly cloudy',3:'Overcast',
+  45:'Foggy',48:'Foggy',51:'Light drizzle',53:'Drizzle',55:'Heavy drizzle',
+  61:'Light rain',63:'Rain',65:'Heavy rain',71:'Light snow',73:'Snow',75:'Heavy snow',
+  80:'Showers',81:'Rain showers',82:'Heavy showers',95:'Thunderstorm',96:'Thunderstorm',99:'Thunderstorm',
+}
+function weatherEmoji(code: number) {
+  if (code <= 1) return '☀️'; if (code <= 3) return '⛅'; if (code <= 48) return '🌫️'
+  if (code <= 67) return '🌧️'; if (code <= 77) return '❄️'; if (code <= 82) return '🌦️'; return '⛈️'
+}
+function fmtTime(iso: string) {
+  if (!iso) return ''
+  const timePart = iso.includes('T') ? iso.split('T')[1] : iso
+  const [h, m] = timePart.split(':').map(Number)
+  const d = new Date(); d.setHours(h, m, 0, 0)
+  return d.toLocaleTimeString('en-US', { hour: 'numeric', minute: '2-digit' })
+}
+function fmtWeatherDate(d: string) {
+  if (!d) return ''
+  return new Date(d + 'T00:00:00').toLocaleDateString('en-US', { weekday: 'short', month: 'short', day: 'numeric' })
+}
+
+async function fetchWeather() {
+  if (!trip.state.trip.destination) { weather.value = []; return }
+  weatherLoading.value = true; weatherError.value = ''
+  try {
+    const fallbackName = trip.state.trip.destination.split(',')[0].trim()
+    const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(fallbackName)}&count=1&language=en&format=json`)
+    const geoData = await geoRes.json()
+    if (!geoData.results?.length) { weatherError.value = 'Location not found'; weatherLoading.value = false; return }
+    const { latitude: lat, longitude: lon } = geoData.results[0]
+    const today = new Date().toISOString().slice(0, 10)
+    const maxEnd = new Date(Date.now() + 15 * 86400000).toISOString().slice(0, 10)
+    const tripStart = trip.state.trip.startDate && trip.state.trip.startDate >= today ? trip.state.trip.startDate : today
+    if (tripStart > maxEnd) { weather.value = []; weatherError.value = 'Forecast not available yet — check back closer to your trip.'; weatherLoading.value = false; return }
+    const start = tripStart
+    const endRaw = trip.state.trip.endDate || start
+    const end = endRaw > maxEnd ? maxEnd : (endRaw < start ? start : endRaw)
+    const wData = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&daily=weather_code,temperature_2m_max,temperature_2m_min,sunrise,sunset&timezone=auto&start_date=${start}&end_date=${end}`).then(r => r.json())
+    if (wData.error) { weatherError.value = wData.reason || 'Could not load weather' }
+    else if (wData.daily) {
+      weather.value = wData.daily.time.map((date: string, i: number) => ({
+        date, code: (wData.daily.weather_code ?? wData.daily.weathercode)[i],
+        high: Math.round(wData.daily.temperature_2m_max[i]), low: Math.round(wData.daily.temperature_2m_min[i]),
+        sunrise: wData.daily.sunrise[i], sunset: wData.daily.sunset[i],
+      }))
+    }
+  } catch { weatherError.value = 'Could not load weather' }
+  weatherLoading.value = false
+}
+
+let weatherTimer: ReturnType<typeof setTimeout> | undefined
+watch(() => [trip.state.trip.destination, trip.state.trip.startDate, trip.state.trip.endDate], () => {
+  clearTimeout(weatherTimer)
+  weatherTimer = setTimeout(fetchWeather, 900)
+}, { immediate: true })
 
 const totalParticipants = computed(() => trip.state.friends.length || trip.state.attendance.adults + trip.state.attendance.kids)
 
@@ -212,6 +275,43 @@ function fmtDate(d: string) {
           ${{ perPerson > 0 ? fmt(perPerson) : '0' }}
         </p>
         <p class="text-xs text-slate-400">{{ perPerson > 0 ? 'avg each' : 'Add costs to calculate' }}</p>
+      </div>
+    </div>
+
+    <!-- Weather widget -->
+    <div v-if="trip.state.trip.destination" class="bg-white dark:bg-[#1a1f2e] rounded-2xl border border-slate-100 dark:border-[#2a3347] shadow-sm px-6 pt-5 pb-6">
+      <div class="flex items-center justify-between mb-5">
+        <div>
+          <h2 class="eyebrow">Weather Forecast</h2>
+          <p class="text-sm font-medium text-slate-700 dark:text-slate-300 mt-0.5 truncate max-w-[220px]">{{ trip.state.trip.destination }}</p>
+        </div>
+        <span class="text-xl">🌍</span>
+      </div>
+      <div v-if="weatherLoading" class="flex items-center gap-2 text-slate-400 text-sm py-2">
+        <svg class="animate-spin shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
+        Loading weather…
+      </div>
+      <p v-else-if="weatherError" class="text-sm text-rose-500">{{ weatherError }}</p>
+      <div v-else-if="weather.length" class="overflow-x-auto -mx-2 px-2 pb-1">
+        <div class="flex gap-2.5" style="min-width:max-content">
+          <div v-for="day in weather" :key="day.date"
+            class="flex flex-col items-center gap-1.5 px-3.5 py-3 bg-slate-50 dark:bg-[#1e2535] rounded-2xl min-w-[76px]">
+            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ fmtWeatherDate(day.date) }}</p>
+            <span class="text-3xl leading-none">{{ weatherEmoji(day.code) }}</span>
+            <p class="text-[10px] text-slate-400 text-center leading-snug">{{ WMO[day.code] || '' }}</p>
+            <div class="flex items-center gap-1.5 mt-0.5">
+              <span class="text-sm font-bold text-rose-500">{{ day.high }}°</span>
+              <span class="text-slate-300">/</span>
+              <span class="text-xs text-blue-400">{{ day.low }}°</span>
+            </div>
+            <div class="flex items-center gap-1 text-[10px] text-amber-500 font-medium">
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+              {{ fmtTime(day.sunrise) }}
+              <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" class="ml-1 text-indigo-400"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+              {{ fmtTime(day.sunset) }}
+            </div>
+          </div>
+        </div>
       </div>
     </div>
   </div>
