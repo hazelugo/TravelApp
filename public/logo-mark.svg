@@ -1,0 +1,9 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" role="img" aria-label="Planis">
+  <rect width="64" height="64" rx="14" fill="#f0fdfa"></rect>
+  <g transform="translate(16 11)">
+    <path d="M16 0 C25.5 0 32 7.2 32 17.4 C32 27 22 35.5 16 42 C10 35.5 0 27 0 17.4 C0 7.2 6.5 0 16 0 Z" fill="#0d9488"></path>
+    <circle cx="16" cy="17" r="6.5" fill="#ffffff"></circle>
+  </g>
+</svg>

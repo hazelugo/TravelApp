@@ -1,16 +1,16 @@
 import { createRouter, createWebHistory } from 'vue-router'
-import HomeView from '@/views/HomeView.vue'
+import TripView from '@/views/TripView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     {
       path: '/',
-      component: HomeView,
+      component: TripView,
     },
     {
       path: '/:pathMatch(.*)*',
-      component: () => import('@/views/NotFoundView.vue'),
+      component: TripView, // SPA — all routes render the trip view
     },
   ],
 })
