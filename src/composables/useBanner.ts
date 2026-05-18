@@ -2,7 +2,7 @@ import { ref, watch } from 'vue'
 import { useTripStore } from '@/stores/trips'
 import { supabase } from '@/lib/supabase'
 
-const PEXELS_KEY = import.meta.env.VITE_PEXELS_API_KEY as string
+const PEXELS_KEY = import.meta.env.VITE_PEXELS_API_KEY
 
 interface PexelsPhoto {
   src: { large2x: string; large: string }
@@ -39,13 +39,16 @@ export function useBanner() {
       if (!res.ok) return
       const data = await res.json() as { photos: PexelsPhoto[] }
       const photo = data.photos?.[0]
-      if (!photo) return
+      if (!photo?.src?.large2x && !photo?.src?.large) return
       trip.state.trip.bannerUrl = photo.src.large2x || photo.src.large
       trip.state.trip.bannerPhotographer = photo.photographer
       trip.state.trip.bannerPhotographerUrl = photo.photographer_url
       trip.state.trip.bannerPosition = '50% 50%'
-    } catch {}
-    loading.value = false
+    } catch (e) {
+      console.error('Failed to fetch Pexels photo:', e)
+    } finally {
+      loading.value = false
+    }
   }
 
   // Explicitly bypass the skip condition and load the next Pexels result
