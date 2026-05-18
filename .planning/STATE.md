@@ -4,12 +4,12 @@ milestone: v1.0
 milestone_name: milestone
 status: executing
 stopped_at: Roadmap created — ROADMAP.md, STATE.md written; REQUIREMENTS.md traceability updated
-last_updated: "2026-05-18T05:46:21.996Z"
-last_activity: 2026-05-18 -- Phase 1 planning complete
+last_updated: "2026-05-18T06:30:00.000Z"
+last_activity: 2026-05-18 -- Phase 2 planning complete
 progress:
   total_phases: 4
   completed_phases: 0
-  total_plans: 2
+  total_plans: 4
   completed_plans: 0
   percent: 0
 ---
@@ -21,14 +21,14 @@ progress:
 See: .planning/PROJECT.md (updated 2026-05-17)
 
 **Core value:** A group can plan, cost, and settle a trip together in one place — no spreadsheets, no chasing people over chat.
-**Current focus:** Phase 1 — Scaffold
+**Current focus:** Phase 2 — Data Layer
 
 ## Current Position
 
-Phase: 1 of 4 (Scaffold)
-Plan: 0 of TBD in current phase
+Phase: 2 of 4 (Data Layer)
+Plan: 0 of 2 in current phase
 Status: Ready to execute
-Last activity: 2026-05-18 -- Phase 1 planning complete
+Last activity: 2026-05-18 -- Phase 2 planning complete
 
 Progress: [░░░░░░░░░░] 0%
 
