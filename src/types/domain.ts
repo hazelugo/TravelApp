@@ -10,6 +10,10 @@ export interface TripMeta {
   destination: string
   startDate: string   // ISO date "YYYY-MM-DD" or empty string
   endDate: string     // ISO date "YYYY-MM-DD" or empty string
+  bannerUrl?: string              // Pexels CDN URL or Supabase Storage public URL
+  bannerPosition?: string         // CSS object-position, e.g. "50% 30%". Defaults "50% 50%"
+  bannerPhotographer?: string     // Pexels photographer name; absent for custom uploads
+  bannerPhotographerUrl?: string  // Pexels photographer profile URL; absent for custom uploads
 }
 
 export interface Attendance {
