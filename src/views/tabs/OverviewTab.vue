@@ -67,6 +67,13 @@ watch(() => [trip.state.trip.destination, trip.state.trip.startDate, trip.state.
   weatherTimer = setTimeout(fetchWeather, 900)
 }, { immediate: true })
 
+// When start date is set, default end date to same day if end is empty or before start
+watch(() => trip.state.trip.startDate, (start) => {
+  if (start && (!trip.state.trip.endDate || trip.state.trip.endDate < start)) {
+    trip.state.trip.endDate = start
+  }
+})
+
 const totalParticipants = computed(() => trip.state.friends.length || trip.state.attendance.adults + trip.state.attendance.kids)
 
 const totalEventCost = computed(() =>
