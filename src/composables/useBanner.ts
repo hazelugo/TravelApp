@@ -31,7 +31,8 @@ export function useBanner() {
     if (!destination || !PEXELS_KEY) return 0
     loading.value = true
     try {
-      const q = encodeURIComponent(`${destination} travel landscape`)
+      const searchTerm = destination.split(',')[0].trim()
+      const q = encodeURIComponent(`${searchTerm} travel landscape`)
       const res = await fetch(
         `https://api.pexels.com/v1/search?query=${q}&per_page=5&orientation=landscape&page=${page + 1}`,
         { headers: { Authorization: PEXELS_KEY } }

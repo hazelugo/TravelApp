@@ -156,11 +156,14 @@ const tripDuration = computed(() => {
 })
 
 const destEditing = ref(false)
-const destSuggestions = ref<{ label: string; lat: number; lon: number }[]>([])
-const destSearching = ref(false)
-const destCoords = ref<{ lat: number; lon: number } | null>(null)
-let destTimer: ReturnType<typeof setTimeout> | undefined
-let suppressSearch = false
+const destQuery = ref(trip.state.trip.destination)
+const destSuggestions = ref<string[]>([])
+const destSuggestionsOpen = ref(false)
+let destDebounce: ReturnType<typeof setTimeout> | undefined
+
+watch(() => trip.state.trip.destination, (val) => {
+  if (val !== destQuery.value) destQuery.value = val
+})
 
 function startDestEdit() {
   destEditing.value = true
@@ -168,43 +171,60 @@ function startDestEdit() {
 }
 
 function onDestInput() {
-  if (suppressSearch) { suppressSearch = false; return }
-  destCoords.value = null
-  clearTimeout(destTimer)
-  const q = trip.state.trip.destination.trim()
-  if (q.length < 2) { destSuggestions.value = []; return }
-  destSearching.value = true
-  destTimer = setTimeout(async () => {
-    try {
-      const r = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(q)}&limit=5&lang=en`)
-      const d = await r.json()
-      const seen = new Set<string>()
-      destSuggestions.value = (d.features || [])
-        .filter((f: { properties: { name?: string } }) => f.properties.name)
-        .map((f: { properties: Record<string, string>; geometry: { coordinates: [number, number] } }) => {
-          const p = f.properties
-          const parts = [p.name]
-          if (p.state && p.state !== p.name) parts.push(p.state)
-          if (p.country) parts.push(p.country)
-          return { label: parts.join(', '), lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0] }
-        })
-        .filter((s: { label: string }) => { if (seen.has(s.label)) return false; seen.add(s.label); return true })
-        .slice(0, 5)
-    } catch {}
-    destSearching.value = false
-  }, 350)
+  trip.state.trip.destination = destQuery.value
+  destSuggestions.value = []
+  destSuggestionsOpen.value = false
+  clearTimeout(destDebounce)
+  if (destQuery.value.length < 2) return
+  destDebounce = setTimeout(() => fetchDestSuggestions(destQuery.value), 400)
 }
 
-function selectDest(s: { label: string; lat: number; lon: number }) {
-  suppressSearch = true
-  trip.state.trip.destination = s.label
-  destCoords.value = { lat: s.lat, lon: s.lon }
-  destSuggestions.value = []
+async function fetchDestSuggestions(query: string) {
+  try {
+    const res = await fetch(
+      `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(query)}&format=json&limit=5&addressdetails=1&accept-language=en`,
+      { headers: { 'User-Agent': 'PlanisApp/1.0' } }
+    )
+    const data = await res.json() as Array<{ name: string; address: Record<string, string> }>
+    const seen = new Set<string>()
+    destSuggestions.value = data
+      .filter(r => r.address)
+      .map(r => {
+        const city = r.address.city || r.address.town || r.address.village || r.address.county || r.name
+        const country = r.address.country || ''
+        const state = r.address.state || ''
+        const code = (r.address.country_code || '').toUpperCase()
+        return (code === 'US' || code === 'CA') && state
+          ? `${city}, ${state}, ${country}`
+          : `${city}, ${country}`
+      })
+      .filter(v => { if (seen.has(v)) return false; seen.add(v); return true })
+    destSuggestionsOpen.value = destSuggestions.value.length > 0
+  } catch {}
+}
+
+function selectDestination(val: string) {
+  destQuery.value = val
+  trip.state.trip.destination = val
+  destSuggestionsOpen.value = false
   destEditing.value = false
 }
 
 function onDestBlur() {
-  setTimeout(() => { destSuggestions.value = []; destEditing.value = false }, 200)
+  setTimeout(() => {
+    trip.state.trip.destination = destQuery.value
+    destSuggestionsOpen.value = false
+    destEditing.value = false
+  }, 150)
+}
+
+function onDestKeydown(e: KeyboardEvent) {
+  if (e.key === 'Enter') {
+    const first = destSuggestions.value[0]
+    if (first && destSuggestionsOpen.value) selectDestination(first)
+    else { trip.state.trip.destination = destQuery.value; destSuggestionsOpen.value = false; destEditing.value = false }
+  }
+  if (e.key === 'Escape') { destSuggestionsOpen.value = false; destEditing.value = false }
 }
 
 const AVATAR_COLORS = ['#6366f1', '#14b8a6', '#f59e0b', '#10b981', '#8b5cf6']
@@ -252,26 +272,22 @@ function fmtDate(d: string) {
             <svg class="shrink-0 opacity-0 group-hover:opacity-40 transition-opacity text-slate-400 mt-1" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
           </button>
           <template v-else>
-            <div class="flex items-center gap-2">
-              <input id="dest-input" v-model="trip.state.trip.destination" type="text"
-                aria-label="Destination"
-                placeholder="Where are you going?" autocomplete="off"
-                @input="onDestInput"
-                @blur="onDestBlur"
-                @keydown.enter.prevent="destSuggestions[0] ? selectDest(destSuggestions[0]) : (destEditing = false)"
-                @keydown.escape="destSuggestions = []; destEditing = false"
-                class="flex-1 bg-transparent border-none border-b-2 border-teal-400 outline-none pb-1 text-slate-900 dark:text-slate-100 placeholder-slate-300 dark:placeholder-slate-600"
-                style="font-size:1.75rem;font-weight:700;line-height:1.2;letter-spacing:-0.01em" />
-              <svg v-if="destSearching" class="animate-spin text-slate-300 shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
-            </div>
+            <input id="dest-input" v-model="destQuery" type="text"
+              placeholder="Where are you going?"
+              autocomplete="off"
+              @input="onDestInput"
+              @blur="onDestBlur"
+              @keydown="onDestKeydown"
+              class="w-full bg-transparent border-none border-b-2 border-teal-400 outline-none pb-1 text-slate-900 dark:text-slate-100 placeholder-slate-300 dark:placeholder-slate-600"
+              style="font-size:1.75rem;font-weight:700;line-height:1.2;letter-spacing:-0.01em" />
             <!-- Suggestions dropdown -->
-            <div v-if="destSuggestions.length"
-              class="absolute top-full left-0 right-0 mt-2 bg-surface border border-slate-200 dark:border-hairline rounded-xl shadow-lg z-50 overflow-hidden">
-              <button v-for="s in destSuggestions" :key="s.label"
-                @mousedown.prevent="selectDest(s)"
+            <div v-if="destSuggestionsOpen && destSuggestions.length"
+              class="absolute left-0 right-0 top-full mt-1 bg-surface border border-slate-200 dark:border-hairline rounded-xl shadow-lg z-50 overflow-hidden">
+              <button
+                v-for="s in destSuggestions" :key="s"
+                @mousedown.prevent="selectDestination(s)"
                 class="w-full text-left flex items-center gap-2.5 px-3 py-2.5 text-sm text-slate-700 dark:text-slate-300 hover:bg-slate-50 dark:hover:bg-inset transition-colors border-b border-slate-50 dark:border-hairline last:border-0">
-                <svg class="shrink-0 text-slate-300" width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
-                <span class="truncate">{{ s.label }}</span>
+                <span class="truncate">{{ s }}</span>
               </button>
             </div>
           </template>
