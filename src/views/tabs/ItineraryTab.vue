@@ -114,13 +114,24 @@ function addEvent() {
 }
 
 async function removeEvent(id: string) { trip.removeEvent(id) }
+
+function exportPDF() { window.print() }
 </script>
 
 <template>
   <div class="space-y-5 anim-fade-up">
 
+    <!-- Print-only header: hidden in app, shown when printing -->
+    <div class="print-only-header">
+      <h1>{{ trip.state.trip.destination || 'Trip Itinerary' }}</h1>
+      <p v-if="trip.state.trip.startDate">
+        {{ fmtDate(trip.state.trip.startDate) }}
+        <template v-if="trip.state.trip.endDate"> — {{ fmtDate(trip.state.trip.endDate) }}</template>
+      </p>
+    </div>
+
     <!-- Add event form -->
-    <div class="bg-white dark:bg-[#1a1f2e] rounded-2xl border border-slate-100 dark:border-[#2a3347] shadow-sm p-6">
+    <div class="no-print bg-white dark:bg-[#1a1f2e] rounded-2xl border border-slate-100 dark:border-[#2a3347] shadow-sm p-6">
       <input v-model="newEvent.name" @keydown.enter="addEvent" type="text" maxlength="120"
         placeholder="What's the plan? e.g. Eiffel Tower visit"
         class="w-full text-xl font-semibold bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 placeholder-slate-300 dark:placeholder-slate-600 mb-5" />
@@ -213,19 +224,30 @@ async function removeEvent(id: string) { trip.removeEvent(id) }
 
     <!-- Toolbar + event list -->
     <div v-else class="space-y-4">
-      <div class="flex items-center justify-between">
+      <div class="flex items-center justify-between no-print">
         <span class="text-xs text-slate-400 font-medium">
           {{ trip.state.events.length }} event{{ trip.state.events.length !== 1 ? 's' : '' }}
           <span v-if="!groupByDay" class="ml-1 text-slate-300 hidden lg:inline">· drag to reorder</span>
         </span>
-        <button @click="groupByDay = !groupByDay"
-          :class="['flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
-            groupByDay
-              ? 'bg-teal-600 text-white border-teal-600 shadow-sm'
-              : 'bg-white dark:bg-[#1a1f2e] border-slate-200 dark:border-[#2a3347] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1e2535]']">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
-          Group by Day
-        </button>
+        <div class="flex items-center gap-2">
+          <button @click="exportPDF"
+            class="flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border border-slate-200 dark:border-[#2a3347] bg-white dark:bg-[#1a1f2e] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1e2535] transition-all">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
+              <polyline points="6 9 6 2 18 2 18 9"/>
+              <path d="M6 18H4a2 2 0 0 1-2-2v-5a2 2 0 0 1 2-2h16a2 2 0 0 1 2 2v5a2 2 0 0 1-2 2h-2"/>
+              <rect x="6" y="14" width="12" height="8"/>
+            </svg>
+            Export PDF
+          </button>
+          <button @click="groupByDay = !groupByDay"
+            :class="['flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
+              groupByDay
+                ? 'bg-teal-600 text-white border-teal-600 shadow-sm'
+                : 'bg-white dark:bg-[#1a1f2e] border-slate-200 dark:border-[#2a3347] text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1e2535]']">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><line x1="8" y1="6" x2="21" y2="6"/><line x1="8" y1="12" x2="21" y2="12"/><line x1="8" y1="18" x2="21" y2="18"/><line x1="3" y1="6" x2="3.01" y2="6"/><line x1="3" y1="12" x2="3.01" y2="12"/><line x1="3" y1="18" x2="3.01" y2="18"/></svg>
+            Group by Day
+          </button>
+        </div>
       </div>
 
       <!-- ── Flat timeline ── -->
@@ -312,7 +334,7 @@ async function removeEvent(id: string) { trip.removeEvent(id) }
               @dragleave="onDragLeave(event.id)"
               @drop.prevent="onDrop($event, event.id)"
               @dragend="onDragEnd"
-              :class="['relative flex items-start gap-0 group select-none py-2 transition-all rounded-xl',
+              :class="['print-event-row relative flex items-start gap-0 group select-none py-2 transition-all rounded-xl',
                 draggedId === event.id  ? 'opacity-40' : 'opacity-100',
                 dragOverId === event.id ? 'bg-teal-50/60 dark:bg-teal-900/10' : '']">
 
@@ -379,13 +401,13 @@ async function removeEvent(id: string) { trip.removeEvent(id) }
       <div v-else class="space-y-8">
         <div v-for="group in groupedEvents" :key="group.date || '__none__'">
           <div class="flex items-baseline justify-between mb-4 pb-3 border-b border-slate-100 dark:border-[#2a3347]">
-            <h3 class="text-lg font-bold text-slate-800 dark:text-slate-100 leading-none">{{ group.label }}</h3>
+            <h3 class="print-day-heading text-lg font-bold text-slate-800 dark:text-slate-100 leading-none">{{ group.label }}</h3>
             <span class="text-xs font-semibold text-slate-400 ml-3 whitespace-nowrap">${{ fmt(group.total) }}</span>
           </div>
           <div class="relative">
             <div class="absolute left-4 top-0 bottom-0 w-px bg-slate-200 dark:bg-[#2a3347]"></div>
             <div class="space-y-1">
-              <div v-for="event in group.events" :key="event.id" class="relative flex items-start gap-0 group transition-all select-none py-2">
+              <div v-for="event in group.events" :key="event.id" class="print-event-row relative flex items-start gap-0 group transition-all select-none py-2">
                 <div class="relative flex flex-col items-center shrink-0 z-10 mr-4" style="width:24px">
                   <div :class="['w-5 h-5 rounded-full border-2 border-white dark:border-[#0f1117] shadow-sm flex items-center justify-center mt-2.5 shrink-0', CAT_COLORS[event.category]?.dot]">
                     <svg width="10" height="10" aria-hidden="true"><use :href="`/icons.svg#${CAT_ICONS[event.category]}`"/></svg>
@@ -441,4 +463,88 @@ async function removeEvent(id: string) { trip.removeEvent(id) }
 .slide-up-enter-active { animation: fade-up 0.18s var(--ease-out) both; }
 .slide-up-leave-active { transition: opacity 0.15s, transform 0.15s; }
 .slide-up-leave-to    { opacity: 0; transform: translateY(-4px); }
+</style>
+
+<style>
+/* Print-only header hidden in normal view */
+.print-only-header {
+  display: none;
+}
+
+@media print {
+  /* Hide app chrome */
+  header,
+  aside,
+  nav,
+  .no-print {
+    display: none !important;
+  }
+
+  /* Reset layout — the outer flex container clips content */
+  body, #app {
+    background: white !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  .flex.h-screen {
+    display: block !important;
+    height: auto !important;
+    overflow: visible !important;
+  }
+
+  main {
+    padding: 0 !important;
+    overflow: visible !important;
+    flex: none !important;
+  }
+
+  /* Show the print header */
+  .print-only-header {
+    display: block !important;
+    font-family: Georgia, 'Times New Roman', serif;
+    margin-bottom: 20pt;
+    padding-bottom: 10pt;
+    border-bottom: 1pt solid #ccc;
+  }
+  .print-only-header h1 {
+    font-size: 22pt;
+    font-weight: 700;
+    margin: 0 0 3pt;
+    color: black;
+  }
+  .print-only-header p {
+    font-size: 10pt;
+    color: #666;
+    margin: 0;
+  }
+
+  /* Day headings */
+  .print-day-heading {
+    font-family: Georgia, 'Times New Roman', serif;
+    font-size: 13pt;
+    font-weight: 700;
+    color: black !important;
+    background: none !important;
+    border-bottom: 0.5pt solid #ddd;
+    padding-bottom: 4pt;
+    margin-top: 16pt;
+    margin-bottom: 8pt;
+  }
+
+  /* Event rows */
+  .print-event-row {
+    page-break-inside: avoid;
+    border-bottom: 0.25pt solid #eee;
+    padding: 6pt 0;
+  }
+
+  /* Strip colors, gradients, shadows */
+  * {
+    box-shadow: none !important;
+    text-shadow: none !important;
+    background-image: none !important;
+    -webkit-print-color-adjust: exact;
+  }
+}
 </style>
