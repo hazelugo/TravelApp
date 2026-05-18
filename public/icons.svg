@@ -46,12 +46,12 @@
       <path d="M2 17h20"></path>
       <path d="M6 8v9"></path>
     </symbol>
-    <!-- fork and knife -->
+    <!-- fork left, knife right -->
     <symbol id="i-food" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-      <line x1="8" y1="2" x2="8" y2="22"></line>
-      <path d="M5 2v4a3 3 0 0 0 6 0V2"></path>
-      <line x1="15" y1="2" x2="15" y2="22"></line>
-      <path d="M12 2h3a4 4 0 0 1 0 8h-3"></path>
+      <line x1="8" y1="2" x2="8" y2="22"/>
+      <path d="M5 2v5a3 3 0 0 0 6 0V2"/>
+      <line x1="16" y1="2" x2="16" y2="22"/>
+      <path d="M16 2c3 0 6 3 6 7h-6"/>
     </symbol>
     <!-- mountain -->
     <symbol id="i-activity" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
