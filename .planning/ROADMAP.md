@@ -13,7 +13,7 @@ The migration takes a working ~3000-line monolithic `index.html` (Vue 3 CDN + Ta
 Decimal phases appear between their surrounding integers in numeric order.
 
 - [ ] **Phase 1: Scaffold** - Vite + Vue 3 + TypeScript SPA with working build pipeline, Tailwind v3, Supabase singleton, and Vercel deploy config
-- [ ] **Phase 2: Data Layer** - Pinia stores own all trip state, Supabase persistence, and real-time subscription
+- [x] **Phase 2: Data Layer** - Pinia stores own all trip state, Supabase persistence, and real-time subscription (completed 2026-05-18)
 - [ ] **Phase 3: UI Migration** - All six tabs extracted as SFCs with full visual parity to the existing app
 - [ ] **Phase 4: Authentication** - Magic-link sign-in with anonymous trip links continuing to work
 
@@ -76,6 +76,6 @@ Phases execute in numeric order: 1 → 2 → 3 → 4
 | Phase | Plans Complete | Status | Completed |
 |-------|----------------|--------|-----------|
 | 1. Scaffold | 0/2 | Ready to execute | - |
-| 2. Data Layer | 0/TBD | Not started | - |
+| 2. Data Layer | 2/2 | Complete    | 2026-05-18 |
 | 3. UI Migration | 0/TBD | Not started | - |
 | 4. Authentication | 0/TBD | Not started | - |
