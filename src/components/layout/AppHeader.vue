@@ -3,6 +3,7 @@ import { ref } from 'vue'
 import { useUIStore } from '@/stores/ui'
 import { useTripStore } from '@/stores/trips'
 import { useTrip } from '@/composables/useTrip'
+import { useBanner } from '@/composables/useBanner'
 
 const props = defineProps<{
   currentTab: string
@@ -13,6 +14,12 @@ const emit = defineEmits<{ (e: 'copy-link'): void }>()
 const ui = useUIStore()
 const trip = useTripStore()
 const { navigateToTrip, getShareUrl } = useTrip()
+
+const banner = useBanner()
+const repositionMode = ref(false)
+const dragging = ref(false)
+const dragStart = ref({ x: 0, y: 0, posX: 50, posY: 50 })
+const bannerFileInput = ref<HTMLInputElement | null>(null)
 
 const linkCopied = ref(false)
 const tripsOpen = ref(false)
@@ -88,24 +95,80 @@ const syncDot: Record<string, string> = {
   error:  'bg-rose-500',
   idle:   'bg-emerald-500',
 }
+
+function onBannerPointerDown(_e: PointerEvent) {}
+function onBannerPointerMove(_e: PointerEvent) {}
+function onBannerPointerUp(_e: PointerEvent) {}
 </script>
 
 <template>
-  <header class="bg-white dark:bg-[#1a1f2e] border-b border-slate-100 dark:border-[#2a3347] px-6 py-4 flex items-center justify-between shrink-0 gap-4">
-    <div class="min-w-0">
-      <h1 class="text-base font-semibold text-slate-900 dark:text-slate-100">{{ meta().label }}</h1>
-      <p class="text-xs text-slate-400 mt-0.5">{{ meta().desc }}</p>
-    </div>
+  <header
+    class="relative shrink-0 overflow-hidden transition-[height] duration-300"
+    :class="!trip.state.trip.bannerUrl
+      ? 'bg-white dark:bg-[#1a1f2e] border-b border-slate-100 dark:border-[#2a3347]'
+      : repositionMode ? 'cursor-grab' : 'cursor-default'"
+    :style="trip.state.trip.bannerUrl ? 'height: 180px' : ''"
+    @pointerdown="onBannerPointerDown"
+    @pointermove="onBannerPointerMove"
+    @pointerup="onBannerPointerUp"
+    @pointerleave="onBannerPointerUp"
+  >
+    <!-- Banner image -->
+    <img
+      v-if="trip.state.trip.bannerUrl"
+      :src="trip.state.trip.bannerUrl"
+      :style="`object-position: ${trip.state.trip.bannerPosition ?? '50% 50%'}`"
+      class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
+      draggable="false"
+      alt=""
+    />
 
-    <div class="hidden lg:flex items-center gap-2 shrink-0">
+    <!-- Gradient overlay -->
+    <div
+      v-if="trip.state.trip.bannerUrl"
+      class="absolute inset-0 pointer-events-none"
+      style="background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 60%, transparent 100%)"
+    />
+
+    <!-- Pexels attribution (only when bannerPhotographer is set — i.e. Pexels photos, not custom uploads) -->
+    <a
+      v-if="trip.state.trip.bannerUrl && trip.state.trip.bannerPhotographer"
+      :href="trip.state.trip.bannerPhotographerUrl"
+      target="_blank"
+      rel="noopener noreferrer"
+      class="absolute bottom-2 left-4 z-10 text-[10px] text-white/50 hover:text-white/80 transition-colors"
+      @click.stop
+    >
+      Photo by {{ trip.state.trip.bannerPhotographer }} on Pexels
+    </a>
+
+    <!-- Content row — sits above image + gradient -->
+    <div class="relative z-10 px-6 py-4 flex items-center justify-between gap-4"
+      :class="trip.state.trip.bannerUrl ? 'h-full items-start pt-5' : ''">
+      <div class="min-w-0">
+        <h1 class="text-base font-semibold"
+          :class="trip.state.trip.bannerUrl ? 'text-white' : 'text-slate-900 dark:text-slate-100'">
+          {{ meta().label }}
+        </h1>
+        <p class="text-xs mt-0.5"
+          :class="trip.state.trip.bannerUrl ? 'text-white/70' : 'text-slate-400'">
+          {{ meta().desc }}
+        </p>
+      </div>
+
+      <div class="hidden lg:flex items-center gap-2 shrink-0">
 
       <!-- My Trips dropdown -->
       <div class="relative">
         <button @click="tripsOpen = !tripsOpen"
           :class="['flex items-center gap-1.5 px-3 py-1.5 rounded-lg text-xs font-semibold border transition-all',
-            tripsOpen
-              ? 'bg-teal-50 dark:bg-[#1e2535] border-teal-200 dark:border-teal-700 text-teal-700 dark:text-teal-400'
-              : 'bg-white dark:bg-[#1a1f2e] border-slate-200 dark:border-[#2a3347] text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1e2535]']">
+            trip.state.trip.bannerUrl
+              ? tripsOpen
+                ? 'bg-white/30 border-white/30 text-white'
+                : 'bg-white/10 border-white/20 text-white/80 hover:bg-white/20'
+              : tripsOpen
+                ? 'bg-teal-50 dark:bg-[#1e2535] border-teal-200 dark:border-teal-700 text-teal-700 dark:text-teal-400'
+                : 'bg-white dark:bg-[#1a1f2e] border-slate-200 dark:border-[#2a3347] text-slate-600 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1e2535]']">
           <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
           My Trips
           <span v-if="trip.tripIndex.length > 1" class="bg-teal-100 dark:bg-teal-800/60 text-teal-700 dark:text-teal-300 rounded-full px-1.5 text-[10px] font-bold leading-none py-0.5">{{ trip.tripIndex.length }}</span>
@@ -173,33 +236,43 @@ const syncDot: Record<string, string> = {
 
       <!-- Copy link -->
       <button @click="copyLink" :aria-label="linkCopied ? 'Copied!' : 'Copy share link'"
-        :class="['w-8 h-8 flex items-center justify-center rounded-lg transition-all', linkCopied ? 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-[#1e2535]' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50 dark:hover:bg-[#1e2535]']">
+        :class="['w-8 h-8 flex items-center justify-center rounded-lg transition-all',
+          trip.state.trip.bannerUrl
+            ? linkCopied ? 'text-white bg-white/20' : 'text-white/70 hover:text-white hover:bg-white/20'
+            : linkCopied ? 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-[#1e2535]' : 'text-slate-400 hover:text-slate-600 hover:bg-slate-50 dark:hover:bg-[#1e2535]']">
         <svg v-if="!linkCopied" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M10 13a5 5 0 0 0 7.54.54l3-3a5 5 0 0 0-7.07-7.07l-1.72 1.71"/><path d="M14 11a5 5 0 0 0-7.54-.54l-3 3a5 5 0 0 0 7.07 7.07l1.71-1.71"/></svg>
         <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polyline points="20 6 9 17 4 12"/></svg>
       </button>
 
       <!-- Theme toggle -->
       <button @click="ui.toggleDark()" :aria-label="ui.darkMode ? 'Light mode' : 'Dark mode'"
-        class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1e2535] transition-all">
+        :class="['w-8 h-8 flex items-center justify-center rounded-lg transition-all',
+          trip.state.trip.bannerUrl
+            ? 'text-white/70 hover:text-white/90 hover:bg-white/20'
+            : 'text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 hover:bg-slate-50 dark:hover:bg-[#1e2535]']">
         <svg v-if="ui.darkMode" width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
         <svg v-else width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
       </button>
     </div>
 
-    <!-- Mobile: briefcase icon + theme toggle -->
-    <div class="lg:hidden flex items-center gap-1 shrink-0">
-      <button @click="tripsOpen = !tripsOpen" aria-label="My Trips"
-        :class="['relative w-10 h-10 flex items-center justify-center rounded-xl transition-all',
-          tripsOpen ? 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-[#1e2535]' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1e2535]']">
-        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
-        <span v-if="trip.tripIndex.length > 1" class="absolute top-1.5 right-1.5 w-3.5 h-3.5 flex items-center justify-center bg-teal-500 text-white text-[9px] font-bold rounded-full leading-none">{{ trip.tripIndex.length }}</span>
-      </button>
-      <button @click="ui.toggleDark()"
-        class="w-10 h-10 flex items-center justify-center rounded-xl text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1e2535] transition-all">
-        <svg v-if="ui.darkMode" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
-        <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
-      </button>
-    </div>
+      <!-- Mobile: briefcase icon + theme toggle -->
+      <div class="lg:hidden flex items-center gap-1 shrink-0">
+        <button @click="tripsOpen = !tripsOpen" aria-label="My Trips"
+          :class="['relative w-10 h-10 flex items-center justify-center rounded-xl transition-all',
+            tripsOpen ? 'text-teal-600 dark:text-teal-400 bg-teal-50 dark:bg-[#1e2535]' : 'text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1e2535]']">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="2" y="7" width="20" height="14" rx="2"/><path d="M16 7V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v2"/></svg>
+          <span v-if="trip.tripIndex.length > 1" class="absolute top-1.5 right-1.5 w-3.5 h-3.5 flex items-center justify-center bg-teal-500 text-white text-[9px] font-bold rounded-full leading-none">{{ trip.tripIndex.length }}</span>
+        </button>
+        <button @click="ui.toggleDark()"
+          :class="['w-10 h-10 flex items-center justify-center rounded-xl transition-all',
+            trip.state.trip.bannerUrl
+              ? 'text-white/70 hover:bg-white/20'
+              : 'text-slate-400 hover:bg-slate-50 dark:hover:bg-[#1e2535]']">
+          <svg v-if="ui.darkMode" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
+          <svg v-else width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"/></svg>
+        </button>
+      </div>
+    </div><!-- end content row -->
   </header>
 
   <!-- Mobile bottom sheet -->
