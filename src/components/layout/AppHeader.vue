@@ -113,8 +113,8 @@ function onBannerPointerDown(e: PointerEvent) {
 function onBannerPointerMove(e: PointerEvent) {
   if (!dragging.value || !repositionMode.value) return
   const el = e.currentTarget as HTMLElement
-  const dx = ((dragStart.value.x - e.clientX) / el.offsetWidth) * 100
-  const dy = ((dragStart.value.y - e.clientY) / el.offsetHeight) * 100
+  const dx = ((e.clientX - dragStart.value.x) / el.offsetWidth) * 100
+  const dy = ((e.clientY - dragStart.value.y) / el.offsetHeight) * 100
   const newX = Math.max(0, Math.min(100, dragStart.value.posX + dx))
   const newY = Math.max(0, Math.min(100, dragStart.value.posY + dy))
   banner.setPosition(newX, newY)
