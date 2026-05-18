@@ -28,7 +28,9 @@
       "Bash(gunzip -c __TRACKED_VAR__/.claude/projects/C--Users-Hector-Documents-TravelApp/3b5baaeb-1a5e-4a74-8dcc-a3095056e289/tool-results/webfetch-1779086052895-ab7l02.bin)",
       "Bash(tar -x -f - -C /tmp/planis-design)",
       "Read(//tmp/**)",
-      "Bash(tar -x -C /tmp/planis-design)"
+      "Bash(tar -x -C /tmp/planis-design)",
+      "Bash(grep -v \"^$\")",
+      "Bash(npm run *)"
     ]
   }
 }
