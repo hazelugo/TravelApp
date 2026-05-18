@@ -73,9 +73,26 @@
 
 ## Traceability
 
-| Requirement | Phase |
-|---|---|
-| SCAF-01 – SCAF-06 | Phase 1: Scaffold |
-| SCAF-07 – SCAF-08 | Phase 2: Data Layer |
-| UI-01 – UI-08 | Phase 3: UI Migration |
-| AUTH-01 – AUTH-05 | Phase 4: Authentication |
+| Requirement | Phase | Status |
+|---|---|---|
+| SCAF-01 | Phase 1: Scaffold | Pending |
+| SCAF-02 | Phase 1: Scaffold | Pending |
+| SCAF-03 | Phase 1: Scaffold | Pending |
+| SCAF-04 | Phase 1: Scaffold | Pending |
+| SCAF-05 | Phase 1: Scaffold | Pending |
+| SCAF-06 | Phase 1: Scaffold | Pending |
+| SCAF-07 | Phase 2: Data Layer | Pending |
+| SCAF-08 | Phase 2: Data Layer | Pending |
+| UI-01 | Phase 3: UI Migration | Pending |
+| UI-02 | Phase 3: UI Migration | Pending |
+| UI-03 | Phase 3: UI Migration | Pending |
+| UI-04 | Phase 3: UI Migration | Pending |
+| UI-05 | Phase 3: UI Migration | Pending |
+| UI-06 | Phase 3: UI Migration | Pending |
+| UI-07 | Phase 3: UI Migration | Pending |
+| UI-08 | Phase 3: UI Migration | Pending |
+| AUTH-01 | Phase 4: Authentication | Pending |
+| AUTH-02 | Phase 4: Authentication | Pending |
+| AUTH-03 | Phase 4: Authentication | Pending |
+| AUTH-04 | Phase 4: Authentication | Pending |
+| AUTH-05 | Phase 4: Authentication | Pending |
