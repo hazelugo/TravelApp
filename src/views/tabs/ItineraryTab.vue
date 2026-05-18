@@ -254,10 +254,10 @@ function exportPDF() { window.print() }
       <div v-if="!groupByDay" class="relative">
         <div class="absolute left-9 top-0 bottom-0 w-px bg-slate-200 dark:bg-[#2a3347]"></div>
         <TransitionGroup name="slide-up" tag="div" class="space-y-1">
-          <template v-for="event in sortedEvents" :key="event.id">
+          <template v-for="event in sortedEvents">
 
             <!-- Inline edit -->
-            <div v-if="editingId === event.id"
+            <div v-if="editingId === event.id" :key="event.id + '-edit'"
               class="ml-10 bg-white dark:bg-[#1a1f2e] rounded-2xl border-2 border-teal-300 dark:border-teal-700 shadow-md p-5 mb-2">
               <p class="eyebrow text-teal-600 dark:text-teal-400 mb-4">Editing Event</p>
               <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
@@ -327,7 +327,7 @@ function exportPDF() { window.print() }
             </div>
 
             <!-- Draggable timeline entry -->
-            <div v-else
+            <div v-else :key="event.id"
               draggable="true"
               @dragstart="onDragStart($event, event.id)"
               @dragover.prevent="onDragOver($event, event.id)"
