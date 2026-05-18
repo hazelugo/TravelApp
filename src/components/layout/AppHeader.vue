@@ -13,7 +13,7 @@ const emit = defineEmits<{ (e: 'copy-link'): void }>()
 
 const ui = useUIStore()
 const trip = useTripStore()
-const { navigateToTrip, getShareUrl } = useTrip()
+const { navigateToTrip } = useTrip()
 
 const banner = useBanner()
 const repositionMode = ref(false)
