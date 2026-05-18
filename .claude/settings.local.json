@@ -12,7 +12,23 @@
       "Bash(git commit *)",
       "Skill(adapt)",
       "Skill(distill)",
-      "Skill(clarify)"
+      "Skill(clarify)",
+      "Bash(git merge *)",
+      "Bash(git checkout *)",
+      "Bash(cp /tmp/state_backup.md .planning/STATE.md)",
+      "Bash(cp /tmp/roadmap_backup.md .planning/ROADMAP.md)",
+      "Bash(npx vue-tsc *)",
+      "Bash(npx vite *)",
+      "Bash(git worktree *)",
+      "Bash(git branch *)",
+      "Bash(node __TRACKED_VAR__/.claude/get-shit-done/bin/gsd-tools.cjs roadmap update-plan-progress 2 02-01 completed)",
+      "Bash(node __TRACKED_VAR__/.claude/get-shit-done/bin/gsd-tools.cjs roadmap update-plan-progress 2 02-02 completed)",
+      "Bash(node __TRACKED_VAR__/.claude/get-shit-done/bin/gsd-tools.cjs phase complete 2)",
+      "WebFetch(domain:api.anthropic.com)",
+      "Bash(gunzip -c __TRACKED_VAR__/.claude/projects/C--Users-Hector-Documents-TravelApp/3b5baaeb-1a5e-4a74-8dcc-a3095056e289/tool-results/webfetch-1779086052895-ab7l02.bin)",
+      "Bash(tar -x -f - -C /tmp/planis-design)",
+      "Read(//tmp/**)",
+      "Bash(tar -x -C /tmp/planis-design)"
     ]
   }
 }
