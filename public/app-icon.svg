@@ -1,0 +1,21 @@
+<?xml version="1.0"?>
+
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="1024" height="1024" role="img" aria-label="Planis app icon">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#2dd4bf"></stop>
+      <stop offset="0.55" stop-color="#14b8a6"></stop>
+      <stop offset="1" stop-color="#0f766e"></stop>
+    </linearGradient>
+    <radialGradient id="hl" cx="0.3" cy="0.2" r="0.7">
+      <stop offset="0" stop-color="#fff" stop-opacity="0.18"></stop>
+      <stop offset="1" stop-color="#fff" stop-opacity="0"></stop>
+    </radialGradient>
+  </defs>
+  <rect width="1024" height="1024" rx="225" fill="url(#bg)"></rect>
+  <rect width="1024" height="1024" rx="225" fill="url(#hl)"></rect>
+  <g transform="translate(384 250)">
+    <path d="M128 0 C198.7 0 256 53.1 256 128.5 C256 199.5 184 270.5 128 320 C72 270.5 0 199.5 0 128.5 C0 53.1 57.3 0 128 0 Z" fill="#ffffff"></path>
+    <circle cx="128" cy="128" r="50" fill="#0f766e"></circle>
+  </g>
+</svg>
