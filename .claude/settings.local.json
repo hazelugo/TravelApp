@@ -30,7 +30,14 @@
       "Read(//tmp/**)",
       "Bash(tar -x -C /tmp/planis-design)",
       "Bash(grep -v \"^$\")",
-      "Bash(npm run *)"
+      "Bash(npm run *)",
+      "Bash(awk '/TAB: SPLITTER/,/TAB:/{print NR\": \"$0}' index-cdn-app.html)",
+      "Bash(awk '/TAB: PHOTOS/,/TAB:/{print NR\": \"$0}' index-cdn-app.html)",
+      "Bash(awk '/TAB: ITINERARY/,/TAB: ANALYTICS/{print NR\": \"$0}' index-cdn-app.html)",
+      "Bash(gunzip)",
+      "Bash(tar -x -C /tmp/planis-icons)",
+      "Bash(gunzip -c /tmp/planis-icons-raw.bin)",
+      "Bash(tar -x -C /tmp/planis-icons2)"
     ]
   }
 }
