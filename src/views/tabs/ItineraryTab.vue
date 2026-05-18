@@ -544,6 +544,7 @@ function exportPDF() { window.print() }
     box-shadow: none !important;
     text-shadow: none !important;
     background-image: none !important;
+    print-color-adjust: exact;
     -webkit-print-color-adjust: exact;
   }
 }
