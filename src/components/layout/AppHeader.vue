@@ -132,7 +132,7 @@ function onBannerPointerUp(_e: PointerEvent) {}
 
     <!-- Pexels attribution (only when bannerPhotographer is set — i.e. Pexels photos, not custom uploads) -->
     <a
-      v-if="trip.state.trip.bannerUrl && trip.state.trip.bannerPhotographer"
+      v-if="trip.state.trip.bannerUrl && trip.state.trip.bannerPhotographer && trip.state.trip.bannerPhotographerUrl"
       :href="trip.state.trip.bannerPhotographerUrl"
       target="_blank"
       rel="noopener noreferrer"
@@ -143,8 +143,8 @@ function onBannerPointerUp(_e: PointerEvent) {}
     </a>
 
     <!-- Content row — sits above image + gradient -->
-    <div class="relative z-10 px-6 py-4 flex items-center justify-between gap-4"
-      :class="trip.state.trip.bannerUrl ? 'h-full items-start pt-5' : ''">
+    <div class="relative z-10 px-6 flex justify-between gap-4"
+      :class="trip.state.trip.bannerUrl ? 'h-full items-start pt-5' : 'items-center py-4'">
       <div class="min-w-0">
         <h1 class="text-base font-semibold"
           :class="trip.state.trip.bannerUrl ? 'text-white' : 'text-slate-900 dark:text-slate-100'">
