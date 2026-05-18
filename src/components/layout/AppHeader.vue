@@ -146,23 +146,20 @@ async function onBannerFileChange(e: Event) {
     @pointerup="onBannerPointerUp"
     @pointerleave="onBannerPointerUp"
   >
-    <!-- Banner image -->
-    <img
-      v-if="trip.state.trip.bannerUrl"
-      :src="trip.state.trip.bannerUrl"
-      :style="`object-position: ${trip.state.trip.bannerPosition ?? '50% 50%'}`"
-      class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
-      draggable="false"
-      fetchpriority="high"
-      alt=""
-    />
-
-    <!-- Gradient overlay -->
-    <div
-      v-if="trip.state.trip.bannerUrl"
-      class="absolute inset-0 pointer-events-none"
-      style="background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 60%, transparent 100%)"
-    />
+    <!-- Banner background: clipped in its own container so the dropdown can overflow the header -->
+    <div v-if="trip.state.trip.bannerUrl" class="absolute inset-0 overflow-hidden pointer-events-none">
+      <img
+        :src="trip.state.trip.bannerUrl"
+        :style="`object-position: ${trip.state.trip.bannerPosition ?? '50% 50%'}`"
+        class="absolute inset-0 w-full h-full object-cover select-none"
+        draggable="false"
+        alt=""
+      />
+      <div
+        class="absolute inset-0"
+        style="background: linear-gradient(to bottom, rgba(0,0,0,0.5) 0%, rgba(0,0,0,0.25) 60%, transparent 100%)"
+      />
+    </div>
 
     <!-- Pexels attribution (only when bannerPhotographer is set — i.e. Pexels photos, not custom uploads) -->
     <a
