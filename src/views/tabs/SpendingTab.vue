@@ -6,45 +6,62 @@ const trip = useTripStore()
 const totalParticipants = computed(() => trip.state.friends.length || trip.state.attendance.adults + trip.state.attendance.kids)
 
 const CATS = [
-  { key: 'Transport', color: '#60a5fa', light: '#dbeafe', text: 'text-blue-600'    },
-  { key: 'Lodging',   color: '#34d399', light: '#d1fae5', text: 'text-emerald-600' },
-  { key: 'Food',      color: '#fbbf24', light: '#fef3c7', text: 'text-amber-600'   },
-  { key: 'Activity',  color: '#a78bfa', light: '#ede9fe', text: 'text-violet-600'  },
+  { key: 'Transport', color: '#60a5fa', light: '#dbeafe' },
+  { key: 'Lodging',   color: '#34d399', light: '#d1fae5' },
+  { key: 'Food',      color: '#fbbf24', light: '#fef3c7' },
+  { key: 'Activity',  color: '#a78bfa', light: '#ede9fe' },
 ]
 
 const breakdown = computed(() => CATS.map(c => {
-  const inCat = trip.state.events.filter(e => e.category === c.key)
-  const total = inCat.reduce((s, e) => s + (e.perPerson ? e.cost * totalParticipants.value : e.cost), 0)
-  return { ...c, total, count: inCat.length }
+  const events = trip.state.events.filter(e => e.category === c.key)
+  const total = events.reduce((s, e) => s + (e.perPerson ? e.cost * totalParticipants.value : e.cost), 0)
+  return { ...c, total, count: events.length, events }
 }))
 
 const grand = computed(() => breakdown.value.reduce((s, b) => s + b.total, 0))
-const activeSlice = ref<string | null>(null)
+
+// hover = donut ring interaction; selected = click to drill down
+const hovered = ref<string | null>(null)
+const selected = ref<string | null>(null)
+
+function toggleSelected(key: string) {
+  selected.value = selected.value === key ? null : key
+  hovered.value = null
+}
+
+const activeKey = computed(() => hovered.value ?? selected.value)
+const activeSlice = computed(() => activeKey.value ? breakdown.value.find(b => b.key === activeKey.value) ?? null : null)
+
+const selectedBreakdown = computed(() =>
+  selected.value ? breakdown.value.find(b => b.key === selected.value) ?? null : null
+)
 
 function fmt(n: number) { return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n) }
 function pct(n: number) { return grand.value > 0 ? Math.round(n / grand.value * 100) : 0 }
 
-// Donut chart — r=80, circumference = 2π×80 ≈ 502.65
+// Donut — r=80, enforce minimum arc of 12px so tiny slices stay clickable
 const R = 80
 const CIRC = 2 * Math.PI * R
-const GAP = 3 // gap between slices in px
+const GAP = 3
+const MIN_ARC = 12
 
 const slices = computed(() => {
-  let offset = -CIRC / 4 // start at 12 o'clock
-  return breakdown.value
-    .filter(b => b.total > 0)
-    .map(b => {
-      const fraction = b.total / grand.value
-      const dash = Math.max(0, fraction * CIRC - GAP)
-      const slice = { ...b, dash, gap: CIRC - dash, offset }
-      offset += fraction * CIRC
-      return slice
-    })
-})
+  const active = breakdown.value.filter(b => b.total > 0)
+  // First pass: compute raw fractions and apply minimum arc
+  const raw = active.map(b => ({ ...b, raw: b.total / grand.value }))
+  const totalMinArc = raw.filter(b => b.raw * CIRC < MIN_ARC).length * MIN_ARC
+  const remaining = CIRC - totalMinArc - GAP * raw.length
+  const scaleFactor = remaining / raw.filter(b => b.raw * CIRC >= MIN_ARC).reduce((s, b) => s + b.raw * CIRC, 0) || 1
 
-const hoveredSlice = computed(() =>
-  activeSlice.value ? breakdown.value.find(b => b.key === activeSlice.value) ?? null : null
-)
+  let offset = -CIRC / 4
+  return raw.map(b => {
+    const arcLen = b.raw * CIRC < MIN_ARC ? MIN_ARC : b.raw * CIRC * scaleFactor
+    const dash = Math.max(0, arcLen - GAP)
+    const slice = { ...b, dash, gap: CIRC - dash, offset }
+    offset += arcLen
+    return slice
+  })
+})
 </script>
 
 <template>
@@ -61,40 +78,37 @@ const hoveredSlice = computed(() =>
         <span class="text-xs text-slate-400">{{ trip.state.events.length }} events</span>
       </div>
 
-      <!-- Donut + legend row -->
+      <!-- Donut + legend -->
       <div class="flex flex-col sm:flex-row items-center gap-8">
 
-        <!-- Donut chart -->
+        <!-- Donut -->
         <div class="relative shrink-0" style="width:200px;height:200px">
           <svg width="200" height="200" viewBox="0 0 200 200">
-            <!-- Background ring -->
             <circle cx="100" cy="100" :r="R" fill="none"
               class="stroke-slate-100 dark:stroke-[#253047]" stroke-width="28" />
-            <!-- Slices -->
             <circle v-for="s in slices" :key="s.key"
               cx="100" cy="100" :r="R" fill="none"
               :stroke="s.color"
-              :stroke-width="activeSlice === s.key ? 32 : 28"
-              :stroke-dasharray="`${s.dash} ${s.gap}`"
-              :stroke-dashoffset="-s.offset"
-              stroke-linecap="round"
-              style="transition:stroke-width 0.15s,opacity 0.15s"
               :style="{
+                strokeWidth: activeKey === s.key ? '34' : '28',
                 strokeDasharray: `${s.dash} ${s.gap}`,
                 strokeDashoffset: String(-s.offset),
-                opacity: activeSlice && activeSlice !== s.key ? 0.35 : 1,
+                opacity: activeKey && activeKey !== s.key ? 0.3 : 1,
+                transition: 'stroke-width 0.15s, opacity 0.15s',
+                cursor: 'pointer',
               }"
-              @mouseenter="activeSlice = s.key"
-              @mouseleave="activeSlice = null"
-              class="cursor-pointer"
+              stroke-linecap="round"
+              @mouseenter="hovered = s.key"
+              @mouseleave="hovered = null"
+              @click="toggleSelected(s.key)"
             />
           </svg>
-          <!-- Centre label -->
+          <!-- Centre -->
           <div class="absolute inset-0 flex flex-col items-center justify-center pointer-events-none">
-            <template v-if="hoveredSlice">
-              <p class="text-lg font-black text-slate-800 dark:text-slate-100 leading-none">${{ fmt(hoveredSlice.total) }}</p>
-              <p class="text-xs text-slate-400 mt-1">{{ hoveredSlice.key }}</p>
-              <p class="text-xs font-bold mt-0.5" :style="`color:${hoveredSlice.color}`">{{ pct(hoveredSlice.total) }}%</p>
+            <template v-if="activeSlice">
+              <p class="text-lg font-black text-slate-800 dark:text-slate-100 leading-none">${{ fmt(activeSlice.total) }}</p>
+              <p class="text-xs text-slate-400 mt-0.5">{{ activeSlice.key }}</p>
+              <p class="text-xs font-bold mt-0.5" :style="`color:${activeSlice.color}`">{{ pct(activeSlice.total) }}%</p>
             </template>
             <template v-else>
               <p class="text-2xl font-black text-slate-800 dark:text-slate-100 leading-none">${{ fmt(grand) }}</p>
@@ -104,25 +118,27 @@ const hoveredSlice = computed(() =>
         </div>
 
         <!-- Legend -->
-        <div class="flex-1 w-full space-y-3">
-          <div v-for="b in breakdown.filter(b => b.total > 0)" :key="b.key"
-            class="flex items-center gap-3 cursor-pointer rounded-xl px-3 py-2.5 transition-colors"
-            :class="activeSlice === b.key ? 'bg-slate-50 dark:bg-[#1e2535]' : 'hover:bg-slate-50 dark:hover:bg-[#1e2535]'"
-            @mouseenter="activeSlice = b.key"
-            @mouseleave="activeSlice = null">
-            <!-- Color dot -->
+        <div class="flex-1 w-full space-y-1.5">
+          <button v-for="b in breakdown.filter(b => b.total > 0)" :key="b.key"
+            class="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors text-left"
+            :class="selected === b.key
+              ? 'ring-1 ring-offset-0'
+              : 'hover:bg-slate-50 dark:hover:bg-[#1e2535]'"
+            :style="selected === b.key ? `background:${b.light};ring-color:${b.color}` : ''"
+            @mouseenter="hovered = b.key"
+            @mouseleave="hovered = null"
+            @click="toggleSelected(b.key)">
             <span class="w-3 h-3 rounded-full shrink-0" :style="`background:${b.color}`"></span>
-            <!-- Label + count -->
             <span class="text-sm font-medium text-slate-700 dark:text-slate-300 flex-1">{{ b.key }}</span>
             <span class="text-xs text-slate-400">{{ b.count }} event{{ b.count !== 1 ? 's' : '' }}</span>
-            <!-- Pct + amount -->
             <div class="text-right">
               <span class="text-sm font-bold text-slate-700 dark:text-slate-200">${{ fmt(b.total) }}</span>
               <span class="text-xs text-slate-400 ml-1.5">{{ pct(b.total) }}%</span>
             </div>
-          </div>
+            <svg v-if="selected === b.key" width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="shrink-0 text-slate-400"><polyline points="18 15 12 9 6 15"/></svg>
+            <svg v-else width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="shrink-0 text-slate-300"><polyline points="6 9 12 15 18 9"/></svg>
+          </button>
 
-          <!-- Zero categories dimmed -->
           <div v-for="b in breakdown.filter(b => b.total === 0)" :key="b.key + '-zero'"
             class="flex items-center gap-3 px-3 py-2 opacity-30">
             <span class="w-3 h-3 rounded-full shrink-0 bg-slate-200 dark:bg-slate-600"></span>
@@ -132,5 +148,41 @@ const hoveredSlice = computed(() =>
         </div>
       </div>
     </div>
+
+    <!-- Drill-down expense list -->
+    <Transition name="fade">
+      <div v-if="selectedBreakdown" class="bg-white dark:bg-[#1a1f2e] rounded-2xl border border-slate-100 dark:border-[#2a3347] shadow-sm overflow-hidden">
+        <!-- Header -->
+        <div class="flex items-center gap-3 px-6 py-4 border-b border-slate-100 dark:border-[#2a3347]"
+          :style="`background:${selectedBreakdown.light}`">
+          <span class="w-3 h-3 rounded-full shrink-0" :style="`background:${selectedBreakdown.color}`"></span>
+          <span class="text-sm font-bold text-slate-800">{{ selectedBreakdown.key }}</span>
+          <span class="text-xs text-slate-500 ml-1">{{ selectedBreakdown.count }} event{{ selectedBreakdown.count !== 1 ? 's' : '' }}</span>
+          <span class="ml-auto text-sm font-black text-slate-800">${{ fmt(selectedBreakdown.total) }}</span>
+          <button @click="selected = null" class="ml-2 w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 hover:bg-black/5 transition-all">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+          </button>
+        </div>
+        <!-- Events -->
+        <div class="divide-y divide-slate-50 dark:divide-[#2a3347]">
+          <div v-for="e in selectedBreakdown.events" :key="e.id"
+            class="flex items-center gap-4 px-6 py-3.5">
+            <div class="flex-1 min-w-0">
+              <p class="text-sm font-semibold text-slate-800 dark:text-slate-200 truncate">{{ e.name }}</p>
+              <p v-if="e.date" class="text-xs text-slate-400 mt-0.5">
+                {{ new Date(e.date + 'T00:00:00').toLocaleDateString('en-US', { month: 'short', day: 'numeric' }) }}
+                <span v-if="e.time"> · {{ e.time }}</span>
+                <span v-if="e.perPerson" class="ml-1.5 px-1.5 py-0.5 rounded-full bg-slate-100 dark:bg-[#1e2535] text-slate-500 text-[10px] font-semibold">Per person</span>
+              </p>
+              <p v-if="e.notes" class="text-xs text-slate-400 mt-1 line-clamp-1 pl-2 border-l-2 border-slate-100 dark:border-[#2a3347]">{{ e.notes }}</p>
+            </div>
+            <div class="text-right shrink-0">
+              <p class="text-sm font-bold text-slate-700 dark:text-slate-300">${{ fmt(e.perPerson ? e.cost * totalParticipants : e.cost) }}</p>
+              <p v-if="e.perPerson && totalParticipants > 1" class="text-[11px] text-slate-400">${{ fmt(e.cost) }}/pp</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </Transition>
   </div>
 </template>
