@@ -147,15 +147,15 @@ function onDestInput() {
       const d = await r.json()
       const seen = new Set<string>()
       destSuggestions.value = (d.features || [])
-        .filter((f: any) => f.properties.name)
-        .map((f: any) => {
+        .filter((f: { properties: { name?: string } }) => f.properties.name)
+        .map((f: { properties: Record<string, string>; geometry: { coordinates: [number, number] } }) => {
           const p = f.properties
           const parts = [p.name]
           if (p.state && p.state !== p.name) parts.push(p.state)
           if (p.country) parts.push(p.country)
           return { label: parts.join(', '), lat: f.geometry.coordinates[1], lon: f.geometry.coordinates[0] }
         })
-        .filter((s: any) => { if (seen.has(s.label)) return false; seen.add(s.label); return true })
+        .filter((s: { label: string }) => { if (seen.has(s.label)) return false; seen.add(s.label); return true })
         .slice(0, 5)
     } catch {}
     destSearching.value = false

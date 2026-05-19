@@ -115,7 +115,7 @@ async function removePayment(id: string) {
         <input v-model="newFriendName" @keydown.enter="addFriendLocal" type="text" placeholder="Add a name…" maxlength="50"
           class="flex-1 min-w-0 px-3.5 py-2.5 border border-slate-200 dark:border-hairline rounded-xl text-sm bg-white dark:bg-inset text-slate-700 dark:text-slate-200 placeholder-slate-300 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500" />
         <button @click="addFriendLocal" :disabled="!newFriendName.trim()"
-          class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 transition-colors disabled:opacity-40" style="background:#0d9488">
+          class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 transition-colors disabled:opacity-40 bg-teal-600 hover:bg-teal-700">
           <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
         </button>
       </div>
@@ -141,7 +141,7 @@ async function removePayment(id: string) {
 
     <!-- Log a payment -->
     <div class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm overflow-hidden">
-      <div class="px-6 pt-5 pb-4 bg-gradient-to-r from-teal-50 via-cyan-50 to-teal-50 dark:from-[#1e2535] dark:via-[#1e2535] dark:to-[#1e2535] border-b border-dashed border-teal-100 dark:border-hairline">
+      <div class="px-6 pt-5 pb-4 bg-gradient-to-r from-teal-50 via-cyan-50 to-teal-50 dark:from-inset dark:via-inset dark:to-inset border-b border-dashed border-teal-100 dark:border-hairline">
         <div class="flex items-center justify-between">
           <h2 class="eyebrow text-teal-700 dark:text-teal-400">{{ editingPaymentId ? '✏️ Edit Expense' : '🧾 Log an Expense' }}</h2>
           <button v-if="editingPaymentId" @click="cancelEdit" class="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-800 font-medium">Cancel</button>
@@ -233,8 +233,7 @@ async function removePayment(id: string) {
           <!-- Submit -->
           <button @click="addPayment"
             :disabled="!newPayment.paidById || !(newPayment.amount > 0) || newPayment.splitAmong.length === 0 || !splitValid"
-            class="w-full py-3 text-white text-sm font-bold rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed transition-all shadow-md"
-            style="background:#0d9488;box-shadow:0 4px 12px rgba(20,184,166,.35)">
+            class="w-full py-3 text-white text-sm font-bold rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed transition-all bg-teal-600 hover:bg-teal-700 shadow-[0_4px_12px_rgba(20,184,166,.35)]">
             {{ editingPaymentId ? '✓ Update Expense' : '+ Log Expense' }}
           </button>
         </div>

@@ -205,8 +205,7 @@ function removeEvent(id: string) { trip.removeEvent(id) }
       </div>
 
       <button @click="addEvent" :disabled="!newEvent.name.trim()"
-        :class="['w-full py-2.5 rounded-full text-sm font-semibold text-white disabled:opacity-40 transition-all', addSuccess ? 'bg-emerald-500' : 'hover:opacity-90']"
-        :style="addSuccess ? '' : 'background:#0d9488;box-shadow:0 2px 8px rgba(20,184,166,.35)'">
+        :class="['w-full py-2.5 rounded-full text-sm font-semibold text-white disabled:opacity-40 transition-all', addSuccess ? 'bg-emerald-500' : 'bg-teal-600 hover:bg-teal-700 shadow-[0_2px_8px_rgba(20,184,166,.35)]']">
         {{ addSuccess ? '✓ Added to your itinerary!' : 'Add to Itinerary' }}
       </button>
     </div>
