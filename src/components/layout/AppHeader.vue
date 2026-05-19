@@ -137,7 +137,7 @@ async function onBannerFileChange(e: Event) {
 
 <template>
   <header
-    class="relative shrink-0 overflow-hidden transition-[height] duration-300"
+    class="relative shrink-0 transition-[height] duration-300"
     :class="!trip.state.trip.bannerUrl
       ? 'bg-white dark:bg-[#1a1f2e] border-b border-slate-100 dark:border-[#2a3347]'
       : repositionMode ? 'cursor-grab' : 'cursor-default'"
