@@ -141,19 +141,61 @@ function addEvent() {
 }
 
 function removeEvent(id: string) { trip.removeEvent(id) }
-function exportPDF() { window.print() }
+
+function esc(s: string) {
+  return s.replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;')
+}
+
+function exportPDF() {
+  const dest = esc(trip.state.trip.destination || 'Trip Itinerary')
+  const s = trip.state.trip.startDate ? fmtDate(trip.state.trip.startDate) : ''
+  const e = trip.state.trip.endDate ? fmtDate(trip.state.trip.endDate) : ''
+  const dateRange = s ? (e && e !== s ? `${s} – ${e}` : s) : ''
+
+  const catColor: Record<string, string> = {
+    Transport: '#2563eb', Lodging: '#059669', Food: '#d97706', Activity: '#7c3aed',
+  }
+
+  let rows = ''
+  for (const group of groupedEvents.value) {
+    rows += `<tr>
+      <td colspan="2" style="padding:20px 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#64748b;border-bottom:1.5px solid #e2e8f0">${esc(group.label)}</td>
+      <td style="padding:20px 0 6px;font-size:11px;font-weight:700;color:#94a3b8;text-align:right;border-bottom:1.5px solid #e2e8f0">$${fmt(group.total)}</td>
+    </tr>`
+    for (const ev of group.events) {
+      const costText = ev.perPerson
+        ? `$${fmt(ev.cost)}<span style="font-size:11px;color:#94a3b8;font-weight:400">/pp</span>`
+        : ev.cost > 0 ? `$${fmt(ev.cost)}` : '—'
+      rows += `<tr>
+        <td style="padding:10px 12px 10px 0;width:84px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:${catColor[ev.category]??'#64748b'};vertical-align:top;border-bottom:1px solid #f8fafc">${esc(ev.category)}</td>
+        <td style="padding:10px 0;font-size:14px;vertical-align:top;border-bottom:1px solid #f8fafc">
+          ${ev.url ? `<a href="${esc(ev.url)}" style="color:#0d9488;font-weight:600;text-decoration:none">${esc(ev.name)}</a>` : `<strong>${esc(ev.name)}</strong>`}
+          ${ev.time ? `<span style="font-size:12px;color:#94a3b8"> · ${esc(ev.time)}</span>` : ''}
+          ${ev.notes ? `<div style="font-size:12px;color:#64748b;font-style:italic;margin-top:3px">${esc(ev.notes)}</div>` : ''}
+        </td>
+        <td style="padding:10px 0;font-size:14px;font-weight:700;color:#0f172a;text-align:right;white-space:nowrap;width:72px;vertical-align:top;border-bottom:1px solid #f8fafc">${costText}</td>
+      </tr>`
+    }
+  }
+
+  const totalCost = groupedEvents.value.reduce((s, g) => s + g.total, 0)
+  const html = `<!DOCTYPE html><html lang="en"><head><meta charset="UTF-8">
+<title>${dest} — Itinerary</title>
+<style>*{box-sizing:border-box;margin:0;padding:0}body{font-family:Georgia,serif;color:#1e293b;padding:48px 40px;max-width:720px;margin:0 auto}@media print{@page{margin:1.5cm}body{padding:0}}table{width:100%;border-collapse:collapse}</style>
+</head><body>
+<h1 style="font-size:26px;font-weight:700;color:#0f172a;letter-spacing:-.02em">${dest}</h1>
+${dateRange ? `<p style="font-size:14px;color:#64748b;margin-top:4px">${dateRange}</p>` : ''}
+<table style="margin-top:32px">${rows}</table>
+${totalCost > 0 ? `<p style="margin-top:20px;font-size:13px;font-weight:700;color:#0f172a;text-align:right;border-top:2px solid #0f172a;padding-top:8px">Total: $${fmt(totalCost)}</p>` : ''}
+</body></html>`
+
+  const win = window.open('', '_blank')
+  if (win) { win.document.write(html); win.document.close() }
+}
 </script>
 
 <template>
   <div class="space-y-5 anim-fade-up">
-
-    <!-- Print-only trip header -->
-    <div class="hidden print:block mb-2">
-      <h1 class="text-2xl font-bold text-slate-900">{{ trip.state.trip.destination || 'Trip Itinerary' }}</h1>
-      <p v-if="trip.state.trip.startDate" class="text-sm text-slate-500 mt-0.5">
-        {{ fmtDate(trip.state.trip.startDate) }}<template v-if="trip.state.trip.endDate"> — {{ fmtDate(trip.state.trip.endDate) }}</template>
-      </p>
-    </div>
 
     <!-- Collapsed add bar — shown when events exist and form is not open -->
     <div v-if="trip.state.events.length > 0 && !formExpanded"
