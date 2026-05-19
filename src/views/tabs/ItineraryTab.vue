@@ -145,7 +145,8 @@ function removeEvent(id: string) { trip.removeEvent(id) }
 
     <!-- Add event form -->
     <div class="bg-white dark:bg-[#1a1f2e] rounded-2xl border border-slate-100 dark:border-[#2a3347] shadow-sm p-6">
-      <input v-model="newEvent.name" @keydown.enter="addEvent" type="text" maxlength="120"
+      <label for="event-name" class="sr-only">Event name</label>
+      <input id="event-name" v-model="newEvent.name" @keydown.enter="addEvent" type="text" maxlength="120"
         placeholder="What's the plan? e.g. Eiffel Tower visit"
         class="w-full text-xl font-semibold bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 placeholder-slate-300 dark:placeholder-slate-600 mb-5" />
 
@@ -398,7 +399,7 @@ function removeEvent(id: string) { trip.removeEvent(id) }
                         <p class="font-bold text-slate-700 dark:text-slate-300 text-sm">${{ fmt(event.perPerson ? event.cost * totalParticipants : event.cost) }}</p>
                         <p v-if="event.perPerson && totalParticipants > 1" class="text-[11px] text-slate-400 mt-0.5">${{ fmt(event.cost) }}/pp</p>
                       </div>
-                      <div class="flex flex-col gap-0.5 shrink-0 opacity-0 group-hover:opacity-100 transition-all">
+                      <div class="flex flex-col gap-0.5 shrink-0 lg:opacity-0 lg:group-hover:opacity-100 transition-all">
                         <a :href="`https://maps.google.com/?q=${encodeURIComponent(event.name + (trip.state.trip.destination ? ' ' + trip.state.trip.destination : ''))}`"
                           target="_blank" rel="noopener"
                           class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all">

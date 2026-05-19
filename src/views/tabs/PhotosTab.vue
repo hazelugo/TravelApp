@@ -13,6 +13,7 @@ const photoError = ref('')
 const photoJustUploaded = ref(false)
 const lightboxPhoto = ref<Photo | null>(null)
 const lightboxEl = ref<HTMLElement | null>(null)
+const lightboxCloseBtn = ref<HTMLElement | null>(null)
 const photoCopied = ref(false)
 const canShare = typeof navigator !== 'undefined' && !!navigator.share
 
@@ -26,6 +27,10 @@ async function uploadPhoto(event: Event) {
   const file = (event.target as HTMLInputElement).files?.[0]
   if (!file) return
   ;(event.target as HTMLInputElement).value = ''
+  if (file.size > 10 * 1024 * 1024) {
+    photoError.value = 'File too large — maximum 10 MB per photo.'
+    return
+  }
   photoUploading.value = true
   photoError.value = ''
   try {
@@ -59,7 +64,7 @@ async function removePhoto(photo: Photo) {
 
 function openLightbox(photo: Photo) {
   lightboxPhoto.value = photo
-  nextTick(() => lightboxEl.value?.focus())
+  nextTick(() => lightboxCloseBtn.value?.focus())
 }
 function closeLightbox() { lightboxPhoto.value = null }
 function lightboxPrev() { const i = lightboxIndex.value; if (i > 0) lightboxPhoto.value = trip.state.photos[i - 1] }
@@ -119,8 +124,12 @@ async function sharePhoto(photo: Photo) {
     <!-- Photo grid -->
     <TransitionGroup v-else name="fade" tag="div" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
       <div v-for="photo in trip.state.photos" :key="photo.id"
+        role="button" tabindex="0"
+        :aria-label="photo.caption || 'Trip photo — click to view'"
         @click="openLightbox(photo)"
-        class="group relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#1e2535] shadow-sm cursor-zoom-in" style="aspect-ratio:1">
+        @keydown.enter.prevent="openLightbox(photo)"
+        @keydown.space.prevent="openLightbox(photo)"
+        class="group relative rounded-2xl overflow-hidden bg-slate-100 dark:bg-[#1e2535] shadow-sm cursor-zoom-in focus:outline-none focus:ring-2 focus:ring-teal-500 focus:ring-offset-2" style="aspect-ratio:1">
         <img :src="photo.url" loading="lazy" decoding="async"
           class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105" :alt="photo.caption || 'Trip photo'" />
         <div class="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent opacity-0 group-hover:opacity-100 transition-opacity flex flex-col justify-end p-3">
@@ -142,7 +151,7 @@ async function sharePhoto(photo: Photo) {
           @keydown.escape="closeLightbox" @keydown.arrow-left="lightboxPrev" @keydown.arrow-right="lightboxNext"
           @click.self="closeLightbox">
           <!-- Close -->
-          <button @click="closeLightbox" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors z-10">
+          <button ref="lightboxCloseBtn" @click="closeLightbox" class="absolute top-4 right-4 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors z-10" aria-label="Close">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
           <!-- Prev -->

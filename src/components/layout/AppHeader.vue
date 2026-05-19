@@ -27,8 +27,7 @@ const copiedTripId = ref<string | null>(null)
 
 const TAB_META: Record<string, { label: string; desc: string }> = {
   overview:   { label: 'Overview',  desc: 'Trip summary and totals' },
-  attendance: { label: 'Group',     desc: "Who's coming" },
-  itinerary:  { label: 'Itinerary', desc: 'Events and activities' },
+itinerary:  { label: 'Itinerary', desc: 'Events and activities' },
   analytics:  { label: 'Spending',  desc: 'Where your money is going' },
   splitter:   { label: 'Splitter',  desc: 'Settle who owes what' },
   photos:     { label: 'Photos',    desc: 'Trip photo wall' },

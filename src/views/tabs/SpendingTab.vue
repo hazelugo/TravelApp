@@ -1,15 +1,17 @@
 <script setup lang="ts">
 import { computed, ref } from 'vue'
 import { useTripStore } from '@/stores/trips'
+import { useUIStore } from '@/stores/ui'
 
 const trip = useTripStore()
+const ui = useUIStore()
 const totalParticipants = computed(() => trip.state.friends.length || trip.state.attendance.adults + trip.state.attendance.kids)
 
 const CATS = [
-  { key: 'Transport', color: '#60a5fa', light: '#dbeafe' },
-  { key: 'Lodging',   color: '#34d399', light: '#d1fae5' },
-  { key: 'Food',      color: '#fbbf24', light: '#fef3c7' },
-  { key: 'Activity',  color: '#a78bfa', light: '#ede9fe' },
+  { key: 'Transport', color: '#60a5fa', light: '#dbeafe', darkBg: 'rgba(96,165,250,0.12)',  darkText: '#93c5fd' },
+  { key: 'Lodging',   color: '#34d399', light: '#d1fae5', darkBg: 'rgba(52,211,153,0.12)',  darkText: '#6ee7b7' },
+  { key: 'Food',      color: '#fbbf24', light: '#fef3c7', darkBg: 'rgba(251,191,36,0.12)',  darkText: '#fcd34d' },
+  { key: 'Activity',  color: '#a78bfa', light: '#ede9fe', darkBg: 'rgba(167,139,250,0.12)', darkText: '#c4b5fd' },
 ]
 
 const breakdown = computed(() => CATS.map(c => {
@@ -154,11 +156,11 @@ const slices = computed(() => {
       <div v-if="selectedBreakdown" class="bg-white dark:bg-[#1a1f2e] rounded-2xl border border-slate-100 dark:border-[#2a3347] shadow-sm overflow-hidden">
         <!-- Header -->
         <div class="flex items-center gap-3 px-6 py-4 border-b border-slate-100 dark:border-[#2a3347]"
-          :style="`background:${selectedBreakdown.light}`">
+          :style="`background:${ui.darkMode ? selectedBreakdown.darkBg : selectedBreakdown.light}`">
           <span class="w-3 h-3 rounded-full shrink-0" :style="`background:${selectedBreakdown.color}`"></span>
-          <span class="text-sm font-bold text-slate-800">{{ selectedBreakdown.key }}</span>
-          <span class="text-xs text-slate-500 ml-1">{{ selectedBreakdown.count }} event{{ selectedBreakdown.count !== 1 ? 's' : '' }}</span>
-          <span class="ml-auto text-sm font-black text-slate-800">${{ fmt(selectedBreakdown.total) }}</span>
+          <span class="text-sm font-bold text-slate-800 dark:text-slate-100">{{ selectedBreakdown.key }}</span>
+          <span class="text-xs text-slate-500 dark:text-slate-400 ml-1">{{ selectedBreakdown.count }} event{{ selectedBreakdown.count !== 1 ? 's' : '' }}</span>
+          <span class="ml-auto text-sm font-black text-slate-800 dark:text-slate-100">${{ fmt(selectedBreakdown.total) }}</span>
           <button @click="selected = null" class="ml-2 w-7 h-7 flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-600 hover:bg-black/5 transition-all">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>

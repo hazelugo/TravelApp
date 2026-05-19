@@ -132,7 +132,7 @@ async function removePayment(id: string) {
           </div>
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate w-full text-center">{{ f.name }}</span>
           <button @click="trip.removeFriend(f.id)"
-            class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white dark:bg-[#1a1f2e] text-slate-300 hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 shadow-sm transition-all opacity-0 group-hover:opacity-100 flex items-center justify-center">
+            class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-white dark:bg-[#1a1f2e] text-slate-300 hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 shadow-sm transition-all lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
@@ -328,10 +328,10 @@ async function removePayment(id: string) {
             <span :class="['text-base font-bold tabular-nums', payment.settled ? 'text-slate-400' : 'text-slate-800 dark:text-slate-200']">
               ${{ fmt(payment.amount) }}
             </span>
-            <button @click="editPayment(payment)" class="opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all">
+            <button @click="editPayment(payment)" class="lg:opacity-0 lg:group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
-            <button @click="removePayment(payment.id)" class="opacity-0 group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all">
+            <button @click="removePayment(payment.id)" class="lg:opacity-0 lg:group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>
