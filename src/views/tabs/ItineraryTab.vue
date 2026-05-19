@@ -157,23 +157,25 @@ function exportPDF() {
   }
 
   let rows = ''
+  let rowIdx = 0
   for (const group of groupedEvents.value) {
     rows += `<tr>
       <td colspan="2" style="padding:20px 0 6px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.1em;color:#64748b;border-bottom:1.5px solid #e2e8f0">${esc(group.label)}</td>
       <td style="padding:20px 0 6px;font-size:11px;font-weight:700;color:#94a3b8;text-align:right;border-bottom:1.5px solid #e2e8f0">$${fmt(group.total)}</td>
     </tr>`
     for (const ev of group.events) {
+      const rowBg = rowIdx++ % 2 === 0 ? '#f8fafc' : '#ffffff'
       const costText = ev.perPerson
         ? `$${fmt(ev.cost)}<span style="font-size:11px;color:#94a3b8;font-weight:400">/pp</span>`
         : ev.cost > 0 ? `$${fmt(ev.cost)}` : '—'
-      rows += `<tr>
-        <td style="padding:10px 12px 10px 0;width:84px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:${catColor[ev.category]??'#64748b'};vertical-align:top;border-bottom:1px solid #f8fafc">${esc(ev.category)}</td>
-        <td style="padding:10px 0;font-size:14px;vertical-align:top;border-bottom:1px solid #f8fafc">
+      rows += `<tr style="background:${rowBg}">
+        <td style="padding:10px 12px 10px 8px;width:84px;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:${catColor[ev.category]??'#64748b'};vertical-align:top">${esc(ev.category)}</td>
+        <td style="padding:10px 0;font-size:14px;vertical-align:top">
           ${ev.url ? `<a href="${esc(ev.url)}" style="color:#0d9488;font-weight:600;text-decoration:none">${esc(ev.name)}</a>` : `<strong>${esc(ev.name)}</strong>`}
           ${ev.time ? `<span style="font-size:12px;color:#94a3b8"> · ${esc(ev.time)}</span>` : ''}
           ${ev.notes ? `<div style="font-size:12px;color:#64748b;font-style:italic;margin-top:3px">${esc(ev.notes)}</div>` : ''}
         </td>
-        <td style="padding:10px 0;font-size:14px;font-weight:700;color:#0f172a;text-align:right;white-space:nowrap;width:72px;vertical-align:top;border-bottom:1px solid #f8fafc">${costText}</td>
+        <td style="padding:10px 8px 10px 0;font-size:14px;font-weight:700;color:#0f172a;text-align:right;white-space:nowrap;width:72px;vertical-align:top">${costText}</td>
       </tr>`
     }
   }
