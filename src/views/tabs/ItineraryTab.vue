@@ -25,7 +25,7 @@ function saveEdit() {
 function cancelEdit() { editingId.value = null }
 
 // ── View toggle ───────────────────────────────────────────────────────────
-const groupByDay = ref(false)
+const groupByDay = ref(true)
 
 // ── Drag to reorder ───────────────────────────────────────────────────────
 const draggedId = ref<string | null>(null)
@@ -405,12 +405,12 @@ function exportPDF() { window.print() }
             <span class="text-xs font-semibold text-slate-400 ml-3 whitespace-nowrap">${{ fmt(group.total) }}</span>
           </div>
           <div class="relative">
-            <div class="absolute left-4 top-0 bottom-0 w-px bg-slate-200 dark:bg-[#2a3347]"></div>
+            <div class="absolute left-5 top-0 bottom-0 w-px bg-slate-200 dark:bg-[#2a3347]"></div>
             <div class="space-y-1">
               <div v-for="event in group.events" :key="event.id" class="print-event-row relative flex items-start gap-0 group transition-all select-none py-2">
-                <div class="relative flex flex-col items-center shrink-0 z-10 mr-4" style="width:24px">
-                  <div :class="['w-5 h-5 rounded-full border-2 border-white dark:border-[#0f1117] shadow-sm flex items-center justify-center mt-2.5 shrink-0', CAT_COLORS[event.category]?.dot]">
-                    <svg width="10" height="10" aria-hidden="true"><use :href="`/icons.svg#${CAT_ICONS[event.category]}`"/></svg>
+                <div class="relative flex flex-col items-center shrink-0 z-10 mr-4" style="width:32px">
+                  <div :class="['w-8 h-8 rounded-full border-2 border-white dark:border-[#0f1117] shadow-sm flex items-center justify-center mt-2 shrink-0', CAT_COLORS[event.category]?.dot]">
+                    <svg width="18" height="18" aria-hidden="true"><use :href="`/icons.svg#${CAT_ICONS[event.category]}`"/></svg>
                   </div>
                 </div>
                 <div class="flex-1 min-w-0 bg-white dark:bg-[#1a1f2e] rounded-2xl border border-slate-100 dark:border-[#2a3347] shadow-sm px-4 py-3.5 hover:border-slate-200 hover:shadow-md transition-all mb-1">
