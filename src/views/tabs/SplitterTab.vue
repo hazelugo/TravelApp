@@ -189,7 +189,7 @@ async function removePayment(id: string) {
           <!-- Split among -->
           <div>
             <div class="flex items-center justify-between mb-2.5">
-              <label class="eyebrow">Split among</label>
+              <label class="eyebrow">Split with</label>
               <button @click="toggleAllSplit" class="text-xs text-teal-500 hover:text-teal-700 font-semibold">
                 {{ newPayment.splitAmong.length === trip.state.friends.length ? 'Deselect all' : 'Select all' }}
               </button>
@@ -227,7 +227,7 @@ async function removePayment(id: string) {
                 Total: {{ splitPercentageTotal }}%
                 <span v-if="!splitValid" class="ml-1">— must equal 100%</span>
               </span>
-              <button @click="redistributeEqual" class="text-xs text-indigo-400 hover:text-indigo-600 font-semibold">Reset equal</button>
+              <button @click="redistributeEqual" class="text-xs text-indigo-400 hover:text-indigo-600 font-semibold">Split evenly</button>
             </div>
           </div>
           <!-- Submit -->

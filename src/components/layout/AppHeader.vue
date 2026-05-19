@@ -81,7 +81,7 @@ function startNewTrip() {
   navigateToTrip(crypto.randomUUID())
 }
 
-const syncLabel: Record<string, string> = { saving: 'Saving…', saved: 'Saved', error: 'Error', idle: 'Saved' }
+const syncLabel: Record<string, string> = { saving: 'Saving…', saved: 'Saved', error: 'Save failed', idle: 'Saved' }
 const syncClass: Record<string, string> = {
   saving: 'bg-amber-50 text-amber-700',
   saved:  'bg-emerald-50 text-emerald-700',
