@@ -91,11 +91,22 @@ async function sharePhoto(photo: Photo) {
     <div class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-6">
       <h2 class="eyebrow mb-4">Add Photos</h2>
       <label class="block cursor-pointer">
-        <div :class="['border-2 border-dashed rounded-2xl p-8 text-center transition-colors',
-          photoUploading ? 'border-teal-200 bg-teal-50 dark:border-teal-800/40 dark:bg-teal-900/10' : 'border-slate-200 dark:border-hairline hover:border-teal-300 hover:bg-slate-50 dark:hover:bg-inset']">
+        <div :class="['border-2 border-dashed rounded-2xl text-center transition-colors',
+          photoUploading ? 'p-8 border-teal-200 bg-teal-50 dark:border-teal-800/40 dark:bg-teal-900/10' : !trip.state.photos.length ? 'py-12 px-8 border-slate-200 dark:border-hairline hover:border-teal-300 hover:bg-slate-50 dark:hover:bg-inset' : 'p-8 border-slate-200 dark:border-hairline hover:border-teal-300 hover:bg-slate-50 dark:hover:bg-inset']">
           <div v-if="photoUploading" class="flex flex-col items-center gap-2">
             <svg class="animate-spin text-teal-400" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
             <p class="text-sm text-teal-400 font-medium">Uploading…</p>
+          </div>
+          <div v-else-if="!trip.state.photos.length" class="flex flex-col items-center gap-3">
+            <p class="text-4xl select-none">📷</p>
+            <div>
+              <p class="text-sm font-semibold text-slate-600 dark:text-slate-300">Your wall is waiting</p>
+              <p class="text-xs text-slate-400 mt-1">Drop the first photo from the trip — this wall is yours to fill.</p>
+            </div>
+            <span class="mt-1 inline-flex items-center gap-1.5 px-3 py-1.5 rounded-full border border-slate-200 dark:border-hairline text-xs font-medium text-slate-500 dark:text-slate-400">
+              <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+              Any image format
+            </span>
           </div>
           <div v-else class="flex flex-col items-center gap-2">
             <svg class="text-slate-300" width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="3" y="3" width="18" height="18" rx="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/></svg>
@@ -114,15 +125,8 @@ async function sharePhoto(photo: Photo) {
       </Transition>
     </div>
 
-    <!-- Empty state -->
-    <div v-if="!trip.state.photos.length" class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-12 text-center">
-      <p class="text-4xl mb-3 select-none">📷</p>
-      <p class="text-sm font-medium text-slate-500 dark:text-slate-400">No memories yet.</p>
-      <p class="text-xs text-slate-400 mt-1">Upload photos as you go — this wall is yours to fill.</p>
-    </div>
-
     <!-- Photo grid -->
-    <TransitionGroup v-else name="fade" tag="div" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
+    <TransitionGroup v-if="trip.state.photos.length" name="fade" tag="div" class="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-4">
       <div v-for="photo in trip.state.photos" :key="photo.id"
         role="button" tabindex="0"
         :aria-label="photo.caption || 'Trip photo — click to view'"

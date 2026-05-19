@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, computed, reactive } from 'vue'
+import { ref, computed, reactive, nextTick } from 'vue'
 import { useTripStore } from '@/stores/trips'
 import type { TripEvent, EventCategory } from '@/types/domain'
 
@@ -8,6 +8,9 @@ const trip = useTripStore()
 // ── Form ──────────────────────────────────────────────────────────────────
 const newEvent = ref({ name: '', date: '', time: '', category: 'Activity' as EventCategory, cost: 0, perPerson: false, notes: '', url: '' })
 const addSuccess = ref(false)
+const formExpanded = ref(false)
+const nameInputRef = ref<HTMLInputElement | null>(null)
+function expandForm() { formExpanded.value = true; nextTick(() => nameInputRef.value?.focus()) }
 
 // ── Edit ──────────────────────────────────────────────────────────────────
 const editingId = ref<string | null>(null)
@@ -134,7 +137,7 @@ function addEvent() {
   trip.addEvent({ ...newEvent.value, name: newEvent.value.name.trim() })
   newEvent.value = { name: '', date: '', time: '', category: 'Activity', cost: 0, perPerson: false, notes: '', url: '' }
   addSuccess.value = true
-  setTimeout(() => { addSuccess.value = false }, 1200)
+  setTimeout(() => { addSuccess.value = false; formExpanded.value = false }, 1200)
 }
 
 function removeEvent(id: string) { trip.removeEvent(id) }
@@ -143,10 +146,27 @@ function removeEvent(id: string) { trip.removeEvent(id) }
 <template>
   <div class="space-y-5 anim-fade-up">
 
-    <!-- Add event form -->
-    <div class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-6">
+    <!-- Collapsed add bar — shown when events exist and form is not open -->
+    <div v-if="trip.state.events.length > 0 && !formExpanded"
+      @click="expandForm"
+      class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm px-5 py-3.5 flex items-center gap-3 cursor-text group hover:border-teal-200 dark:hover:border-teal-700 transition-all">
+      <div class="w-7 h-7 rounded-lg bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center shrink-0">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="text-teal-500"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+      </div>
+      <span class="text-sm text-slate-400 dark:text-slate-500 flex-1">What's next on the trip?</span>
+      <span class="text-xs text-slate-300 dark:text-slate-600 hidden sm:block">Click to add</span>
+    </div>
+
+    <!-- Full add form — always shown when no events, or when expanded -->
+    <div v-else class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-6">
+      <div v-if="trip.state.events.length > 0" class="flex items-center justify-between mb-4">
+        <p class="eyebrow text-teal-600 dark:text-teal-400">Add event</p>
+        <button @click="formExpanded = false" class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-300 hover:text-slate-500 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-inset transition-all" aria-label="Close form">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
+        </button>
+      </div>
       <label for="event-name" class="sr-only">Event name</label>
-      <input id="event-name" v-model="newEvent.name" @keydown.enter="addEvent" type="text" maxlength="120"
+      <input ref="nameInputRef" id="event-name" v-model="newEvent.name" @keydown.enter="addEvent" @keydown.escape="trip.state.events.length > 0 && (formExpanded = false)" type="text" maxlength="120"
         placeholder="What's the plan? e.g. Eiffel Tower visit"
         class="w-full text-xl font-semibold bg-transparent border-none outline-none text-slate-800 dark:text-slate-100 placeholder-slate-300 dark:placeholder-slate-600 mb-5" />
 
