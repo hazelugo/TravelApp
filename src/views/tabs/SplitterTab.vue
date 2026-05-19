@@ -10,6 +10,8 @@ const ui = useUIStore()
 const newPayment = reactive({ paidById: '', amount: 0, description: '', splitAmong: [] as string[], splitPercentages: {} as Record<string, number> })
 const editingPaymentId = ref<string | null>(null)
 const newFriendName = ref('')
+const AVATAR_COLORS = ['#6366f1', '#14b8a6', '#f59e0b', '#10b981', '#8b5cf6']
+const avatarColor = (id: string) => AVATAR_COLORS[trip.state.friends.findIndex(f => f.id === id) % 5]
 
 function addFriendLocal() {
   const n = newFriendName.value.trim()
@@ -125,7 +127,7 @@ async function removePayment(id: string) {
         <div v-for="f in trip.state.friends" :key="f.id"
           class="group relative flex flex-col items-center gap-2 p-3 rounded-2xl bg-slate-50 dark:bg-[#1e2535] hover:bg-teal-50 dark:hover:bg-[#253047] transition-colors">
           <div class="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold shadow-sm"
-            style="background:linear-gradient(135deg,#2dd4bf,#06b6d4)">
+            :style="`background:${avatarColor(f.id)}`">
             {{ friendInitial(f.name) }}
           </div>
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate w-full text-center">{{ f.name }}</span>
@@ -177,7 +179,7 @@ async function removePayment(id: string) {
                     : 'bg-slate-50 dark:bg-[#1e2535] border-slate-200 dark:border-[#2a3347] text-slate-600 dark:text-slate-400 hover:border-teal-300 hover:bg-teal-50 dark:hover:bg-[#253047] hover:text-teal-700']">
                 <span :class="['w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0',
                   newPayment.paidById === f.id ? 'bg-white/25 text-white' : 'text-white']"
-                  :style="newPayment.paidById !== f.id ? 'background:linear-gradient(135deg,#2dd4bf,#06b6d4)' : ''">
+                  :style="newPayment.paidById !== f.id ? `background:${avatarColor(f.id)}` : ''">
                   {{ friendInitial(f.name) }}
                 </span>
                 <span class="truncate max-w-[72px]">{{ f.name }}</span>
@@ -307,7 +309,7 @@ async function removePayment(id: string) {
           :class="payment.settled ? 'opacity-45' : ''">
           <div class="flex items-start gap-3.5 flex-1 min-w-0">
             <div :class="['w-10 h-10 rounded-full flex items-center justify-center text-white text-sm font-bold shrink-0 mt-0.5 shadow-sm']"
-              :style="payment.settled ? 'background:linear-gradient(135deg,#cbd5e1,#94a3b8)' : 'background:linear-gradient(135deg,#2dd4bf,#06b6d4)'">
+              :style="payment.settled ? 'background:linear-gradient(135deg,#cbd5e1,#94a3b8)' : `background:${avatarColor(payment.paidById)}`">
               {{ friendInitial(friendName(payment.paidById)) }}
             </div>
             <div class="min-w-0 flex-1">

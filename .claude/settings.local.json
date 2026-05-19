@@ -37,7 +37,8 @@
       "Bash(gunzip)",
       "Bash(tar -x -C /tmp/planis-icons)",
       "Bash(gunzip -c /tmp/planis-icons-raw.bin)",
-      "Bash(tar -x -C /tmp/planis-icons2)"
+      "Bash(tar -x -C /tmp/planis-icons2)",
+      "Bash(Remove-Item *)"
     ]
   }
 }

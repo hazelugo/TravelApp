@@ -4,7 +4,6 @@ import AppSidebar from '@/components/layout/AppSidebar.vue'
 import AppHeader from '@/components/layout/AppHeader.vue'
 import AppBottomNav from '@/components/layout/AppBottomNav.vue'
 import OverviewTab from '@/views/tabs/OverviewTab.vue'
-import GroupTab from '@/views/tabs/GroupTab.vue'
 import ItineraryTab from '@/views/tabs/ItineraryTab.vue'
 import SpendingTab from '@/views/tabs/SpendingTab.vue'
 import SplitterTab from '@/views/tabs/SplitterTab.vue'
@@ -16,7 +15,6 @@ const trip = useTripStore()
 
 const TABS: Record<string, typeof OverviewTab> = {
   overview:   OverviewTab,
-  attendance: GroupTab,
   itinerary:  ItineraryTab,
   analytics:  SpendingTab,
   splitter:   SplitterTab,

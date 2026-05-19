@@ -13,7 +13,6 @@ const ui = useUIStore()
 
 const tabs = [
   { id: 'overview',   label: 'Overview',  icon: 'i-overview'  },
-  { id: 'attendance', label: 'Group',     icon: 'i-group'     },
   { id: 'itinerary',  label: 'Itinerary', icon: 'i-itinerary' },
   { id: 'analytics',  label: 'Spending',  icon: 'i-spending'  },
   { id: 'splitter',   label: 'Splitter',  icon: 'i-splitter'  },
