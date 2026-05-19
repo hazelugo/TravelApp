@@ -272,11 +272,13 @@ function fmtDate(d: string) {
             <span v-else-if="daysUntil === 0" class="text-xs text-teal-600 dark:text-teal-400 font-semibold">· 🎉 Today!</span>
             <span v-else-if="!tripDuration" class="text-xs text-slate-300 italic">Set dates to see duration</span>
           </div>
-          <div class="ml-auto flex items-center gap-2 shrink-0">
-            <span class="eyebrow">Budget</span>
-            <span class="text-sm font-semibold text-slate-700 dark:text-slate-300">
-              {{ trip.state.budget ? '$' + fmt(trip.state.budget) : '—' }}
-            </span>
+          <div class="ml-auto flex items-center gap-1.5 shrink-0">
+            <label for="trip-budget" class="eyebrow cursor-pointer">Budget</label>
+            <div class="relative flex items-center">
+              <span class="absolute left-0 text-slate-400 text-sm pointer-events-none" :class="trip.state.budget ? '' : 'opacity-0'">$</span>
+              <input id="trip-budget" v-model.number="trip.state.budget" type="number" min="0" step="100" placeholder="—"
+                class="w-20 pl-3.5 text-sm font-semibold bg-transparent border-b border-transparent hover:border-slate-200 dark:hover:border-hairline focus:border-teal-400 focus:outline-none text-slate-700 dark:text-slate-300 placeholder-slate-300 dark:placeholder-slate-600 transition-colors text-right" />
+            </div>
           </div>
         </div>
       </div>
