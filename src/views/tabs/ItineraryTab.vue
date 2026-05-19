@@ -6,7 +6,7 @@ import type { TripEvent, EventCategory } from '@/types/domain'
 const trip = useTripStore()
 
 // ── Form ──────────────────────────────────────────────────────────────────
-const newEvent = ref({ name: '', date: '', time: '', category: 'Activity' as EventCategory, cost: 0, perPerson: false, notes: '', url: '' })
+const newEvent = ref({ name: '', date: '', time: '', category: 'Adventure' as EventCategory, cost: 0, perPerson: false, notes: '', url: '' })
 const addSuccess = ref(false)
 const formExpanded = ref(false)
 const nameInputRef = ref<HTMLInputElement | null>(null)
@@ -14,7 +14,7 @@ function expandForm() { formExpanded.value = true; nextTick(() => nameInputRef.v
 
 // ── Edit ──────────────────────────────────────────────────────────────────
 const editingId = ref<string | null>(null)
-const editForm = reactive({ name: '', date: '', time: '', category: 'Activity' as EventCategory, cost: 0, perPerson: false, notes: '', url: '' })
+const editForm = reactive({ name: '', date: '', time: '', category: 'Adventure' as EventCategory, cost: 0, perPerson: false, notes: '', url: '' })
 
 function startEdit(event: TripEvent) {
   editingId.value = event.id
@@ -118,10 +118,10 @@ const CAT_COLORS: Record<string, { badge: string; dot: string }> = {
   Transport: { badge: 'bg-blue-100 text-blue-600',       dot: 'bg-blue-100 text-blue-600'       },
   Lodging:   { badge: 'bg-emerald-100 text-emerald-600', dot: 'bg-emerald-100 text-emerald-600' },
   Food:      { badge: 'bg-amber-100 text-amber-600',     dot: 'bg-amber-100 text-amber-600'     },
-  Activity:  { badge: 'bg-violet-100 text-violet-600',   dot: 'bg-violet-100 text-violet-600'   },
+  Adventure:  { badge: 'bg-violet-100 text-violet-600',   dot: 'bg-violet-100 text-violet-600'   },
 }
 const CAT_ICONS: Record<string, string> = {
-  Transport: 'i-transport', Lodging: 'i-lodging', Food: 'i-food', Activity: 'i-activity',
+  Transport: 'i-transport', Lodging: 'i-lodging', Food: 'i-food', Adventure: 'i-activity',
 }
 
 function fmt(n: number) { return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n) }
@@ -135,7 +135,7 @@ const inputCls = 'w-full px-3 py-2.5 border border-slate-200 dark:border-hairlin
 function addEvent() {
   if (!newEvent.value.name.trim()) return
   trip.addEvent({ ...newEvent.value, name: newEvent.value.name.trim() })
-  newEvent.value = { name: '', date: '', time: '', category: 'Activity', cost: 0, perPerson: false, notes: '', url: '' }
+  newEvent.value = { name: '', date: '', time: '', category: 'Adventure', cost: 0, perPerson: false, notes: '', url: '' }
   addSuccess.value = true
   setTimeout(() => { addSuccess.value = false; formExpanded.value = false }, 1200)
 }
@@ -153,7 +153,7 @@ function exportPDF() {
   const dateRange = s ? (e && e !== s ? `${s} – ${e}` : s) : ''
 
   const catColor: Record<string, string> = {
-    Transport: '#2563eb', Lodging: '#059669', Food: '#d97706', Activity: '#7c3aed',
+    Transport: '#2563eb', Lodging: '#059669', Food: '#d97706', Adventure: '#7c3aed',
   }
 
   let rows = ''
@@ -227,7 +227,7 @@ ${totalCost > 0 ? `<p style="margin-top:20px;font-size:13px;font-weight:700;colo
         <div class="flex-1 min-w-[120px]">
           <label class="eyebrow block mb-1.5">Category</label>
           <select v-model="newEvent.category" :class="inputCls">
-            <option>Transport</option><option>Lodging</option><option>Food</option><option>Activity</option>
+            <option>Transport</option><option>Lodging</option><option>Food</option><option>Adventure</option>
           </select>
         </div>
         <div class="flex-1 min-w-[100px]">
@@ -397,7 +397,7 @@ ${totalCost > 0 ? `<p style="margin-top:20px;font-size:13px;font-weight:700;colo
                     <div>
                       <label class="eyebrow block mb-1.5">Category</label>
                       <select v-model="editForm.category" :class="inputCls">
-                        <option>Transport</option><option>Lodging</option><option>Food</option><option>Activity</option>
+                        <option>Transport</option><option>Lodging</option><option>Food</option><option>Adventure</option>
                       </select>
                     </div>
                     <div>

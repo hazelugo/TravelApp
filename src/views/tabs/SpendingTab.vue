@@ -11,7 +11,7 @@ const CATS = [
   { key: 'Transport', color: '#60a5fa', light: '#dbeafe', darkBg: 'rgba(96,165,250,0.12)',  darkText: '#93c5fd' },
   { key: 'Lodging',   color: '#34d399', light: '#d1fae5', darkBg: 'rgba(52,211,153,0.12)',  darkText: '#6ee7b7' },
   { key: 'Food',      color: '#fbbf24', light: '#fef3c7', darkBg: 'rgba(251,191,36,0.12)',  darkText: '#fcd34d' },
-  { key: 'Activity',  color: '#a78bfa', light: '#ede9fe', darkBg: 'rgba(167,139,250,0.12)', darkText: '#c4b5fd' },
+  { key: 'Adventure',  color: '#a78bfa', light: '#ede9fe', darkBg: 'rgba(167,139,250,0.12)', darkText: '#c4b5fd' },
 ]
 
 const breakdown = computed(() => CATS.map(c => {

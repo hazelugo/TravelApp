@@ -19,8 +19,8 @@
   --cat-lodging-400:   #34d399;  --cat-lodging-600:   #059669;
   --cat-food-50:       #fffbeb;  --cat-food-100:      #fef3c7;
   --cat-food-400:      #fbbf24;  --cat-food-600:      #d97706;
-  --cat-activity-50:   #f5f3ff;  --cat-activity-100:  #ede9fe;
-  --cat-activity-400:  #a78bfa;  --cat-activity-600:  #7c3aed;
+  --cat-adventure-50:   #f5f3ff;  --cat-adventure-100:  #ede9fe;
+  --cat-adventure-400:  #a78bfa;  --cat-adventure-600:  #7c3aed;
 
   /* Neutrals */
   --bg-app:       #f8fafc;
@@ -124,7 +124,7 @@ button:not([disabled]):active { transform: scale(0.97); transition: transform 80
 .cat-transport { background: var(--cat-transport-100); color: var(--cat-transport-600); }
 .cat-lodging   { background: var(--cat-lodging-100);   color: var(--cat-lodging-600);   }
 .cat-food      { background: var(--cat-food-100);      color: var(--cat-food-600);       }
-.cat-activity  { background: var(--cat-activity-100);  color: var(--cat-activity-600);   }
+.cat-adventure  { background: var(--cat-adventure-100);  color: var(--cat-adventure-600);   }
 
 /* Animations */
 @media (prefers-reduced-motion: no-preference) {
