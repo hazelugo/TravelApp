@@ -32,20 +32,7 @@ const daysUntil = computed(() => {
     <!-- Planis wordmark -->
     <div class="px-5 pt-6 pb-5 border-b border-slate-100 dark:border-[#2a3347]">
       <div class="flex flex-col gap-1">
-        <!-- Custom wordmark: Plan + ı (with teal pin-dot) + s -->
-        <span class="flex items-baseline" style="font-family:'Inter',sans-serif;font-weight:800;font-size:28px;letter-spacing:-0.05em;color:#0f172a;line-height:1" :style="ui.darkMode ? 'color:#f1f5f9' : ''">
-          Plan
-          <span class="relative inline-block">
-            <!-- dotless ı -->
-            <span style="font-variant-ligatures:none">ı</span>
-            <!-- teal pin replaces the dot -->
-            <svg viewBox="0 0 20 26" style="position:absolute;left:53.5%;bottom:0.60em;transform:translateX(-50%);width:0.30em;height:0.36em;overflow:visible" aria-hidden="true">
-              <path d="M10 0 C15.5 0 20 4.3 20 9.6 C20 15.3 12.3 23 10 26 C7.7 23 0 15.3 0 9.6 C0 4.3 4.5 0 10 0 Z" fill="#0d9488"/>
-              <circle cx="10" cy="9.4" r="3.6" fill="#fff"/>
-            </svg>
-          </span>
-          s
-        </span>
+        <img :src="ui.darkMode ? '/logo-dark.svg' : '/logo.svg'" alt="Planis" class="h-8 w-auto" />
         <p class="text-xs text-slate-400 truncate max-w-[180px]">{{ trip.state.trip.destination || 'Plan & Budget' }}</p>
       </div>
     </div>
