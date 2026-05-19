@@ -291,7 +291,7 @@ ${totalCost > 0 ? `<p style="margin-top:20px;font-size:13px;font-weight:700;colo
         <div class="w-px h-8 border-l-2 border-dashed border-slate-200 dark:border-hairline"></div>
         <div class="w-3 h-3 rounded-full border-2 border-dashed border-slate-300 dark:border-slate-600 bg-surface"></div>
         <div class="w-px h-6 border-l-2 border-dashed border-slate-200 dark:border-hairline"></div>
-        <div class="text-4xl my-2 select-none">🗺️</div>
+        <svg width="48" height="48" class="my-2 text-slate-400 dark:text-slate-500" aria-hidden="true"><use href="/icons.svg#i-empty-itinerary"/></svg>
         <div class="w-px h-6 border-l-2 border-dashed border-slate-200 dark:border-hairline"></div>
         <div class="w-3 h-3 rounded-full border-2 border-dashed border-slate-300 dark:border-slate-600 bg-surface"></div>
         <div class="w-px h-8 border-l-2 border-dashed border-slate-200 dark:border-hairline"></div>
@@ -362,7 +362,7 @@ ${totalCost > 0 ? `<p style="margin-top:20px;font-size:13px;font-weight:700;colo
 
       <!-- No results -->
       <div v-if="!groupedEvents.length" class="rounded-2xl border-2 border-dashed border-slate-200 dark:border-hairline p-12 text-center">
-        <p class="text-3xl mb-3 select-none">🔍</p>
+        <svg width="40" height="40" class="mb-3 text-slate-300 dark:text-slate-600" aria-hidden="true"><use href="/icons.svg#i-empty-search"/></svg>
         <p class="text-sm font-semibold text-slate-600 dark:text-slate-400">No events match your search</p>
         <button @click="clearFilters" class="mt-3 text-xs text-teal-600 dark:text-teal-400 font-semibold hover:underline">Clear filters</button>
       </div>
