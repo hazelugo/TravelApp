@@ -109,39 +109,8 @@ async function removePayment(id: string) {
 <template>
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 anim-fade-up">
 
-    <!-- Who's on this trip -->
-    <div class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-6 space-y-5">
-      <h2 class="eyebrow">Who's on this trip</h2>
-      <div class="flex gap-2">
-        <input v-model="newFriendName" @keydown.enter="addFriendLocal" type="text" placeholder="Add a name…" maxlength="50"
-          class="flex-1 min-w-0 px-3.5 py-2.5 border border-slate-200 dark:border-hairline rounded-xl text-sm bg-white dark:bg-inset text-slate-700 dark:text-slate-200 placeholder-slate-300 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500" />
-        <button @click="addFriendLocal" :disabled="!newFriendName.trim()"
-          class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 transition-colors disabled:opacity-40 bg-teal-600 hover:bg-teal-700">
-          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
-        </button>
-      </div>
-      <div v-if="!trip.state.friends.length" class="py-6 text-center">
-        <svg width="36" height="36" class="mb-2 text-slate-400 dark:text-slate-500" aria-hidden="true"><use href="/icons.svg#i-empty-crew"/></svg>
-        <p class="text-sm text-slate-400 font-medium">Add your crew to get started</p>
-      </div>
-      <div v-else class="grid grid-cols-2 gap-2.5">
-        <div v-for="f in trip.state.friends" :key="f.id"
-          class="group relative flex flex-col items-center gap-2 p-3 rounded-2xl bg-slate-50 dark:bg-inset hover:bg-teal-50 dark:hover:bg-lift transition-colors">
-          <div class="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold shadow-sm"
-            :style="`background:${avatarColor(f.id)}`">
-            {{ friendInitial(f.name) }}
-          </div>
-          <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate w-full text-center">{{ f.name }}</span>
-          <button @click="trip.removeFriend(f.id)"
-            class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-surface text-slate-300 hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 shadow-sm transition-all lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
-            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <!-- Log a payment -->
-    <div class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm overflow-hidden">
+    <!-- Log a payment — primary action, 2 cols wide -->
+    <div class="lg:col-span-2 bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm overflow-hidden">
       <div class="px-6 pt-5 pb-4 bg-gradient-to-r from-teal-50 via-cyan-50 to-teal-50 dark:from-inset dark:via-inset dark:to-inset border-b border-dashed border-teal-100 dark:border-hairline">
         <div class="flex items-center justify-between">
           <h2 class="eyebrow text-teal-700 dark:text-teal-400">{{ editingPaymentId ? '✏️ Edit Expense' : '🧾 Log an Expense' }}</h2>
@@ -169,66 +138,69 @@ async function removePayment(id: string) {
             <input v-model="newPayment.description" @keydown.enter="addPayment" type="text" placeholder="e.g. Dinner at Le Jules Verne" maxlength="120"
               class="w-full px-3.5 py-2.5 border border-slate-200 dark:border-hairline rounded-xl text-sm bg-white dark:bg-inset text-slate-700 dark:text-slate-200 placeholder-slate-300 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500" />
           </div>
-          <!-- Who paid -->
-          <div>
-            <label class="eyebrow block mb-2.5">Who paid?</label>
-            <div class="flex flex-wrap gap-2">
-              <button v-for="f in trip.state.friends" :key="f.id" @click="newPayment.paidById = f.id"
-                :class="['flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all',
-                  newPayment.paidById === f.id
-                    ? 'bg-teal-500 border-teal-500 text-white shadow-sm'
-                    : 'bg-slate-50 dark:bg-inset border-slate-200 dark:border-hairline text-slate-600 dark:text-slate-400 hover:border-teal-300 hover:bg-teal-50 dark:hover:bg-lift hover:text-teal-700']">
-                <span :class="['w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0',
-                  newPayment.paidById === f.id ? 'bg-white/25 text-white' : 'text-white']"
-                  :style="newPayment.paidById !== f.id ? `background:${avatarColor(f.id)}` : ''">
-                  {{ friendInitial(f.name) }}
-                </span>
-                <span class="truncate max-w-[72px]">{{ f.name }}</span>
-              </button>
-            </div>
-          </div>
-          <!-- Split among -->
-          <div>
-            <div class="flex items-center justify-between mb-2.5">
-              <label class="eyebrow">Split with</label>
-              <button @click="toggleAllSplit" class="text-xs text-teal-500 hover:text-teal-700 font-semibold">
-                {{ newPayment.splitAmong.length === trip.state.friends.length ? 'Deselect all' : newPayment.splitAmong.length === 0 ? 'Everyone, equally' : 'Select all' }}
-              </button>
-            </div>
-            <div class="space-y-1.5">
-              <div v-for="f in trip.state.friends" :key="f.id"
-                class="flex items-center gap-2.5 rounded-xl transition-colors"
-                :class="newPayment.splitAmong.includes(f.id) ? 'bg-indigo-50 dark:bg-inset' : ''">
-                <button @click="toggleSplitFriend(f.id)"
-                  :class="['flex items-center gap-2 flex-1 min-w-0 px-3 py-2 rounded-xl text-left transition-colors',
-                    newPayment.splitAmong.includes(f.id) ? '' : 'hover:bg-slate-50 dark:hover:bg-inset']">
-                  <span :class="['w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-all',
-                    newPayment.splitAmong.includes(f.id) ? 'bg-indigo-500 border-indigo-500' : 'border-slate-300 dark:border-slate-600 bg-surface']">
-                    <svg v-if="newPayment.splitAmong.includes(f.id)" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+          <!-- Who paid + Split with — side by side on wide screens -->
+          <div class="grid grid-cols-1 sm:grid-cols-2 gap-5">
+            <!-- Who paid -->
+            <div>
+              <label class="eyebrow block mb-2.5">Who paid?</label>
+              <div class="flex flex-wrap gap-2">
+                <button v-for="f in trip.state.friends" :key="f.id" @click="newPayment.paidById = f.id"
+                  :class="['flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all',
+                    newPayment.paidById === f.id
+                      ? 'bg-teal-500 border-teal-500 text-white shadow-sm'
+                      : 'bg-slate-50 dark:bg-inset border-slate-200 dark:border-hairline text-slate-600 dark:text-slate-400 hover:border-teal-300 hover:bg-teal-50 dark:hover:bg-lift hover:text-teal-700']">
+                  <span :class="['w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0',
+                    newPayment.paidById === f.id ? 'bg-white/25 text-white' : 'text-white']"
+                    :style="newPayment.paidById !== f.id ? `background:${avatarColor(f.id)}` : ''">
+                    {{ friendInitial(f.name) }}
                   </span>
-                  <span :class="['text-sm font-medium truncate', newPayment.splitAmong.includes(f.id) ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-600 dark:text-slate-400']">{{ f.name }}</span>
+                  <span class="truncate max-w-[72px]">{{ f.name }}</span>
                 </button>
-                <template v-if="newPayment.splitAmong.includes(f.id)">
-                  <div class="relative shrink-0">
-                    <input type="number" min="0" max="100" step="0.01"
-                      :value="newPayment.splitPercentages[f.id] ?? 0"
-                      @input="(e: Event) => newPayment.splitPercentages[f.id] = parseFloat((e.target as HTMLInputElement).value) || 0"
-                      class="w-16 pr-5 pl-2 py-1.5 border border-indigo-200 dark:border-indigo-700 bg-surface rounded-lg text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-400 font-semibold text-indigo-700 dark:text-indigo-300" />
-                    <span class="absolute right-1.5 top-1/2 -translate-y-1/2 text-indigo-400 text-xs pointer-events-none font-medium">%</span>
-                  </div>
-                  <span v-if="newPayment.amount" class="text-xs text-indigo-400 w-12 text-right shrink-0 font-medium pr-3">
-                    ${{ fmt(newPayment.amount * (newPayment.splitPercentages[f.id] || 0) / 100) }}
-                  </span>
-                </template>
-                <span v-else class="pr-3"></span>
               </div>
             </div>
-            <div v-if="newPayment.splitAmong.length > 0" class="mt-2.5 flex items-center justify-between px-1">
-              <span class="text-xs font-medium" :class="splitValid ? 'text-slate-400' : 'text-rose-500'">
-                Total: {{ splitPercentageTotal }}%
-                <span v-if="!splitValid" class="ml-1">— must equal 100%</span>
-              </span>
-              <button @click="redistributeEqual" class="text-xs text-indigo-400 hover:text-indigo-600 font-semibold">Split evenly</button>
+            <!-- Split with -->
+            <div>
+              <div class="flex items-center justify-between mb-2.5">
+                <label class="eyebrow">Split with</label>
+                <button @click="toggleAllSplit" class="text-xs text-teal-500 hover:text-teal-700 font-semibold">
+                  {{ newPayment.splitAmong.length === trip.state.friends.length ? 'Deselect all' : newPayment.splitAmong.length === 0 ? 'Everyone, equally' : 'Select all' }}
+                </button>
+              </div>
+              <div class="space-y-1.5">
+                <div v-for="f in trip.state.friends" :key="f.id"
+                  class="flex items-center gap-2.5 rounded-xl transition-colors"
+                  :class="newPayment.splitAmong.includes(f.id) ? 'bg-indigo-50 dark:bg-inset' : ''">
+                  <button @click="toggleSplitFriend(f.id)"
+                    :class="['flex items-center gap-2 flex-1 min-w-0 px-3 py-2 rounded-xl text-left transition-colors',
+                      newPayment.splitAmong.includes(f.id) ? '' : 'hover:bg-slate-50 dark:hover:bg-inset']">
+                    <span :class="['w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-all',
+                      newPayment.splitAmong.includes(f.id) ? 'bg-indigo-500 border-indigo-500' : 'border-slate-300 dark:border-slate-600 bg-surface']">
+                      <svg v-if="newPayment.splitAmong.includes(f.id)" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+                    </span>
+                    <span :class="['text-sm font-medium truncate', newPayment.splitAmong.includes(f.id) ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-600 dark:text-slate-400']">{{ f.name }}</span>
+                  </button>
+                  <template v-if="newPayment.splitAmong.includes(f.id)">
+                    <div class="relative shrink-0">
+                      <input type="number" min="0" max="100" step="0.01"
+                        :value="newPayment.splitPercentages[f.id] ?? 0"
+                        @input="(e: Event) => newPayment.splitPercentages[f.id] = parseFloat((e.target as HTMLInputElement).value) || 0"
+                        class="w-16 pr-5 pl-2 py-1.5 border border-indigo-200 dark:border-indigo-700 bg-surface rounded-lg text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-400 font-semibold text-indigo-700 dark:text-indigo-300" />
+                      <span class="absolute right-1.5 top-1/2 -translate-y-1/2 text-indigo-400 text-xs pointer-events-none font-medium">%</span>
+                    </div>
+                    <span v-if="newPayment.amount" class="text-xs text-indigo-400 w-12 text-right shrink-0 font-medium pr-3">
+                      ${{ fmt(newPayment.amount * (newPayment.splitPercentages[f.id] || 0) / 100) }}
+                    </span>
+                  </template>
+                  <span v-else class="pr-3"></span>
+                </div>
+              </div>
+              <div v-if="newPayment.splitAmong.length > 0" class="mt-2.5 flex items-center justify-between px-1">
+                <span class="text-xs font-medium" :class="splitValid ? 'text-slate-400' : 'text-rose-500'">
+                  Total: {{ splitPercentageTotal }}%
+                  <span v-if="!splitValid" class="ml-1">— must equal 100%</span>
+                </span>
+                <button @click="redistributeEqual" class="text-xs text-indigo-400 hover:text-indigo-600 font-semibold">Split evenly</button>
+              </div>
             </div>
           </div>
           <!-- Submit -->
@@ -236,6 +208,40 @@ async function removePayment(id: string) {
             :disabled="!newPayment.paidById || !(newPayment.amount > 0) || newPayment.splitAmong.length === 0 || !splitValid"
             class="w-full py-3 text-white text-sm font-bold rounded-2xl disabled:opacity-40 disabled:cursor-not-allowed transition-all bg-teal-600 hover:bg-teal-700 shadow-[0_4px_12px_rgba(20,184,166,.35)]">
             {{ editingPaymentId ? '✓ Update Expense' : '+ Log Expense' }}
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Right rail: Crew + Settlements stacked -->
+    <div class="flex flex-col gap-5">
+
+    <!-- Who's on this trip -->
+    <div class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-6 space-y-5">
+      <h2 class="eyebrow">Who's on this trip</h2>
+      <div class="flex gap-2">
+        <input v-model="newFriendName" @keydown.enter="addFriendLocal" type="text" placeholder="Add a name…" maxlength="50"
+          class="flex-1 min-w-0 px-3.5 py-2.5 border border-slate-200 dark:border-hairline rounded-xl text-sm bg-white dark:bg-inset text-slate-700 dark:text-slate-200 placeholder-slate-300 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500" />
+        <button @click="addFriendLocal" :disabled="!newFriendName.trim()"
+          class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 transition-colors disabled:opacity-40 bg-teal-600 hover:bg-teal-700">
+          <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        </button>
+      </div>
+      <div v-if="!trip.state.friends.length" class="py-6 text-center">
+        <svg width="36" height="36" class="mb-2 text-slate-400 dark:text-slate-500" aria-hidden="true"><use href="/icons.svg#i-empty-crew"/></svg>
+        <p class="text-sm text-slate-400 font-medium">Add your crew to get started</p>
+      </div>
+      <div v-else class="grid grid-cols-2 gap-2.5">
+        <div v-for="f in trip.state.friends" :key="f.id"
+          class="group relative flex flex-col items-center gap-2 p-3 rounded-2xl bg-slate-50 dark:bg-inset hover:bg-teal-50 dark:hover:bg-lift transition-colors">
+          <div class="w-12 h-12 rounded-full flex items-center justify-center text-white text-lg font-bold shadow-sm"
+            :style="`background:${avatarColor(f.id)}`">
+            {{ friendInitial(f.name) }}
+          </div>
+          <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate w-full text-center">{{ f.name }}</span>
+          <button @click="trip.removeFriend(f.id)"
+            class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-surface text-slate-300 hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 shadow-sm transition-all lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
+            <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
       </div>
@@ -293,6 +299,8 @@ async function removePayment(id: string) {
         </div>
       </div>
     </div>
+
+    </div><!-- end right rail -->
 
     <!-- Expense Feed -->
     <div v-if="trip.state.payments.length" class="lg:col-span-3 bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-6">
