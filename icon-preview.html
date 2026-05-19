@@ -1,0 +1,80 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<title>Icon Preview</title>
+<style>
+  body { font-family: system-ui, sans-serif; background: #f8fafc; padding: 40px; }
+  h1 { font-size: 14px; font-weight: 700; text-transform: uppercase; letter-spacing: .1em; color: #64748b; margin-bottom: 24px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 12px; }
+  .icon-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 16px 8px 12px; display: flex; flex-direction: column; align-items: center; gap: 8px; cursor: pointer; }
+  .icon-card:hover { border-color: #0d9488; background: #f0fdfa; }
+  .icon-card svg { color: #1e293b; }
+  .icon-card span { font-size: 10px; color: #94a3b8; text-align: center; word-break: break-all; }
+  .dark-strip { background: #0f1117; border-radius: 16px; padding: 24px; margin-top: 32px; }
+  .dark-strip h1 { color: #64748b; }
+  .dark-strip .icon-card { background: #1a1f2e; border-color: #2a3347; }
+  .dark-strip .icon-card:hover { border-color: #2dd4bf; background: #1e2535; }
+  .dark-strip .icon-card svg { color: #e2e8f0; }
+  .dark-strip .icon-card span { color: #475569; }
+  .copied { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%); background: #0d9488; color: white; padding: 8px 16px; border-radius: 8px; font-size: 13px; opacity: 0; transition: opacity .2s; pointer-events: none; }
+  .copied.show { opacity: 1; }
+</style>
+</head>
+<body>
+<!-- Inline the sprite so it works when opened as a local file -->
+<div id="sprite"></div>
+
+<h1>Icons — light</h1>
+<div class="grid" id="light-grid"></div>
+
+<div class="dark-strip">
+  <h1>Icons — dark</h1>
+  <div class="grid" id="dark-grid"></div>
+</div>
+
+<div class="copied" id="toast">Copied!</div>
+
+<script>
+const ids = [
+  'i-overview','i-group','i-itinerary','i-spending','i-splitter','i-photos',
+  'i-transport','i-lodging','i-food','i-adventure',
+  'i-pin','i-briefcase','i-plus','i-arrow-right','i-link','i-check',
+  'i-edit','i-trash','i-list','i-grip','i-sun','i-moon',
+]
+
+// Load the sprite file
+fetch('/icons.svg')
+  .then(r => r.text())
+  .then(svg => {
+    document.getElementById('sprite').innerHTML = svg
+    render()
+  })
+  .catch(() => {
+    // Fallback: try relative path when opened as file://
+    document.getElementById('sprite').innerHTML = '<p style="color:red;font-size:13px">Could not load icons.svg — serve this file from the project root (e.g. run the dev server and open http://localhost:5173/icon-preview.html)</p>'
+  })
+
+function card(id) {
+  return `<div class="icon-card" onclick="copy('${id}')">
+    <svg width="24" height="24" aria-hidden="true"><use href="#${id}"/></svg>
+    <span>${id}</span>
+  </div>`
+}
+
+function render() {
+  const html = ids.map(card).join('')
+  document.getElementById('light-grid').innerHTML = html
+  document.getElementById('dark-grid').innerHTML = html
+}
+
+function copy(id) {
+  navigator.clipboard.writeText(`<svg width="20" height="20"><use href="/icons.svg#${id}"/></svg>`)
+  const t = document.getElementById('toast')
+  t.textContent = `Copied ${id}`
+  t.classList.add('show')
+  setTimeout(() => t.classList.remove('show'), 1800)
+}
+</script>
+</body>
+</html>
