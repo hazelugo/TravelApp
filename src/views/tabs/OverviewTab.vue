@@ -331,7 +331,7 @@ function fmtDate(d: string) {
 
     <!-- Stats strip -->
     <div v-if="trip.state.trip.destination || trip.state.friends.length || trip.state.events.length || tripDuration > 0"
-      class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm divide-x divide-slate-100 dark:divide-hairline grid grid-cols-2 lg:grid-cols-4 overflow-hidden">
+      :class="['bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm divide-x divide-slate-100 dark:divide-hairline grid grid-cols-2 overflow-hidden', perPerson > 0 ? 'lg:grid-cols-4' : 'lg:grid-cols-3']">
 
       <!-- Travelers -->
       <div class="px-5 py-4 flex flex-col gap-1.5">
@@ -365,13 +365,11 @@ function fmtDate(d: string) {
         <p class="text-xs text-slate-400">{{ trip.state.events.length ? 'in itinerary' : 'Nothing planned yet' }}</p>
       </div>
 
-      <!-- Per person -->
-      <div class="px-5 py-4 flex flex-col gap-1.5">
+      <!-- Per person — only shown when there are costs to calculate -->
+      <div v-if="perPerson > 0" class="px-5 py-4 flex flex-col gap-1.5">
         <p class="eyebrow">Per Person</p>
-        <p class="text-2xl font-black leading-none" :class="perPerson > 0 ? 'text-slate-800 dark:text-slate-100' : 'text-slate-300 dark:text-slate-600'">
-          ${{ perPerson > 0 ? fmt(perPerson) : '0' }}
-        </p>
-        <p class="text-xs text-slate-400">{{ perPerson > 0 ? 'avg each' : 'Add costs to calculate' }}</p>
+        <p class="text-2xl font-black text-slate-800 dark:text-slate-100 leading-none">${{ fmt(perPerson) }}</p>
+        <p class="text-xs text-slate-400">avg each</p>
       </div>
     </div>
 

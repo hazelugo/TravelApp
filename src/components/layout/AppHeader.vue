@@ -183,10 +183,6 @@ async function onBannerFileChange(e: Event) {
           :class="trip.state.trip.bannerUrl ? 'text-white' : 'text-slate-900 dark:text-slate-100'">
           {{ meta().label }}
         </h1>
-        <p class="text-xs mt-0.5"
-          :class="trip.state.trip.bannerUrl ? 'text-white/70' : 'text-slate-400'">
-          {{ meta().desc }}
-        </p>
       </div>
 
       <div class="hidden lg:flex items-center gap-2 shrink-0">

@@ -192,7 +192,7 @@ async function removePayment(id: string) {
             <div class="flex items-center justify-between mb-2.5">
               <label class="eyebrow">Split with</label>
               <button @click="toggleAllSplit" class="text-xs text-teal-500 hover:text-teal-700 font-semibold">
-                {{ newPayment.splitAmong.length === trip.state.friends.length ? 'Deselect all' : 'Select all' }}
+                {{ newPayment.splitAmong.length === trip.state.friends.length ? 'Deselect all' : newPayment.splitAmong.length === 0 ? 'Everyone, equally' : 'Select all' }}
               </button>
             </div>
             <div class="space-y-1.5">
