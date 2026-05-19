@@ -119,7 +119,7 @@ async function removePayment(id: string) {
       </div>
       <div class="px-6 pb-6">
         <div v-if="trip.state.friends.length < 2" class="py-10 text-center">
-          <svg width="36" height="36" class="mb-2 text-slate-400 dark:text-slate-500" aria-hidden="true"><use href="/icons.svg#i-empty-split"/></svg>
+          <svg width="36" height="36" class="mb-2 text-teal-500 dark:text-teal-400" aria-hidden="true"><use href="/icons.svg#i-empty-split"/></svg>
           <p class="text-sm text-slate-400 font-medium">Add at least 2 members to split costs</p>
         </div>
         <div v-else class="space-y-5 pt-4">
@@ -228,7 +228,7 @@ async function removePayment(id: string) {
         </button>
       </div>
       <div v-if="!trip.state.friends.length" class="py-6 text-center">
-        <svg width="36" height="36" class="mb-2 text-slate-400 dark:text-slate-500" aria-hidden="true"><use href="/icons.svg#i-empty-crew"/></svg>
+        <svg width="36" height="36" class="mb-2 text-teal-500 dark:text-teal-400" aria-hidden="true"><use href="/icons.svg#i-empty-crew"/></svg>
         <p class="text-sm text-slate-400 font-medium">Add your crew to get started</p>
       </div>
       <div v-else class="grid grid-cols-2 gap-2.5">
@@ -251,7 +251,7 @@ async function removePayment(id: string) {
     <div class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-6 space-y-4">
       <h2 class="eyebrow">Who Owes What</h2>
       <div v-if="!trip.state.payments.length" class="py-10 text-center">
-        <svg width="36" height="36" class="mb-2 text-slate-400 dark:text-slate-500" aria-hidden="true"><use href="/icons.svg#i-empty-spending"/></svg>
+        <svg width="36" height="36" class="mb-2 text-teal-500 dark:text-teal-400" aria-hidden="true"><use href="/icons.svg#i-empty-spending"/></svg>
         <p class="text-sm text-slate-400 font-medium">Log expenses to see who owes what</p>
       </div>
       <div v-else-if="!trip.settlements.length" class="py-8 text-center rounded-2xl bg-emerald-50 dark:bg-emerald-900/20">
