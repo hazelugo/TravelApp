@@ -141,15 +141,24 @@ function addEvent() {
 }
 
 function removeEvent(id: string) { trip.removeEvent(id) }
+function exportPDF() { window.print() }
 </script>
 
 <template>
   <div class="space-y-5 anim-fade-up">
 
+    <!-- Print-only trip header -->
+    <div class="hidden print:block mb-2">
+      <h1 class="text-2xl font-bold text-slate-900">{{ trip.state.trip.destination || 'Trip Itinerary' }}</h1>
+      <p v-if="trip.state.trip.startDate" class="text-sm text-slate-500 mt-0.5">
+        {{ fmtDate(trip.state.trip.startDate) }}<template v-if="trip.state.trip.endDate"> — {{ fmtDate(trip.state.trip.endDate) }}</template>
+      </p>
+    </div>
+
     <!-- Collapsed add bar — shown when events exist and form is not open -->
     <div v-if="trip.state.events.length > 0 && !formExpanded"
       @click="expandForm"
-      class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm px-5 py-3.5 flex items-center gap-3 cursor-text group hover:border-teal-200 dark:hover:border-teal-700 transition-all">
+      class="print:hidden bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm px-5 py-3.5 flex items-center gap-3 cursor-text group hover:border-teal-200 dark:hover:border-teal-700 transition-all">
       <div class="w-7 h-7 rounded-lg bg-teal-50 dark:bg-teal-900/20 flex items-center justify-center shrink-0">
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" class="text-teal-500"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
       </div>
@@ -158,7 +167,7 @@ function removeEvent(id: string) { trip.removeEvent(id) }
     </div>
 
     <!-- Full add form — always shown when no events, or when expanded -->
-    <div v-else class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-6">
+    <div v-else class="print:hidden bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-6">
       <div v-if="trip.state.events.length > 0" class="flex items-center justify-between mb-4">
         <p class="eyebrow text-teal-600 dark:text-teal-400">Add event</p>
         <button @click="formExpanded = false" class="w-7 h-7 flex items-center justify-center rounded-lg text-slate-300 hover:text-slate-500 dark:hover:text-slate-300 hover:bg-slate-100 dark:hover:bg-inset transition-all" aria-label="Close form">
@@ -249,7 +258,7 @@ function removeEvent(id: string) { trip.removeEvent(id) }
     <div v-else class="space-y-4">
 
       <!-- Search / filter toolbar -->
-      <div class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm px-4 py-3 space-y-3">
+      <div class="print:hidden bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm px-4 py-3 space-y-3">
         <div class="flex items-center gap-2">
           <!-- Text search -->
           <div class="flex-1 relative">
@@ -265,6 +274,13 @@ function removeEvent(id: string) { trip.removeEvent(id) }
                 : 'border-slate-200 dark:border-hairline text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-inset']">
             <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"><polygon points="22 3 2 3 10 12.46 10 19 14 21 14 12.46 22 3"/></svg>
             Cost
+          </button>
+          <!-- Export PDF -->
+          <button @click="exportPDF"
+            class="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold border border-slate-200 dark:border-hairline text-slate-500 dark:text-slate-400 hover:bg-slate-50 dark:hover:bg-inset transition-all shrink-0"
+            title="Export to PDF">
+            <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg>
+            PDF
           </button>
           <!-- Clear -->
           <button v-if="hasFilter" @click="clearFilters"
@@ -385,7 +401,7 @@ function removeEvent(id: string) { trip.removeEvent(id) }
                     dragOverId === event.id ? 'bg-teal-50/60 dark:bg-teal-900/10' : '']">
 
                   <!-- Drag handle -->
-                  <div class="hidden lg:flex items-center justify-center w-4 shrink-0 pt-3 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-400 transition-colors z-10">
+                  <div class="hidden lg:flex print:hidden items-center justify-center w-4 shrink-0 pt-3 cursor-grab active:cursor-grabbing text-slate-300 hover:text-slate-400 transition-colors z-10">
                     <svg width="10" height="10" viewBox="0 0 24 24" fill="currentColor">
                       <circle cx="9" cy="5" r="1.5"/><circle cx="15" cy="5" r="1.5"/>
                       <circle cx="9" cy="12" r="1.5"/><circle cx="15" cy="12" r="1.5"/>
@@ -418,7 +434,7 @@ function removeEvent(id: string) { trip.removeEvent(id) }
                         <p class="font-bold text-slate-700 dark:text-slate-300 text-sm">${{ fmt(event.perPerson ? event.cost * totalParticipants : event.cost) }}</p>
                         <p v-if="event.perPerson && totalParticipants > 1" class="text-[11px] text-slate-400 mt-0.5">${{ fmt(event.cost) }}/pp</p>
                       </div>
-                      <div class="flex flex-col gap-0.5 shrink-0 lg:opacity-0 lg:group-hover:opacity-100 transition-all">
+                      <div class="print:hidden flex flex-col gap-0.5 shrink-0 lg:opacity-0 lg:group-hover:opacity-100 transition-all">
                         <a :href="`https://maps.google.com/?q=${encodeURIComponent(event.name + (trip.state.trip.destination ? ' ' + trip.state.trip.destination : ''))}`"
                           target="_blank" rel="noopener"
                           class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all">
@@ -451,4 +467,14 @@ function removeEvent(id: string) { trip.removeEvent(id) }
 .fade-enter-active, .fade-leave-active { transition: opacity 0.15s, transform 0.12s; }
 .fade-enter-from { opacity: 0; transform: translateY(-4px); }
 .fade-leave-to   { opacity: 0; transform: translateY(-4px); }
+
+@media print {
+  @page { margin: 1.5cm; }
+  /* Remove card shadows and soften borders */
+  .bg-surface { box-shadow: none !important; }
+  /* Keep timeline spine visible */
+  .border-l-2 { border-color: #e2e8f0 !important; }
+  /* Ensure text is black for print */
+  .text-slate-800, .text-slate-700 { color: #1e293b !important; }
+}
 </style>
