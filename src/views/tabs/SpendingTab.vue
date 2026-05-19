@@ -15,7 +15,7 @@ const CATS = [
 ]
 
 const breakdown = computed(() => CATS.map(c => {
-  const events = trip.state.events.filter(e => e.category === c.key)
+  const events = trip.state.events.filter(e => e.category === c.key || (c.key === 'Adventure' && e.category === 'Activity'))
   const total = events.reduce((s, e) => s + (e.perPerson ? e.cost * totalParticipants.value : e.cost), 0)
   return { ...c, total, count: events.length, events }
 }))

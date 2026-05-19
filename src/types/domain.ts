@@ -4,7 +4,7 @@
 
 import type { Database } from './database.types'
 
-export type EventCategory = 'Transport' | 'Lodging' | 'Food' | 'Adventure'
+export type EventCategory = 'Transport' | 'Lodging' | 'Food' | 'Adventure' | 'Activity'
 
 export interface TripMeta {
   destination: string

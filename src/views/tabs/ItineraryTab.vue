@@ -119,9 +119,11 @@ const CAT_COLORS: Record<string, { badge: string; dot: string }> = {
   Lodging:   { badge: 'bg-emerald-100 text-emerald-600', dot: 'bg-emerald-100 text-emerald-600' },
   Food:      { badge: 'bg-amber-100 text-amber-600',     dot: 'bg-amber-100 text-amber-600'     },
   Adventure:  { badge: 'bg-violet-100 text-violet-600',   dot: 'bg-violet-100 text-violet-600'   },
+  Activity:   { badge: 'bg-violet-100 text-violet-600',   dot: 'bg-violet-100 text-violet-600'   },
 }
 const CAT_ICONS: Record<string, string> = {
-  Transport: 'i-transport', Lodging: 'i-lodging', Food: 'i-food', Adventure: 'i-activity',
+  Transport: 'i-transport', Lodging: 'i-lodging', Food: 'i-food',
+  Adventure: 'i-adventure', Activity: 'i-adventure',
 }
 
 function fmt(n: number) { return new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(n) }
@@ -153,7 +155,7 @@ function exportPDF() {
   const dateRange = s ? (e && e !== s ? `${s} – ${e}` : s) : ''
 
   const catColor: Record<string, string> = {
-    Transport: '#2563eb', Lodging: '#059669', Food: '#d97706', Adventure: '#7c3aed',
+    Transport: '#2563eb', Lodging: '#059669', Food: '#d97706', Adventure: '#7c3aed', Activity: '#7c3aed',
   }
 
   let rows = ''
