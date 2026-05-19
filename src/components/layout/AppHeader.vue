@@ -26,11 +26,11 @@ const tripsOpen = ref(false)
 const copiedTripId = ref<string | null>(null)
 
 const TAB_META: Record<string, { label: string; desc: string }> = {
-  overview:   { label: 'Overview',  desc: 'Trip summary and totals' },
-itinerary:  { label: 'Itinerary', desc: 'Events and activities' },
-  analytics:  { label: 'Spending',  desc: 'Where your money is going' },
-  splitter:   { label: 'Splitter',  desc: 'Settle who owes what' },
-  photos:     { label: 'Photos',    desc: 'Trip photo wall' },
+  overview:   { label: 'Overview',  desc: "How it's shaping up" },
+  itinerary:  { label: 'Itinerary', desc: "What's on the agenda" },
+  analytics:  { label: 'Spending',  desc: 'Follow the money' },
+  splitter:   { label: 'Splitter',  desc: 'No awkward IOUs' },
+  photos:     { label: 'Photos',    desc: 'The memories' },
 }
 const meta = () => TAB_META[props.currentTab] ?? TAB_META.overview
 
@@ -183,6 +183,10 @@ async function onBannerFileChange(e: Event) {
           :class="trip.state.trip.bannerUrl ? 'text-white' : 'text-slate-900 dark:text-slate-100'">
           {{ meta().label }}
         </h1>
+        <p class="text-xs mt-0.5"
+          :class="trip.state.trip.bannerUrl ? 'text-white/70' : 'text-slate-400'">
+          {{ meta().desc }}
+        </p>
       </div>
 
       <div class="hidden lg:flex items-center gap-2 shrink-0">
