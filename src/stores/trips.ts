@@ -233,7 +233,7 @@ export const useTripStore = defineStore('trip', () => {
     watch(
       () => state.trip.destination,
       (dest) => {
-        document.title = dest ? `${dest} — TravelApp` : 'TravelApp — Plan & Budget'
+        document.title = dest ? `${dest} — Planis` : 'Planis — Plan & Budget'
       },
       { immediate: true }
     )

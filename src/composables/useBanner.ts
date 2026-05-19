@@ -70,6 +70,7 @@ export function useBanner() {
   }
 
   async function uploadBanner(file: File) {
+    if (file.size > 10 * 1024 * 1024) return
     loading.value = true
     try {
       const ext = file.name.split('.').pop() ?? 'jpg'

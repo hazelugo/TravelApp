@@ -123,10 +123,8 @@ const slices = computed(() => {
         <div class="flex-1 w-full space-y-1.5">
           <button v-for="b in breakdown.filter(b => b.total > 0)" :key="b.key"
             class="w-full flex items-center gap-3 rounded-xl px-3 py-2.5 transition-colors text-left"
-            :class="selected === b.key
-              ? 'ring-1 ring-offset-0'
-              : 'hover:bg-slate-50 dark:hover:bg-inset'"
-            :style="selected === b.key ? `background:${b.light};ring-color:${b.color}` : ''"
+            :class="selected === b.key ? '' : 'hover:bg-slate-50 dark:hover:bg-inset'"
+            :style="selected === b.key ? `background:${ui.darkMode ? b.darkBg : b.light};outline:2px solid ${b.color};outline-offset:-2px;border-radius:0.75rem` : ''"
             @mouseenter="hovered = b.key"
             @mouseleave="hovered = null"
             @click="toggleSelected(b.key)">
