@@ -23,7 +23,7 @@
   --cat-adventure-400:  #a78bfa;  --cat-adventure-600:  #7c3aed;
 
   /* Neutrals */
-  --bg-app:       #f8fafc;
+  --bg-app:       #f1f5f9; /* option 1: slate-100 */
   --bg-surface:   #ffffff;
   --bg-muted:     #f1f5f9;
   --bg-subtle:    #e2e8f0;
