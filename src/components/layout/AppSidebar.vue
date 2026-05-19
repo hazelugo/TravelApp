@@ -33,7 +33,7 @@ const daysUntil = computed(() => {
     <div class="px-5 pt-6 pb-5 border-b border-slate-100 dark:border-hairline">
       <div class="flex flex-col gap-1">
         <img :src="ui.darkMode ? '/logo-dark.svg' : '/logo.svg'" alt="Planis" class="h-8 w-auto" />
-        <p class="text-xs text-slate-400 truncate max-w-[180px]">{{ trip.state.trip.destination || 'Plan & Budget' }}</p>
+        <p class="text-xs text-slate-400 truncate max-w-[180px]">{{ trip.state.trip.destination || 'Making trip planning fun again' }}</p>
       </div>
     </div>
 
