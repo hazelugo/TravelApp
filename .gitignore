@@ -1,5 +1,5 @@
 .vercel
-.notes
+\notes
 .env*.local
 
 # Vite build output

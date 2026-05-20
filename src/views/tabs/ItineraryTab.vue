@@ -309,7 +309,7 @@ ${totalCost > 0 ? `<p style="margin-top:20px;font-size:13px;font-weight:700;colo
           <!-- Text search -->
           <div class="flex-1 relative">
             <svg class="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 pointer-events-none" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
-            <input v-model="searchText" type="text" placeholder="Search by name or notes…"
+            <input v-model="searchText" type="text" aria-label="Search events" placeholder="Search by name or notes…"
               class="w-full pl-9 pr-3 py-2 border border-slate-200 dark:border-hairline rounded-xl text-sm bg-white dark:bg-inset text-slate-700 dark:text-slate-200 placeholder-slate-300 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500" />
           </div>
           <!-- Filter toggle -->
@@ -342,13 +342,13 @@ ${totalCost > 0 ? `<p style="margin-top:20px;font-size:13px;font-weight:700;colo
             <span class="text-xs text-slate-400 shrink-0">Cost</span>
             <div class="relative flex-1">
               <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs">$</span>
-              <input v-model.number="costMin" type="number" min="0" placeholder="Min"
+              <input v-model.number="costMin" type="number" min="0" aria-label="Minimum cost" placeholder="Min"
                 class="w-full pl-6 pr-2 py-1.5 border border-slate-200 dark:border-hairline rounded-lg text-xs bg-white dark:bg-inset text-slate-700 dark:text-slate-200 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500" />
             </div>
             <span class="text-xs text-slate-300">—</span>
             <div class="relative flex-1">
               <span class="absolute left-2.5 top-1/2 -translate-y-1/2 text-slate-400 text-xs">$</span>
-              <input v-model.number="costMax" type="number" min="0" placeholder="Max"
+              <input v-model.number="costMax" type="number" min="0" aria-label="Maximum cost" placeholder="Max"
                 class="w-full pl-6 pr-2 py-1.5 border border-slate-200 dark:border-hairline rounded-lg text-xs bg-white dark:bg-inset text-slate-700 dark:text-slate-200 placeholder-slate-300 focus:outline-none focus:ring-2 focus:ring-teal-500" />
             </div>
           </div>
@@ -483,14 +483,17 @@ ${totalCost > 0 ? `<p style="margin-top:20px;font-size:13px;font-weight:700;colo
                       <div class="print:hidden flex flex-col gap-0.5 shrink-0 lg:opacity-0 lg:group-hover:opacity-100 transition-all">
                         <a :href="`https://maps.google.com/?q=${encodeURIComponent(event.name + (trip.state.trip.destination ? ' ' + trip.state.trip.destination : ''))}`"
                           target="_blank" rel="noopener"
+                          aria-label="View on Google Maps"
                           class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-emerald-500 hover:bg-emerald-50 dark:hover:bg-emerald-900/20 transition-all">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 10c0 7-9 13-9 13s-9-6-9-13a9 9 0 0 1 18 0z"/><circle cx="12" cy="10" r="3"/></svg>
                         </a>
                         <button @click="startEdit(event)"
+                          aria-label="Edit event"
                           class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-teal-500 hover:bg-teal-50 dark:hover:bg-teal-900/20 transition-all">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
                         </button>
                         <button @click="removeEvent(event.id)"
+                          aria-label="Delete event"
                           class="w-8 h-8 rounded-lg flex items-center justify-center text-slate-300 hover:text-rose-500 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all">
                           <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="3 6 5 6 21 6"/><path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"/></svg>
                         </button>

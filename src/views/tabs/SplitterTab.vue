@@ -182,6 +182,7 @@ async function removePayment(id: string) {
                   <template v-if="newPayment.splitAmong.includes(f.id)">
                     <div class="relative shrink-0">
                       <input type="number" min="0" max="100" step="0.01"
+                        :aria-label="`${f.name} split percentage`"
                         :value="newPayment.splitPercentages[f.id] ?? 0"
                         @input="(e: Event) => newPayment.splitPercentages[f.id] = parseFloat((e.target as HTMLInputElement).value) || 0"
                         class="w-16 pr-5 pl-2 py-1.5 border border-indigo-200 dark:border-indigo-700 bg-surface rounded-lg text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-400 font-semibold text-indigo-700 dark:text-indigo-300" />
@@ -220,7 +221,7 @@ async function removePayment(id: string) {
     <div class="bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm p-6 space-y-5">
       <h2 class="eyebrow">Who's on this trip</h2>
       <div class="flex gap-2">
-        <input v-model="newFriendName" @keydown.enter="addFriendLocal" type="text" placeholder="Add a name…" maxlength="50"
+        <input v-model="newFriendName" @keydown.enter="addFriendLocal" type="text" aria-label="Add crew member" placeholder="Add a name…" maxlength="50"
           class="flex-1 min-w-0 px-3.5 py-2.5 border border-slate-200 dark:border-hairline rounded-xl text-sm bg-white dark:bg-inset text-slate-700 dark:text-slate-200 placeholder-slate-300 dark:placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-teal-500" />
         <button @click="addFriendLocal" :disabled="!newFriendName.trim()"
           class="w-10 h-10 rounded-xl flex items-center justify-center text-white shrink-0 transition-colors disabled:opacity-40 bg-teal-600 hover:bg-teal-700">
@@ -240,7 +241,8 @@ async function removePayment(id: string) {
           </div>
           <span class="text-xs font-semibold text-slate-700 dark:text-slate-300 truncate w-full text-center">{{ f.name }}</span>
           <button @click="trip.removeFriend(f.id)"
-            class="absolute top-1.5 right-1.5 w-5 h-5 rounded-full bg-surface text-slate-300 hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 shadow-sm transition-all lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
+            :aria-label="`Remove ${f.name}`"
+            class="absolute top-1 right-1 w-6 h-6 rounded-full bg-surface text-slate-300 hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 shadow-sm transition-all lg:opacity-0 lg:group-hover:opacity-100 flex items-center justify-center">
             <svg width="9" height="9" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>
@@ -336,10 +338,10 @@ async function removePayment(id: string) {
             <span :class="['text-base font-bold tabular-nums', payment.settled ? 'text-slate-400' : 'text-slate-800 dark:text-slate-200']">
               ${{ fmt(payment.amount) }}
             </span>
-            <button @click="editPayment(payment)" class="lg:opacity-0 lg:group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all">
+            <button @click="editPayment(payment)" aria-label="Edit expense" class="lg:opacity-0 lg:group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-indigo-400 hover:bg-indigo-50 dark:hover:bg-indigo-900/20 transition-all">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
             </button>
-            <button @click="removePayment(payment.id)" class="lg:opacity-0 lg:group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all">
+            <button @click="removePayment(payment.id)" aria-label="Delete expense" class="lg:opacity-0 lg:group-hover:opacity-100 w-8 h-8 flex items-center justify-center rounded-lg text-slate-300 hover:text-rose-400 hover:bg-rose-50 dark:hover:bg-rose-900/20 transition-all">
               <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
             </button>
           </div>

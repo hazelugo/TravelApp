@@ -153,6 +153,7 @@ async function onBannerFileChange(e: Event) {
       :style="`object-position: ${trip.state.trip.bannerPosition ?? '50% 50%'}`"
       class="absolute inset-0 w-full h-full object-cover select-none pointer-events-none"
       draggable="false"
+      fetchpriority="high"
       alt=""
     />
 
@@ -394,7 +395,7 @@ async function onBannerFileChange(e: Event) {
       <div v-if="tripsOpen" class="lg:hidden fixed inset-x-0 bottom-0 z-50 bg-surface rounded-t-2xl border-t border-slate-100 dark:border-hairline shadow-xl overflow-hidden" style="padding-bottom:env(safe-area-inset-bottom,0px)">
         <div class="flex items-center justify-between px-5 pt-5 pb-3 border-b border-slate-100 dark:border-hairline">
           <p class="text-sm font-semibold text-slate-800 dark:text-slate-200">My Trips</p>
-          <button @click="tripsOpen = false" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 dark:hover:bg-inset">
+          <button @click="tripsOpen = false" aria-label="Close" class="w-8 h-8 flex items-center justify-center rounded-lg text-slate-400 hover:bg-slate-50 dark:hover:bg-inset">
             <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
           </button>
         </div>

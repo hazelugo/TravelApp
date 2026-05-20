@@ -185,6 +185,25 @@ export const useTripStore = defineStore('trip', () => {
     }
   }
 
+  // ── Banner URL cache (localStorage) ─────────────────────────────────────
+  // Caches bannerUrl per tripId so the header renders at the correct height
+  // before Supabase responds, eliminating the layout shift (CLS).
+  const bannerCacheKey = (id: string) => `planis_banner_${id}`
+
+  function restoreBannerCache(id: string): void {
+    const cached = localStorage.getItem(bannerCacheKey(id))
+    if (cached) state.trip.bannerUrl = cached
+  }
+
+  function updateBannerCache(id: string): void {
+    const url = state.trip.bannerUrl
+    if (url) {
+      localStorage.setItem(bannerCacheKey(id), url)
+    } else {
+      localStorage.removeItem(bannerCacheKey(id))
+    }
+  }
+
   // ── Initialization ────────────────────────────────────────────────────────
   // Called once from App.vue onMounted. Safe to await before mounting children.
   async function initialize(id: string): Promise<void> {
@@ -195,6 +214,10 @@ export const useTripStore = defineStore('trip', () => {
     shareUrl.searchParams.set('trip', id)
     window.history.replaceState({}, '', shareUrl)
 
+    // Pre-populate bannerUrl from cache so header renders at correct height
+    // immediately, before the Supabase round-trip completes (fixes CLS).
+    restoreBannerCache(id)
+
     try {
       const { data } = await supabase
         .from('trips')
@@ -203,6 +226,7 @@ export const useTripStore = defineStore('trip', () => {
         .single()
       if (data?.data) {
         Object.assign(state, data.data as TripState)
+        updateBannerCache(id)
       }
     } catch {
       // First visit — state stays at defaults
@@ -228,6 +252,9 @@ export const useTripStore = defineStore('trip', () => {
         upsertTripIndex(id, dest, start, end)
       }
     )
+
+    // Keep banner cache in sync so the header height is correct on next visit
+    watch(() => state.trip.bannerUrl, () => updateBannerCache(id))
 
     // Keep document title in sync with destination
     watch(

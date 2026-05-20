@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { onMounted } from 'vue'
+import { onMounted, onUnmounted } from 'vue'
 import { RouterView } from 'vue-router'
 import { useUIStore } from '@/stores/ui'
 import { useTripStore } from '@/stores/trips'
@@ -12,9 +12,21 @@ const { resolveTripId } = useTrip()
 const { confirm } = storeToRefs(ui)
 const { confirmOk, confirmCancel } = ui
 
+// Disconnect realtime on pagehide so the page can enter bfcache.
+// Reconnect on pageshow if restored from bfcache (persisted = true).
+function onPageHide() { trip.unsubscribeFromRealTime() }
+function onPageShow(e: PageTransitionEvent) { if (e.persisted) trip.subscribeToRealTime() }
+
 onMounted(async () => {
   ui.initDarkMode()
   await trip.initialize(resolveTripId())
+  window.addEventListener('pagehide', onPageHide)
+  window.addEventListener('pageshow', onPageShow)
+})
+
+onUnmounted(() => {
+  window.removeEventListener('pagehide', onPageHide)
+  window.removeEventListener('pageshow', onPageShow)
 })
 </script>
 

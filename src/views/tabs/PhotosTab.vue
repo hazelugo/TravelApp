@@ -141,6 +141,7 @@ async function sharePhoto(photo: Photo) {
             class="text-xs text-white bg-white/20 backdrop-blur-sm border border-white/30 rounded-lg px-2.5 py-1.5 placeholder-white/60 focus:outline-none focus:ring-1 focus:ring-white/50 w-full" />
         </div>
         <button @click.stop="removePhoto(photo)"
+          aria-label="Remove photo"
           class="absolute top-2 right-2 w-8 h-8 rounded-full bg-black/40 backdrop-blur-sm text-white flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity hover:bg-rose-500">
           <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg>
         </button>
@@ -160,6 +161,7 @@ async function sharePhoto(photo: Photo) {
           </button>
           <!-- Prev -->
           <button v-if="lightboxIndex > 0" @click="lightboxPrev"
+            aria-label="Previous photo"
             class="absolute left-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors z-10">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
           </button>
@@ -180,6 +182,7 @@ async function sharePhoto(photo: Photo) {
           </div>
           <!-- Next -->
           <button v-if="lightboxIndex < trip.state.photos.length - 1" @click="lightboxNext"
+            aria-label="Next photo"
             class="absolute right-4 top-1/2 -translate-y-1/2 w-10 h-10 rounded-full bg-white/10 hover:bg-white/20 text-white flex items-center justify-center transition-colors z-10">
             <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="9 18 15 12 9 6"/></svg>
           </button>

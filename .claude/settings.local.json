@@ -45,7 +45,19 @@
       "Bash(python3 -c \"import sys,json; d=json.load\\(sys.stdin\\); print\\('\\\\n'.join\\(f'{k}: {v}' for k,v in {**d.get\\('dependencies',{}\\),**d.get\\('devDependencies',{}\\)}.items\\(\\)\\)\\)\")",
       "Bash(python3 -c \"import sys,json; print\\(json.load\\(sys.stdin\\).get\\('version','?'\\)\\)\")",
       "Bash(grep -o \"\\\\.bg-surface\\\\|\\\\.border-hairline\\\\|\\\\.bg-inset\\\\|\\\\.bg-lift\\\\|\\\\.divide-hairline\\\\|\\\\.dark\\\\\\\\\\\\\\\\\\\\:bg-surface\\\\|\\\\.dark\\\\\\\\\\\\\\\\\\\\:border-hairline\" dist/assets/index-*.css)",
-      "Bash(python3 -c ' *)"
+      "Bash(python3 -c ' *)",
+      "Bash(sed -n '155,170p' \"C:/Users/Hector/Documents/TravelApp/src/views/tabs/SpendingTab.vue\")",
+      "Bash(sed -n '310,340p' \"C:/Users/Hector/Documents/TravelApp/src/views/tabs/ItineraryTab.vue\")",
+      "Bash(sed -n '480,500p' \"C:/Users/Hector/Documents/TravelApp/src/views/tabs/ItineraryTab.vue\")",
+      "Bash(sed -n '335,345p' \"C:/Users/Hector/Documents/TravelApp/src/views/tabs/SplitterTab.vue\")",
+      "Bash(sed -n '138,150p' \"C:/Users/Hector/Documents/TravelApp/src/views/tabs/PhotosTab.vue\")",
+      "Bash(sed -n '238,248p' \"C:/Users/Hector/Documents/TravelApp/src/views/tabs/SplitterTab.vue\")",
+      "Bash(sed -n '395,400p' \"C:/Users/Hector/Documents/TravelApp/src/components/layout/AppHeader.vue\")",
+      "Bash(sed -n '125,200p' \"C:/Users/Hector/Documents/TravelApp/src/views/tabs/SplitterTab.vue\")",
+      "Bash(sed -n '250,315p' \"C:/Users/Hector/Documents/TravelApp/src/views/tabs/OverviewTab.vue\")",
+      "Bash(sed -n '308,320p' \"C:/Users/Hector/Documents/TravelApp/src/views/tabs/ItineraryTab.vue\")",
+      "Bash(sed -n '1,50p' \"C:/Users/Hector/Documents/TravelApp/src/style.css\")",
+      "Bash(sed -n '105,125p' \"C:/Users/Hector/Documents/TravelApp/src/style.css\")"
     ]
   }
 }

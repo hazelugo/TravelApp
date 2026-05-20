@@ -254,6 +254,7 @@ function fmtDate(d: string) {
           <template v-else>
             <div class="flex items-center gap-2">
               <input id="dest-input" v-model="trip.state.trip.destination" type="text"
+                aria-label="Destination"
                 placeholder="Where are you going?" autocomplete="off"
                 @input="onDestInput"
                 @blur="onDestBlur"
@@ -279,14 +280,14 @@ function fmtDate(d: string) {
         <!-- Dates row -->
         <div class="flex items-center gap-3">
           <div class="flex-1 min-w-0">
-            <p class="eyebrow mb-1">From</p>
-            <input v-model="trip.state.trip.startDate" type="date"
+            <label class="eyebrow mb-1 block" for="trip-start-date">From</label>
+            <input id="trip-start-date" v-model="trip.state.trip.startDate" type="date"
               class="w-full bg-transparent border-b border-slate-200 dark:border-slate-600 pb-1 text-sm text-slate-600 dark:text-slate-400 focus:outline-none focus:border-teal-400" />
           </div>
           <span class="text-slate-300 text-lg font-light mt-4 shrink-0">→</span>
           <div class="flex-1 min-w-0">
-            <p class="eyebrow mb-1">To</p>
-            <input v-model="trip.state.trip.endDate" type="date"
+            <label class="eyebrow mb-1 block" for="trip-end-date">To</label>
+            <input id="trip-end-date" v-model="trip.state.trip.endDate" type="date"
               class="w-full bg-transparent border-b border-slate-200 dark:border-slate-600 pb-1 text-sm text-slate-600 dark:text-slate-400 focus:outline-none focus:border-teal-400" />
           </div>
         </div>
@@ -297,9 +298,9 @@ function fmtDate(d: string) {
             <span v-if="tripDuration > 0" class="inline-flex items-center gap-1 px-2.5 py-1 rounded-full bg-emerald-50 dark:bg-emerald-900/20 border border-emerald-100 dark:border-emerald-800/30 text-xs font-semibold text-emerald-700 dark:text-emerald-400">
               {{ tripDuration }} days
             </span>
-            <span v-if="daysUntil !== null && daysUntil > 0" class="text-xs text-slate-400">· {{ daysUntil }} to go</span>
+            <span v-if="daysUntil !== null && daysUntil > 0" class="text-xs text-slate-500 dark:text-slate-400">· {{ daysUntil }} to go</span>
             <span v-else-if="daysUntil === 0" class="text-xs text-teal-600 dark:text-teal-400 font-semibold">· 🎉 Today!</span>
-            <span v-else-if="!tripDuration" class="text-xs text-slate-300 italic">Set dates to see duration</span>
+            <span v-else-if="!tripDuration" class="text-xs text-slate-500 dark:text-slate-400 italic">Set dates to see duration</span>
           </div>
           <div class="ml-auto flex items-center gap-1.5 shrink-0">
             <label for="trip-budget" class="eyebrow cursor-pointer">Budget</label>
@@ -356,7 +357,7 @@ function fmtDate(d: string) {
       <div v-else class="lg:col-span-2 rounded-2xl border-2 border-dashed border-slate-200 dark:border-hairline p-6 flex flex-col items-center justify-center text-center gap-3">
         <svg width="48" height="48" class="block mx-auto text-teal-500 dark:text-teal-400" aria-hidden="true"><use href="/icons.svg#i-empty-itinerary"/></svg>
         <p class="text-sm font-semibold text-slate-600 dark:text-slate-400">Your trip summary will appear here</p>
-        <p class="text-xs text-slate-400 leading-relaxed">Add your destination and dates<br>to get started</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400 leading-relaxed">Add your destination and dates<br>to get started</p>
       </div>
     </div>
 
@@ -379,28 +380,28 @@ function fmtDate(d: string) {
             +{{ trip.state.friends.length - 5 }}
           </span>
         </div>
-        <p v-else class="text-xs text-slate-400">No travelers yet</p>
+        <p v-else class="text-xs text-slate-500 dark:text-slate-400">No travelers yet</p>
       </div>
 
       <!-- Duration -->
       <div class="px-5 py-4 flex flex-col gap-1.5">
         <p class="eyebrow">Duration</p>
         <p class="text-2xl font-black text-slate-800 dark:text-slate-100 leading-none">{{ tripDuration || '—' }}</p>
-        <p class="text-xs text-slate-400">{{ tripDuration > 0 ? 'days' : 'Set dates above' }}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400">{{ tripDuration > 0 ? 'days' : 'Set dates above' }}</p>
       </div>
 
       <!-- Events -->
       <div class="px-5 py-4 flex flex-col gap-1.5">
         <p class="eyebrow">Events</p>
         <p class="text-2xl font-black text-slate-800 dark:text-slate-100 leading-none">{{ trip.state.events.length || '—' }}</p>
-        <p class="text-xs text-slate-400">{{ trip.state.events.length ? 'in itinerary' : 'Nothing planned yet' }}</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400">{{ trip.state.events.length ? 'in itinerary' : 'Nothing planned yet' }}</p>
       </div>
 
       <!-- Per person — only shown when there are costs to calculate -->
       <div v-if="perPerson > 0" class="px-5 py-4 flex flex-col gap-1.5">
         <p class="eyebrow">Per Person</p>
         <p class="text-2xl font-black text-slate-800 dark:text-slate-100 leading-none">${{ fmt(perPerson) }}</p>
-        <p class="text-xs text-slate-400">avg each</p>
+        <p class="text-xs text-slate-500 dark:text-slate-400">avg each</p>
       </div>
     </div>
 
@@ -413,7 +414,7 @@ function fmtDate(d: string) {
         </div>
         <span class="text-xl">🌍</span>
       </div>
-      <div v-if="weatherLoading" class="flex items-center gap-2 text-slate-400 text-sm py-2">
+      <div v-if="weatherLoading" class="flex items-center gap-2 text-slate-500 dark:text-slate-400 text-sm py-2">
         <svg class="animate-spin shrink-0" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M21 12a9 9 0 1 1-6.219-8.56"/></svg>
         Loading weather…
       </div>
@@ -421,7 +422,7 @@ function fmtDate(d: string) {
         <p class="text-sm text-rose-500">{{ weatherError }}</p>
         <button @click="fetchWeather" class="shrink-0 text-xs font-semibold text-rose-500 hover:text-rose-700 border border-rose-200 dark:border-rose-800/40 rounded-lg px-2.5 py-1 transition-colors">Retry</button>
       </div>
-      <div v-else-if="weatherNote && !weather.length" class="flex items-start gap-2 py-1 text-slate-400 text-sm">
+      <div v-else-if="weatherNote && !weather.length" class="flex items-start gap-2 py-1 text-slate-500 dark:text-slate-400 text-sm">
         <svg class="shrink-0 mt-0.5" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
         {{ weatherNote }}
       </div>
@@ -429,13 +430,13 @@ function fmtDate(d: string) {
         <div class="flex gap-2.5" style="min-width:max-content">
           <div v-for="day in weather" :key="day.date"
             class="flex flex-col items-center gap-1.5 px-3.5 py-3 bg-slate-50 dark:bg-inset rounded-2xl min-w-[76px]">
-            <p class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">{{ fmtWeatherDate(day.date) }}</p>
+            <p class="text-[10px] font-bold text-slate-500 dark:text-slate-400 uppercase tracking-wider">{{ fmtWeatherDate(day.date) }}</p>
             <span class="text-3xl leading-none">{{ weatherEmoji(day.code) }}</span>
-            <p class="text-[10px] text-slate-400 text-center leading-snug">{{ WMO[day.code] || 'Conditions vary' }}</p>
+            <p class="text-[10px] text-slate-500 dark:text-slate-400 text-center leading-snug">{{ WMO[day.code] || 'Conditions vary' }}</p>
             <div class="flex items-center gap-1.5 mt-0.5">
               <span class="text-sm font-bold text-rose-500">{{ day.high }}°C</span>
               <span class="text-slate-300">/</span>
-              <span class="text-xs text-blue-400">{{ day.low }}°C</span>
+              <span class="text-xs text-blue-500 dark:text-blue-400">{{ day.low }}°C</span>
             </div>
             <div class="flex items-center gap-1 text-[10px] text-amber-500 font-medium">
               <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="5"/><line x1="12" y1="1" x2="12" y2="3"/><line x1="12" y1="21" x2="12" y2="23"/><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"/><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"/><line x1="1" y1="12" x2="3" y2="12"/><line x1="21" y1="12" x2="23" y2="12"/><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"/><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"/></svg>
