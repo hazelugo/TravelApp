@@ -185,7 +185,7 @@ async function onBannerFileChange(e: Event) {
           {{ meta().label }}
         </h1>
         <p class="text-xs mt-0.5"
-          :class="trip.state.trip.bannerUrl ? 'text-white/70' : 'text-slate-400'">
+          :class="trip.state.trip.bannerUrl ? 'text-white/70' : 'text-slate-500 dark:text-slate-400'">
           {{ meta().desc }}
         </p>
       </div>
@@ -375,6 +375,7 @@ async function onBannerFileChange(e: Event) {
           <span v-if="trip.tripIndex.length > 1" class="absolute top-1.5 right-1.5 w-3.5 h-3.5 flex items-center justify-center bg-teal-500 text-white text-[9px] font-bold rounded-full leading-none">{{ trip.tripIndex.length }}</span>
         </button>
         <button @click="ui.toggleDark()"
+          :aria-label="ui.darkMode ? 'Light mode' : 'Dark mode'"
           :class="['w-10 h-10 flex items-center justify-center rounded-xl transition-all',
             trip.state.trip.bannerUrl
               ? 'text-white/70 hover:bg-white/20'

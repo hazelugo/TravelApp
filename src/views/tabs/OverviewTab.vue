@@ -245,7 +245,7 @@ function fmtDate(d: string) {
         <div class="relative">
           <button v-if="!destEditing" @click="startDestEdit"
             class="w-full text-left group flex items-center gap-2 min-w-0">
-            <span class="truncate block" :class="trip.state.trip.destination ? 'text-slate-900 dark:text-slate-100' : 'text-slate-300 dark:text-slate-600'"
+            <span class="truncate block" :class="trip.state.trip.destination ? 'text-slate-900 dark:text-slate-100' : 'text-slate-500 dark:text-slate-500'"
               style="font-size:1.75rem;font-weight:700;line-height:1.2;letter-spacing:-0.01em">
               {{ trip.state.trip.destination || 'Where are you going?' }}
             </span>

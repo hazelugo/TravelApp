@@ -21,7 +21,7 @@ const tabs = [
         'flex-1 flex flex-col items-center gap-1 py-2.5 text-[10px] font-semibold transition-colors',
         currentTab === tab.id
           ? 'text-teal-600 dark:text-[#2dd4bf]'
-          : 'text-slate-400 dark:text-slate-500'
+          : 'text-slate-500 dark:text-slate-400'
       ]"
     >
       <svg width="20" height="20" aria-hidden="true"><use :href="`/icons.svg#${tab.icon}`"/></svg>
