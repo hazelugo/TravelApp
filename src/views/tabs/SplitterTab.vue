@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, reactive, computed } from 'vue'
+import { ref, reactive, computed, nextTick } from 'vue'
 import { useTripStore } from '@/stores/trips'
 import { useUIStore } from '@/stores/ui'
 import type { Payment } from '@/types/domain'
@@ -10,6 +10,8 @@ const ui = useUIStore()
 const newPayment = reactive({ paidById: '', amount: 0, description: '', splitAmong: [] as string[], splitPercentages: {} as Record<string, number> })
 const editingPaymentId = ref<string | null>(null)
 const newFriendName = ref('')
+const formCardRef = ref<HTMLElement | null>(null)
+const formFlashing = ref(false)
 const AVATAR_COLORS = ['#6366f1', '#14b8a6', '#f59e0b', '#10b981', '#8b5cf6']
 const avatarColorMap = computed(() => new Map(trip.state.friends.map((f, i) => [f.id, AVATAR_COLORS[i % 5]])))
 const avatarColor = (id: string) => avatarColorMap.value.get(id) ?? AVATAR_COLORS[0]
@@ -93,6 +95,11 @@ function editPayment(p: Payment) {
   newPayment.description = p.description
   newPayment.splitAmong = [...p.splitAmong]
   newPayment.splitPercentages = { ...p.splitPercentages }
+  nextTick(() => {
+    formCardRef.value?.scrollIntoView({ behavior: 'smooth', block: 'nearest' })
+    formFlashing.value = true
+    setTimeout(() => { formFlashing.value = false }, 1200)
+  })
 }
 
 function cancelEdit() {
@@ -110,10 +117,14 @@ async function removePayment(id: string) {
   <div class="grid grid-cols-1 lg:grid-cols-3 gap-5 anim-fade-up">
 
     <!-- Log a payment — primary action, 2 cols wide -->
-    <div class="lg:col-span-2 bg-surface rounded-2xl border border-slate-100 dark:border-hairline shadow-sm overflow-hidden">
+    <div ref="formCardRef" :class="['lg:col-span-2 bg-surface rounded-2xl border shadow-sm overflow-hidden transition-all duration-300',
+      formFlashing ? 'border-teal-400 ring-2 ring-teal-300 ring-offset-2 dark:ring-offset-slate-900' : 'border-slate-100 dark:border-hairline']">
       <div class="px-6 pt-5 pb-4 bg-gradient-to-r from-teal-50 via-cyan-50 to-teal-50 dark:from-inset dark:via-inset dark:to-inset border-b border-dashed border-teal-100 dark:border-hairline">
         <div class="flex items-center justify-between">
-          <h2 class="eyebrow text-teal-700 dark:text-teal-400">{{ editingPaymentId ? '✏️ Edit Expense' : '🧾 Log an Expense' }}</h2>
+          <div>
+            <h2 class="eyebrow text-teal-700 dark:text-teal-400">{{ editingPaymentId ? '✏️ Editing expense' : '🧾 Log an Expense' }}</h2>
+            <p v-if="editingPaymentId && newPayment.description" class="text-xs text-teal-600 dark:text-teal-400 font-medium mt-0.5 truncate max-w-xs">{{ newPayment.description }}</p>
+          </div>
           <button v-if="editingPaymentId" @click="cancelEdit" class="text-xs text-teal-600 dark:text-teal-400 hover:text-teal-800 font-medium">Cancel</button>
         </div>
       </div>
@@ -143,56 +154,54 @@ async function removePayment(id: string) {
             <!-- Who paid -->
             <div>
               <label class="eyebrow block mb-2.5">Who paid?</label>
-              <div class="flex flex-wrap gap-2">
+              <div class="grid grid-cols-4 gap-2">
                 <button v-for="f in trip.state.friends" :key="f.id" @click="newPayment.paidById = f.id"
-                  :class="['flex items-center gap-2 px-3 py-1.5 rounded-full border text-xs font-semibold transition-all',
+                  :class="['flex flex-col items-center gap-1.5 px-2 py-2.5 rounded-xl border font-semibold transition-all',
                     newPayment.paidById === f.id
                       ? 'bg-teal-500 border-teal-500 text-white shadow-sm'
                       : 'bg-slate-50 dark:bg-inset border-slate-200 dark:border-hairline text-slate-600 dark:text-slate-400 hover:border-teal-300 hover:bg-teal-50 dark:hover:bg-lift hover:text-teal-700']">
-                  <span :class="['w-5 h-5 rounded-full flex items-center justify-center text-[10px] font-bold shrink-0',
+                  <span :class="['w-7 h-7 rounded-full flex items-center justify-center text-[11px] font-bold shrink-0',
                     newPayment.paidById === f.id ? 'bg-white/25 text-white' : 'text-white']"
                     :style="newPayment.paidById !== f.id ? `background:${avatarColor(f.id)}` : ''">
                     {{ friendInitial(f.name) }}
                   </span>
-                  <span class="truncate max-w-[72px]">{{ f.name }}</span>
+                  <span class="truncate w-full text-center text-[11px] leading-tight">{{ f.name }}</span>
                 </button>
               </div>
             </div>
             <!-- Split with -->
             <div>
-              <div class="flex items-center justify-between mb-2.5">
-                <label class="eyebrow">Split with</label>
-                <button @click="toggleAllSplit" class="text-xs text-teal-500 hover:text-teal-700 font-semibold">
-                  {{ newPayment.splitAmong.length === trip.state.friends.length ? 'Deselect all' : newPayment.splitAmong.length === 0 ? 'Everyone, equally' : 'Select all' }}
-                </button>
-              </div>
-              <div class="space-y-1.5">
+              <label class="eyebrow block mb-2.5">Split with</label>
+              <div class="grid grid-cols-2 gap-2">
                 <div v-for="f in trip.state.friends" :key="f.id"
-                  class="flex items-center gap-2.5 rounded-xl transition-colors"
-                  :class="newPayment.splitAmong.includes(f.id) ? 'bg-indigo-50 dark:bg-inset' : ''">
-                  <button @click="toggleSplitFriend(f.id)"
-                    :class="['flex items-center gap-2 flex-1 min-w-0 px-3 py-2 rounded-xl text-left transition-colors',
-                      newPayment.splitAmong.includes(f.id) ? '' : 'hover:bg-slate-50 dark:hover:bg-inset']">
-                    <span :class="['w-4 h-4 rounded-full border-2 shrink-0 flex items-center justify-center transition-all',
-                      newPayment.splitAmong.includes(f.id) ? 'bg-indigo-500 border-indigo-500' : 'border-slate-300 dark:border-slate-600 bg-surface']">
-                      <svg v-if="newPayment.splitAmong.includes(f.id)" width="8" height="8" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="3.5"><polyline points="20 6 9 17 4 12"/></svg>
+                  :class="['rounded-xl border transition-colors',
+                    newPayment.splitAmong.includes(f.id) ? 'bg-indigo-50 dark:bg-inset border-indigo-200 dark:border-indigo-700' : 'border-slate-200 dark:border-hairline hover:border-slate-300 dark:hover:border-slate-600']">
+                  <div class="flex items-center gap-1.5 px-2 py-2">
+                    <!-- Avatar toggle button -->
+                    <button @click="toggleSplitFriend(f.id)" :aria-label="f.name"
+                      :class="['w-6 h-6 rounded-full shrink-0 flex items-center justify-center text-[10px] font-bold transition-all',
+                        newPayment.splitAmong.includes(f.id) ? 'ring-2 ring-indigo-400 ring-offset-1' : 'opacity-40']"
+                      :style="`background:${avatarColor(f.id)};color:white`">
+                      {{ friendInitial(f.name) }}
+                    </button>
+                    <!-- Name -->
+                    <span @click="toggleSplitFriend(f.id)"
+                      :class="['text-xs font-medium truncate flex-1 cursor-pointer select-none',
+                        newPayment.splitAmong.includes(f.id) ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-500 dark:text-slate-400']">
+                      {{ f.name }}
                     </span>
-                    <span :class="['text-sm font-medium truncate', newPayment.splitAmong.includes(f.id) ? 'text-indigo-700 dark:text-indigo-300' : 'text-slate-600 dark:text-slate-400']">{{ f.name }}</span>
-                  </button>
-                  <template v-if="newPayment.splitAmong.includes(f.id)">
-                    <div class="relative shrink-0">
-                      <input type="number" min="0" max="100" step="0.01"
-                        :aria-label="`${f.name} split percentage`"
-                        :value="newPayment.splitPercentages[f.id] ?? 0"
-                        @input="(e: Event) => newPayment.splitPercentages[f.id] = parseFloat((e.target as HTMLInputElement).value) || 0"
-                        class="w-16 pr-5 pl-2 py-1.5 border border-indigo-200 dark:border-indigo-700 bg-surface rounded-lg text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-400 font-semibold text-indigo-700 dark:text-indigo-300" />
-                      <span class="absolute right-1.5 top-1/2 -translate-y-1/2 text-indigo-400 text-xs pointer-events-none font-medium">%</span>
-                    </div>
-                    <span v-if="newPayment.amount" class="text-xs text-indigo-400 w-12 text-right shrink-0 font-medium pr-3">
-                      ${{ fmt(newPayment.amount * (newPayment.splitPercentages[f.id] || 0) / 100) }}
-                    </span>
-                  </template>
-                  <span v-else class="pr-3"></span>
+                    <!-- % input — only when selected -->
+                    <template v-if="newPayment.splitAmong.includes(f.id)">
+                      <div class="relative shrink-0">
+                        <input type="number" min="0" max="100" step="1"
+                          :aria-label="`${f.name} split percentage`"
+                          :value="newPayment.splitPercentages[f.id] ?? 0"
+                          @input="(e: Event) => newPayment.splitPercentages[f.id] = parseFloat((e.target as HTMLInputElement).value) || 0"
+                          class="w-16 pr-4 pl-1.5 py-1 border border-indigo-200 dark:border-indigo-700 bg-surface rounded-lg text-xs text-right focus:outline-none focus:ring-2 focus:ring-indigo-400 font-semibold text-indigo-700 dark:text-indigo-300" />
+                        <span class="absolute right-1 top-1/2 -translate-y-1/2 text-indigo-400 text-[10px] pointer-events-none font-medium">%</span>
+                      </div>
+                    </template>
+                  </div>
                 </div>
               </div>
               <div v-if="newPayment.splitAmong.length > 0" class="mt-2.5 flex items-center justify-between px-1">
@@ -200,7 +209,9 @@ async function removePayment(id: string) {
                   Total: {{ splitPercentageTotal }}%
                   <span v-if="!splitValid" class="ml-1">— must equal 100%</span>
                 </span>
-                <button @click="redistributeEqual" class="text-xs text-indigo-400 hover:text-indigo-600 font-semibold">Split evenly</button>
+                <button @click="toggleAllSplit" class="text-xs text-teal-500 hover:text-teal-700 font-semibold">
+                  {{ newPayment.splitAmong.length === trip.state.friends.length ? 'Deselect all' : newPayment.splitAmong.length === 0 ? 'Everyone, equally' : 'Select all' }}
+                </button>
               </div>
             </div>
           </div>

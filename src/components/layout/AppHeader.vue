@@ -30,7 +30,7 @@ const TAB_META: Record<string, { label: string; desc: string }> = {
   itinerary:  { label: 'Itinerary', desc: "What's on the agenda" },
   analytics:  { label: 'Spending',  desc: 'Follow the money' },
   splitter:   { label: 'Splitter',  desc: 'No awkward IOUs' },
-  photos:     { label: 'Photos',    desc: 'The memories' },
+  // photos:  { label: 'Photos',    desc: 'The memories' },
 }
 const meta = () => TAB_META[props.currentTab] ?? TAB_META.overview
 

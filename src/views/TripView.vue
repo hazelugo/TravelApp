@@ -7,7 +7,7 @@ import OverviewTab from '@/views/tabs/OverviewTab.vue'
 import ItineraryTab from '@/views/tabs/ItineraryTab.vue'
 import SpendingTab from '@/views/tabs/SpendingTab.vue'
 import SplitterTab from '@/views/tabs/SplitterTab.vue'
-import PhotosTab from '@/views/tabs/PhotosTab.vue'
+// import PhotosTab from '@/views/tabs/PhotosTab.vue'
 import { useTripStore } from '@/stores/trips'
 
 const currentTab = ref('overview')
@@ -18,7 +18,7 @@ const TABS: Record<string, typeof OverviewTab> = {
   itinerary:  ItineraryTab,
   analytics:  SpendingTab,
   splitter:   SplitterTab,
-  photos:     PhotosTab,
+  // photos:  PhotosTab,
 }
 </script>
 

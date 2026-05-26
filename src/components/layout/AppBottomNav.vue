@@ -7,7 +7,7 @@ const tabs = [
   { id: 'itinerary',  label: 'Itinerary', icon: 'i-itinerary' },
   { id: 'analytics',  label: 'Spending',  icon: 'i-spending'  },
   { id: 'splitter',   label: 'Splitter',  icon: 'i-splitter'  },
-  { id: 'photos',     label: 'Photos',    icon: 'i-photos'    },
+  // { id: 'photos',  label: 'Photos',    icon: 'i-photos'    },
 ]
 </script>
 
